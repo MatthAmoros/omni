@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import sys
 import RPi.GPIO as GPIO
-import lib.SimpleMFRC522 #Credit to 
+import lib.SimpleMFRC522 as SimpleMFRC522#Credit to 
 from lib.doorController import DoorController
 from flask import Flask
 from flask import request
