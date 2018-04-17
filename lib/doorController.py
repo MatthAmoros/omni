@@ -15,9 +15,7 @@ class DoorController:
 	def __str__(self):
 		""" Prints out user-friendly string description """
 		description = "DoorController : " + str(self.name)
-		+ " with master " + self.masterUrl 
-		+ " running version " + VERSION
-		+ " <br/>Configuration " + str(jsonify(self))
+		+ " running version " + self.VERSION
 		return description
 		
 	def getConfiguration(self):
