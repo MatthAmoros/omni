@@ -98,7 +98,7 @@ def startReadingLoop():
 				id = 22554655721354687
 				text = "hashedIdAndMasterSecret"
 				
-			global doorBerry	
+			global doorCtrl	
 			result = doorCtrl.validateCredential(id, text)
 			
 			if result == 1:
