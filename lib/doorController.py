@@ -4,12 +4,12 @@ This class handle door controller life cycle.
 import requests
 
 class DoorController:
-	VERSION = "0.0.1"	
-	NOT_BINDED = "<FREE>"
 	
 	def __init__(self, name):
+		self.VERSION = "0.0.1"	
+		self.NOT_BINDED = "<FREE>"
 		self.name = name
-		self.masterUrl = NOT_BINDED
+		self.masterUrl = self.NOT_BINDED
 		print str(name)  + " started."	
 	
 	def __str__(self):
@@ -22,7 +22,7 @@ class DoorController:
 		
 	def getConfiguration(self):
 		""" Asks master for configuration """
-		if self.masterUrl != NOT_BINDED:
+		if self.masterUrl != self.NOT_BINDED:
 			r = requests.get(self.masterUrl + '/configuration/' + self.name)
 			if r.status_code == "200":
 				#Request success
