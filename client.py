@@ -87,7 +87,7 @@ def startWebServer():
 def startReadingLoop():
 	""" Starts RFID reading loop """
 	try:
-		global doorBerry
+		
 		reader = SimpleMFRC522.SimpleMFRC522()
 		print "Starting reader..."
 		while mustStop == 0 :
@@ -98,7 +98,14 @@ def startReadingLoop():
 				id = 22554655721354687
 				text = "hashedIdAndMasterSecret"
 				
-			doorCtrl.validateCredential(id, text)
+			global doorBerry	
+			result = doorCtrl.validateCredential(id, text)
+			
+			if result == 1:
+				print "Valid !"
+			else:
+				print "Error"
+				
 			print(id)
 			print(text)
 	except KeyboardInterrupt:
