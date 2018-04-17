@@ -48,6 +48,7 @@ class DoorController:
 			
 		r = requests.get(masterUrl + '/isAlive')
 		if r.status_code == 200:
+			print "Setting master url to " + masterUrl
 			self.masterUrl = masterUrl
 		else:
 			print "Error, invalid master response"
@@ -62,4 +63,5 @@ class DoorController:
 			else:
 				return -1
 		else:
+			print "Master URL not set."
 			return -1
