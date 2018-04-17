@@ -55,7 +55,8 @@ class DoorController:
 	def validateCredential(self, cardId, secret):
 		""" Validates provided credentials against master's db """
 		if len(self.masterUrl) > 0:
-			r = requests.get(self.masterUrl + '/accessRule/' + self.zoneId + '/' + cardId)
+			print "Getting " + self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId)
+			r = requests.get(self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId))
 			if r.status_code == "200":
 				return 1
 			else:
