@@ -19,7 +19,7 @@ def index():
     return "200"
     
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
-def validateCredential():
+def validateCredential(zone, credential):
 	if zone == '1':
 		return "200"
 	else:
