@@ -27,6 +27,7 @@ class DoorController:
 				self.zoneEnabled = config['zone']['enabled']
 				self.zoneDayTimeOnly = config['zone']['dayTimeOnly']
 				self.masterSecret = config['secret']
+				self.configurationLoaded = 1
 				print "Configuration loaded."
 			else:
 				print "Configuration loading failed."
@@ -50,11 +51,16 @@ class DoorController:
 		if r.status_code == 200:
 			print "Setting master url to " + masterUrl
 			self.masterUrl = masterUrl
+			self.getConfiguration()
 		else:
 			print "Error, invalid master response"
 		
 	def validateCredential(self, cardId, secret):
 		""" Validates provided credentials against master's db """
+		if not self.configurationLoaded
+			print "No configuration loaded"
+			return -1
+			
 		if len(self.masterUrl) > 0:
 			print "Getting " + self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId)
 			r = requests.get(self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId))

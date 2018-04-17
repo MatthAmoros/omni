@@ -140,9 +140,6 @@ if __name__ == "__main__":
 	mustStop = 1
 	print "Notify threads to stop..."
 	sleep(1)
-	#Send terminate exception
-	webServerThread.terminate()
-	rfidReaderThread.terminate()
 	#Join threads
 	webServerThread.join()
 	rfidReaderThread.join()
