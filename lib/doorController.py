@@ -1,18 +1,46 @@
+"""
+This class handle door controller life cycle.
+"""
 import requests
 
-class DoorController:	
+class DoorController:
+	VERSION = "0.0.1"	
 	def __init__(self, name):
 		self.name = name
 		self.masterUrl = ''
-		print name  + " started."
+		print name  + " started."	
+	
+	def __str__(self):
+		""" Prints out user-friendly string description """
+		description = "DoorController : " + self.name 
+		+ " with master " + self.masterUrl 
+		+ " running version " + VERSION
+		+ " <br/>Configuration " + jsonify(self)
+		return description
 		
 	def getConfiguration(self):
-		#Query server for configuration
-		self.zone.id = 1
-		self.zone.enabled = 1
-		self.zone.dayTimeOnly = 0
+		""" Asks master for configuration """
+		if self.masterUrl != '':
+			r = requests.get(self.masterUrl + '/configuration/' + self.name)
+			if r.status_code == "200":
+				#Request success
+				config = json.loads(r.text)
+				self.zone.id = config['zone']['id']
+				self.zone.enabled = config['zone']['enabled']
+				self.zone.dayTimeOnly = config['zone']['dayTimeOnly']
+				print "Configuration loaded."
+			else:
+				print "Configuration loading failed."
+				self.zone.id = 1
+				self.zone.enabled = 1
+				self.zone.dayTimeOnly = 0
+		else:
+			self.zone.id = 1
+			self.zone.enabled = 1
+			self.zone.dayTimeOnly = 0
 		
 	def setMaster(self, masterUrl):
+		""" Sets default master """
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
 		r = requests.get(masterUrl + '/isAlive')
@@ -22,8 +50,7 @@ class DoorController:
 			print "Error, invalid master response"
 		
 	def validateCredential(self, cardId, secret):
-		#Validate cardId secret combination
-		#Query for zone
+		""" Validates provided credentials against master's db """
 		r = requests.get(self.masterUrl + '/accessRule/' + self.zone.id + '/' + cardId , headers=getCredentialsHeaders(httpVerb='GET', httpUri=requestUri, clientSecret=self.secret))
 		if r.status_code == "200":
 			return 1
