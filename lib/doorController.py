@@ -57,7 +57,7 @@ class DoorController:
 		
 	def validateCredential(self, cardId, secret):
 		""" Validates provided credentials against master's db """
-		if not self.configurationLoaded
+		if not self.configurationLoaded:
 			print "No configuration loaded"
 			return -1
 			
