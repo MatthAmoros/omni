@@ -34,7 +34,7 @@ def getConfigurationByClientId(clientId):
 def configuration(clientId):
 	print clientId + " requested configuration."
 	configuration = getConfigurationByClientId(clientId)
-	return jsonify(configuration)
+	return jsonify(configuration.serialize())
 
 #Only if it's run
 if __name__ == "__main__":

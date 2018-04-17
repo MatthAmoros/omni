@@ -23,9 +23,9 @@ class DoorController:
 			if r.status_code == "200":
 				#Request success
 				config = json.loads(r.text)
-				self.zoneId = config['zone']['id']
-				self.zoneEnabled = config['zone']['enabled']
-				self.zoneDayTimeOnly = config['zone']['dayTimeOnly']
+				self.zoneId = config['zone']
+				self.zoneEnabled = config['enabled']
+				self.zoneDayTimeOnly = config['dayTimeOnly']
 				self.masterSecret = config['secret']
 				self.configurationLoaded = 1
 				print "Configuration loaded."
