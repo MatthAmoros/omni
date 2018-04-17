@@ -31,7 +31,7 @@ def index():
 @app.route("/isNodeFree")
 def isNodeFree():
 	""" Called to check if a master has been associated """
-	if doorCtrl.masterUrl == doorCtrl.NOT_BINDED:
+	if len(doorCtrl.masterUrl) == 0:
 		return "200" # Available for adoption
 	else:
 		return "409" # Conflict
@@ -51,7 +51,7 @@ def adopt():
 				403 : Master alreay registered
 	"""
 	global doorCtrl
-	if doorCtrl.masterUrl == doorCtrl.NOT_BINDED:
+	if len(doorCtrl.masterUrl) == 0:
 		if request.method == 'POST':
 			newMaster = request.form.get('master')
 			print 'Received ' + newMaster
@@ -114,6 +114,7 @@ def startReadingLoop():
 if __name__ == "__main__":
 	if len(sys.argv) > 1 and sys.argv[1] == "mock":
 		mockReader = 1
+		print "Started with mocked reader."
 	
 	#Delcare processes
 	webServerThread = Process(target=startWebServer)

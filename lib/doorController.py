@@ -7,7 +7,6 @@ class DoorController:
 	
 	def __init__(self, name):
 		self.VERSION = "0.0.1"	
-		self.NOT_BINDED = '<FREE>'
 		self.name = str(name)
 		self.masterUrl = self.NOT_BINDED
 		self.masterSecret = ''
@@ -19,32 +18,34 @@ class DoorController:
 		
 	def getConfiguration(self):
 		""" Asks master for configuration """
-		if self.masterUrl != self.NOT_BINDED:
+		if len(self.masterUrl) > 0:
 			r = requests.get(self.masterUrl + '/configuration/' + self.name)
 			if r.status_code == "200":
 				#Request success
 				config = json.loads(r.text)
-				self.zone.id = config['zone']['id']
-				self.zone.enabled = config['zone']['enabled']
-				self.zone.dayTimeOnly = config['zone']['dayTimeOnly']
+				self.zoneId = config['zone']['id']
+				self.zoneEnabled = config['zone']['enabled']
+				self.zoneDayTimeOnly = config['zone']['dayTimeOnly']
 				self.masterSecret = config['secret']
 				print "Configuration loaded."
 			else:
 				print "Configuration loading failed."
-				self.zone.id = 1
-				self.zone.enabled = 1
-				self.zone.dayTimeOnly = 0
+				self.zoneId= 1
+				self.zoneEnabled = 1
+				self.zoneDayTimeOnly = 0
 		else:
-			self.zone.id = 1
-			self.zone.enabled = 1
-			self.zone.dayTimeOnly = 0
+			self.zoneId = 1
+			self.zoneEnabled = 1
+			self.zoneDayTimeOnly = 0
 		
 	def setMaster(self, masterUrl):
 		""" Sets default master """
 		if(not masterUrl.startswith("http")):
 			print "Error, master is not an url"
+			
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
+			
 		r = requests.get(masterUrl + '/isAlive')
 		if r.status_code == 200:
 			self.masterUrl = masterUrl
@@ -53,8 +54,11 @@ class DoorController:
 		
 	def validateCredential(self, cardId, secret):
 		""" Validates provided credentials against master's db """
-		r = requests.get(self.masterUrl + '/accessRule/' + self.zone.id + '/' + cardId , headers=getCredentialsHeaders(httpVerb='GET', httpUri=requestUri, clientSecret=self.secret))
-		if r.status_code == "200":
-			return 1
+		if len(self.masterUrl) > 0:
+			r = requests.get(self.masterUrl + '/accessRule/' + self.zoneId + '/' + cardId)
+			if r.status_code == "200":
+				return 1
+			else:
+				return -1
 		else:
 			return -1
