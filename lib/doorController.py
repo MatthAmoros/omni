@@ -43,7 +43,7 @@ class DoorController:
 		
 	def setMaster(self, masterUrl):
 		""" Sets default master """
-		if(!masterUrl.startswith("http"))
+		if(not masterUrl.startswith("http"))
 			print "Error, master is not an url"
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
