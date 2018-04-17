@@ -8,7 +8,7 @@ class DoorController:
 	def __init__(self, name):
 		self.name = name
 		self.masterUrl = ''
-		print name  + " started."	
+		print str(name)  + " started."	
 	
 	def __str__(self):
 		""" Prints out user-friendly string description """
