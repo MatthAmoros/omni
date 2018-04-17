@@ -5,9 +5,11 @@ import requests
 
 class DoorController:
 	VERSION = "0.0.1"	
+	NOT_BINDED = "<FREE>"
+	
 	def __init__(self, name):
 		self.name = name
-		self.masterUrl = ''
+		self.masterUrl = NOT_BINDED
 		print str(name)  + " started."	
 	
 	def __str__(self):
@@ -15,12 +17,12 @@ class DoorController:
 		description = "DoorController : " + str(self.name)
 		+ " with master " + self.masterUrl 
 		+ " running version " + VERSION
-		+ " <br/>Configuration " + jsonify(self)
+		+ " <br/>Configuration " + str(jsonify(self))
 		return description
 		
 	def getConfiguration(self):
 		""" Asks master for configuration """
-		if self.masterUrl != '':
+		if self.masterUrl != NOT_BINDED:
 			r = requests.get(self.masterUrl + '/configuration/' + self.name)
 			if r.status_code == "200":
 				#Request success
@@ -41,6 +43,8 @@ class DoorController:
 		
 	def setMaster(self, masterUrl):
 		""" Sets default master """
+		if(!masterUrl.startswith("http"))
+			print "Error, master is not an url"
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
 		r = requests.get(masterUrl + '/isAlive')

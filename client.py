@@ -30,7 +30,7 @@ def index():
 @app.route("/isNodeFree")
 def isNodeFree():
 	""" Called to check if a master has been associated """
-	if doorCtrl.masterUrl == '':
+	if doorCtrl.masterUrl == doorCtrl.NOT_BINDED:
 		return "200" # Available for adoption
 	else:
 		return "409" # Conflict
@@ -50,7 +50,7 @@ def adopt():
 				403 : Master alreay registered
 	"""
 	global doorCtrl
-	if doorCtrl.masterUrl == '':
+	if doorCtrl.masterUrl == doorCtrl.NOT_BINDED:
 		if request.method == 'POST':
 			newMaster = request.form.get('master')
 			print 'Received ' + newMaster
