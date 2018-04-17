@@ -13,7 +13,7 @@ from flask import request
 # Others
 import sys
 from uuid import getnode as get_mac
-from multiprocessing import Process
+from threading import Thread
 from time import sleep
 
 mockReader = 0
@@ -119,8 +119,8 @@ if __name__ == "__main__":
 		print "Started with mocked reader."
 	
 	#Delcare processes
-	webServerThread = Process(target=startWebServer)
-	rfidReaderThread = Process(target=startReadingLoop)
+	webServerThread = Thread(target=startWebServer)
+	rfidReaderThread = Thread(target=startReadingLoop)
 	#Start processes
 	rfidReaderThread.start();
 	webServerThread.start();
