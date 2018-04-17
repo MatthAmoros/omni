@@ -7,16 +7,14 @@ class DoorController:
 	
 	def __init__(self, name):
 		self.VERSION = "0.0.1"	
-		self.NOT_BINDED = "<FREE>"
+		self.NOT_BINDED = '<FREE>'
 		self.name = name
 		self.masterUrl = self.NOT_BINDED
 		print str(name)  + " started."	
 	
 	def __str__(self):
 		""" Prints out user-friendly string description """
-		description = "DoorController : " + str(self.name)
-		+ " running version " + self.VERSION
-		return description
+		return "DoorController : " + str(self.name)	+ " running version " + self.VERSION		 
 		
 	def getConfiguration(self):
 		""" Asks master for configuration """
