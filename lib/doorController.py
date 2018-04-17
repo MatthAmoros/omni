@@ -8,7 +8,7 @@ class DoorController:
 	def __init__(self, name):
 		self.VERSION = "0.0.1"	
 		self.name = str(name)
-		self.masterUrl = self.NOT_BINDED
+		self.masterUrl = ''
 		self.masterSecret = ''
 		print self.name  + " started."	
 	
