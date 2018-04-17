@@ -50,7 +50,6 @@ def adopt():
 				405 : HTTP Method not allowed (must use POST), 
 				403 : Master alreay registered
 	"""
-	global doorCtrl
 	if len(doorCtrl.masterUrl) == 0:
 		if request.method == 'POST':
 			newMaster = request.form.get('master')
@@ -69,7 +68,6 @@ def adopt():
 @app.route('/adopt', methods=['GET'])
 def getMaster():
 	""" Returns current master """
-	global doorCtrl
 	if request.method == 'GET':
 		return doorCtrl.masterUrl
 
@@ -86,8 +84,7 @@ def startWebServer():
 
 def startReadingLoop():
 	""" Starts RFID reading loop """
-	try:
-		
+	try:		
 		reader = SimpleMFRC522.SimpleMFRC522()
 		print "Starting reader..."
 		while mustStop == 0 :
@@ -98,7 +95,6 @@ def startReadingLoop():
 				id = 22554655721354687
 				text = "hashedIdAndMasterSecret"
 				
-			global doorCtrl	
 			result = doorCtrl.validateCredential(id, text)
 			
 			if result == 1:
@@ -113,7 +109,6 @@ def startReadingLoop():
 	finally:
 		print "Reader stopped"
 		GPIO.cleanup()
-
 
 # ===========================
 # 		Starting up

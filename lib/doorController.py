@@ -63,5 +63,5 @@ class DoorController:
 			else:
 				return -1
 		else:
-			print "Master URL not set."
+			print "Master URL not set. (" + self.masterUrl + ")"
 			return -1
