@@ -8,9 +8,10 @@ class DoorController:
 	def __init__(self, name):
 		self.VERSION = "0.0.1"	
 		self.NOT_BINDED = '<FREE>'
-		self.name = name
+		self.name = str(name)
 		self.masterUrl = self.NOT_BINDED
-		print str(name)  + " started."	
+		self.masterSecret = ''
+		print self.name  + " started."	
 	
 	def __str__(self):
 		""" Prints out user-friendly string description """
@@ -26,6 +27,7 @@ class DoorController:
 				self.zone.id = config['zone']['id']
 				self.zone.enabled = config['zone']['enabled']
 				self.zone.dayTimeOnly = config['zone']['dayTimeOnly']
+				self.masterSecret = config['secret']
 				print "Configuration loaded."
 			else:
 				print "Configuration loading failed."

@@ -16,6 +16,7 @@ from uuid import getnode as get_mac
 from multiprocessing import Process
 from time import sleep
 
+mockReader = 0
 mustStop = 0;
 nodeId = get_mac()
 doorCtrl = DoorController(nodeId)
@@ -90,8 +91,14 @@ def startReadingLoop():
 		reader = SimpleMFRC522.SimpleMFRC522()
 		print "Starting reader..."
 		while mustStop == 0 :
-			id, text = reader.read()
-			doorCtrl.validateCredential(id, text);
+			if mockReader == 0:
+				id, text = reader.read()
+			else:
+				sleep(5)
+				id = 22554655721354687
+				text = "hashedIdAndMasterSecret"
+				
+			doorCtrl.validateCredential(id, text)
 			print(id)
 			print(text)
 	except KeyboardInterrupt:
@@ -105,6 +112,9 @@ def startReadingLoop():
 # 		Starting up
 # ===========================
 if __name__ == "__main__":
+	if len(sys.argv) > 1 and sys.argv[1] == "mock":
+		mockReader = 1
+	
 	#Delcare processes
 	webServerThread = Process(target=startWebServer)
 	rfidReaderThread = Process(target=startReadingLoop)
