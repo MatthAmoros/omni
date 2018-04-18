@@ -32,7 +32,7 @@ class SourceFactory:
 			connectionFile.read(self.parameter)
 			
 			connectionString = "DRIVER={"+ connectionFile.get("ConnectionString", "driver") +"};" 
-			connectionString += "SERVER=" + connectionFile.get("ConnectionString", "server") + ';' + "PORT=1433;"		
+			connectionString += "SERVER=" + connectionFile.get("ConnectionString", "server") + ';' + "PORT=49225;"		
 			connectionString +=  "DATABASE=" + connectionFile.get("ConnectionString", "database") + ';'
 			
 			#connectionString += "Persist Security Info=True;"
