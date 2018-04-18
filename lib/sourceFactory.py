@@ -31,9 +31,10 @@ class SourceFactory:
 			connectionFile = configparser.ConfigParser()
 			connectionFile.read(self.parameter)
 			
-			connectionString = "DRIVER={"+ connectionFile.get("ConnectionString", "driver") +"};"
-			connectionString += "SERVER=tcp:" + connectionFile.get("ConnectionString", "server") + ';'		
+			connectionString = "DRIVER={"+ connectionFile.get("ConnectionString", "driver") +"};" 
+			connectionString += "SERVER=" + connectionFile.get("ConnectionString", "server") + ';' + "PORT=1433;"		
 			connectionString +=  "DATABASE=" + connectionFile.get("ConnectionString", "database") + ';'
+			
 			#connectionString += "Persist Security Info=True;"
 			
 			#connectionString = "DSN=AccesControl;"
@@ -44,8 +45,8 @@ class SourceFactory:
 			else:
 				connectionString += "Trusted_Connection=yes;"
 
-			print "Connection string " + connectionString			
-
+			print "Connection string " + connectionString
+			
 			cnxn = pyodbc.connect(connectionString)
 			
 			try:
