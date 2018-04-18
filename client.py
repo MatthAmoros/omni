@@ -2,9 +2,6 @@
 """
 This is the client, this module must be run on a Raspberry PI
 """
-# Raspberry PI specifics imports
-import RPi.GPIO as GPIO
-import lib.SimpleMFRC522 as SimpleMFRC522 #Credit to 
 # Module imports
 from lib.doorController import DoorController
 # Flask imports
@@ -12,11 +9,24 @@ from flask import Flask
 from flask import request
 # Others
 import sys
+import requests
 from uuid import getnode as get_mac
 from threading import Thread
 from time import sleep
 
-mockReader = 0
+# Raspberry PI specifics imports
+try:
+	import RPi.GPIO
+	import lib.SimpleMFRC522 as SimpleMFRC522 #Credit to 
+	mockReader = 0
+	runningOnPi = 1
+except ImportError, e:
+	print "Module RPi.GPIO doesn't exist"
+except RuntimeError:
+	print "Not running on a Raspberry Pi board, mocking reader"
+	mockReader = 1	
+	runningOnPi = 0
+	
 mustStop = 0;
 nodeId = get_mac()
 doorCtrl = DoorController(nodeId)
@@ -27,6 +37,17 @@ app = Flask(__name__)
 def index():
 	""" Used to check if client is online """
 	return str(doorCtrl),"200"
+
+@app.route("/shutdown")
+def shutdown():
+	global mustStop
+	if mustStop == 1:
+		shutdownFunc = request.environ.get('werkzeug.server.shutdown')		
+		if shutdownFunc is None:
+			raise RuntimeError('Not running with the Werkzeug Server')		
+		shutdownFunc()
+	return "200"
+	
     
 @app.route("/isNodeFree")
 def isNodeFree():
@@ -84,8 +105,9 @@ def startWebServer():
 
 def startReadingLoop():
 	""" Starts RFID reading loop """
-	try:		
-		reader = SimpleMFRC522.SimpleMFRC522()
+	try:
+		if mockReader == 0:		
+			reader = SimpleMFRC522.SimpleMFRC522()
 		print "Starting reader..."
 		while mustStop == 0 :
 			if mockReader == 0:
@@ -108,14 +130,21 @@ def startReadingLoop():
 		pass		
 	finally:
 		print "Reader stopped"
-		GPIO.cleanup()
+		if mockReader == 0:
+			GPIO.cleanup()
 
-# ===========================
-# 		Starting up
-# ===========================
-if __name__ == "__main__":
+	print "Gracefully closed"
+	sleep(1)
+	
+def main():
+	""" Main method, handle startup and shutdown """
+	global mockReader
+	global mustStop
+	
 	if len(sys.argv) > 1 and sys.argv[1] == "mock":
 		mockReader = 1
+		
+	if mockReader == 1:
 		print "Started with mocked reader."
 	
 	#Delcare processes
@@ -138,6 +167,9 @@ if __name__ == "__main__":
 
 	#Notify threads
 	mustStop = 1
+	#Send request to kill endpoint
+	requests.get("http://localhost:5000/shutdown")
+	
 	print "Notify threads to stop..."
 	sleep(1)
 	#Join threads
@@ -145,7 +177,11 @@ if __name__ == "__main__":
 	rfidReaderThread.join()
 
 	#Cleanup GPIO handles
-	GPIO.cleanup()
+	if runningOnPi == 1:
+		GPIO.cleanup()
 
-	print "Gracefully closed"
-	sleep(1)
+# ===========================
+# 		Starting up
+# ===========================
+if __name__ == "__main__":
+	main()

@@ -10,6 +10,7 @@ class DoorController:
 		self.name = str(name)
 		self.masterUrl = ''
 		self.masterSecret = ''
+		self.configurationLoaded = 0
 		print self.name  + " started."	
 	
 	def __str__(self):
