@@ -2,6 +2,7 @@
 ###################
 *.pyc
 *.o
+.so
 
 # Packages #
 ############
@@ -9,8 +10,7 @@
 *.tar
 *.zip
 
-# Logs and databases #
-######################
+# Logs and connection string #
+##############################
 *.log
 *.sql
-*.sqlite

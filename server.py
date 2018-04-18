@@ -38,5 +38,9 @@ def configuration(clientId):
 
 #Only if it's run
 if __name__ == "__main__":
+	""" Reading configuration """
+	appConfig = ConfigParser.ConfigParser()
+	appConfig.read("./cfg/config.ini")
+
 	print "Start web server..."
 	app.run(host='0.0.0.0')
