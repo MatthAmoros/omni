@@ -61,6 +61,7 @@ def isNodeFree():
 def loadConfiguration():
 	""" Called by master to force reload configuration """
 	doorCtrl.getConfiguration()
+	return "200";
 
 @app.route('/adopt', methods=['POST'])
 def adopt():
@@ -100,7 +101,7 @@ def startWebServer():
 	""" Starts Flask """
 	print "Start web server..."
 	global app
-	app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0', port=int("5555"))
 	print "Web server stopped"
 
 def startReadingLoop():
@@ -168,7 +169,7 @@ def main():
 	#Notify threads
 	mustStop = 1
 	#Send request to kill endpoint
-	requests.get("http://localhost:5000/shutdown")
+	requests.get("http://localhost:5555/shutdown")
 	
 	print "Notify threads to stop..."
 	sleep(1)
