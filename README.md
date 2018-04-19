@@ -40,6 +40,7 @@ TODO : Docker image
 * [Flask](http://flask.pocoo.org/docs/0.12/) - Flask is a micro webdevelopment framework for Python.
 * [RPi.GPIO](https://pypi.org/project/RPi.GPIO/) - Provides a class to control the GPIO on a Raspberry Pi.
 * [MFRC522](https://github.com/pimylifeup/MFRC522-python) - MFRC522 Wrapper
+* [Docker](https://www.docker.com/) - Docker is an open platform for developers and sysadmins to build, ship, and run distributed applications.
 
 ## Contributing
 
