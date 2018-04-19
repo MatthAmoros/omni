@@ -8,7 +8,7 @@ class ClientConfiguration:
 	dayTimeOnly = 0 #Only enabled on day time ?
 	authorizeOnly = "" #If empty, authorize all, else groups with ';' separators
 	clientId = 0 #Client ID
-	secret = 18091992118292 #Server secret, for future cryptographic uses
+	secret = "" #Server secret, for future cryptographic uses
 	
 	def __init__(self, clientId):
 		self.clientId = clientId

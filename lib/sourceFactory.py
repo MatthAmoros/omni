@@ -22,7 +22,9 @@ class SourceFactory:
 		""" Prints out user-friendly string description """
 		return "Source : Type : " + self.sourceType + " with parameter " + self.parameter
 		
-	def buildConnectionString(self):		
+	def buildConnectionString(self):	
+		""" If we are using a Database, self.parameter must contains a path
+			to the file that contains connection string information """		
 		connectionFile = configparser.ConfigParser()
 		connectionFile.read(self.parameter)
 		
@@ -64,30 +66,60 @@ class SourceFactory:
 		return config		   
 		"""
 
-	def loadClientConfiguration(self, clientId):
-		""" Loads configuration for specified clientId and returns it as an object """
-		config = ClientConfiguration(clientId)
-		if self.sourceType == self.TYPE_DATABASE:
-			""" If we are using a Database, self.parameter must contains a path
-			 to the file that contains connection string information """		
+	def checkIsReachable(self):
+		""" Check data source is reachable """
+		if self.sourceType == self.TYPE_DATABASE:	
 			connectionString = self.buildConnectionString()
 
 			print "Connection string " + connectionString
 				
 			try:
 				cnxn = pyodbc.connect(connectionString)
-				cursor = cnxn.cursor()
-				print "Retrieving configuration for client " +  str(clientId)
-				cursor.execute('SELECT * FROM Controller WHERE ControllerCode =' + str(clientId))
+				cnxn.close()
+				return 1
+			except:
+				print "Could not connect to provided connection."		
+				return 0				
+			
+		elif self.sourceType == self.TYPE_FILE:
+			#Load from provided path
+			return 1
+		elif self.sourceType == self.TYPE_WEB:
+			#Load from provided url	
+			return 1
+		else:
+			return 0
 
-				for row in cursor:
-					str(row)
-					
+	def loadClientConfiguration(self, clientId):
+		""" Loads configuration for specified clientId and returns it as an object """
+		config = ClientConfiguration(clientId)
+		if self.sourceType == self.TYPE_DATABASE:	
+			connectionString = self.buildConnectionString()
+			try:
+				cnxn = pyodbc.connect(connectionString)
+				cursor = cnxn.cursor()
+				cursor.execute('SELECT TOP 1 ControllerId,ControllerCode,ZoneId,Enabled FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
+				""" 
+					Must return something like 
+					zoneId as int
+					enabled as bool					
+				"""
+
+				row = cursor.fetchone()
+				
+				#Bind to actual configuration object	
+				if row is not None:	
 					config.zone = row[2]
 					config.enabled = row[3]
-					print str(config.serialize())
+				else:
+					print "No configuration found for client " +  str(clientId)			
 			except:
 				print "Could not connect to provided connection."					   
+			finally:
+				#Cleaning up
+				cursor.close()
+				del cursor
+				cnxn.close()
 				
 			return config
 		elif self.sourceType == self.TYPE_FILE:

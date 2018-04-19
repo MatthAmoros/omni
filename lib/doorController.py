@@ -52,7 +52,7 @@ class DoorController:
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
 			
-		r = requests.get(masterUrl + '/isAlive')
+		r = requests.get(masterUrl + '/confirmAdopt')
 		if r.status_code == 200:
 			print "Setting master url to " + masterUrl
 			self.masterUrl = masterUrl
