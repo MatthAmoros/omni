@@ -69,6 +69,9 @@ if __name__ == "__main__":
 	appConfig = ConfigParser.ConfigParser()
 	appConfig.read("./cfg/config.ini")
 	
+	if len(appConfig.sections()) == 0:
+		raise RuntimeError("Could not open configuration file")
+			
 	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
 	SERVER_SECRET = appConfig.get("AppConstants", "Secret")
 	
