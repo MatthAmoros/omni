@@ -1,5 +1,5 @@
 [ConnectionString]
-driver=ODBC Driver 13 for SQL Server
+driver=FreeTDS
 server=server_name
 database=AccessControl
 trusted=no

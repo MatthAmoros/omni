@@ -66,8 +66,11 @@ if __name__ == "__main__":
 	""" Reading configuration """
 	print "Pre-start diagnostic ..."
 	print "1) Loading application configuration ..."
+	
 	appConfig = ConfigParser.ConfigParser()
 	appConfig.read("./cfg/config.ini")
+	
+	print "Sections : " + str(len(appConfig.sections()))
 	
 	if len(appConfig.sections()) == 0:
 		raise RuntimeError("Could not open configuration file")
