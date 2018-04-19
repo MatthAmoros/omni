@@ -12,7 +12,7 @@ from flask import request
 from flask import jsonify
 
 from lib.sourceFactory import SourceFactory
-CONNECTION_FILE_PATH = "../cfg/connectionString.sql" #Default
+CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 app = Flask(__name__)
 
 #Flask definitions
@@ -31,10 +31,15 @@ def validateCredential(zone, credential):
 def configuration(clientId):
 	print clientId + " requested configuration."
 	configuration = getConfigurationByClientId(clientId)
-	return jsonify(configuration.serialize())
+	
+	if configuration is None:
+		return "401"
+		
+	return jsonify(configuration.serialize()), "200"
 
 def getConfigurationByClientId(clientId):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	print str(source)
 	conf = source.loadClientConfiguration(clientId)
 	return conf
 
@@ -42,14 +47,13 @@ def loadServerConfiguration():
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	conf = source.loadServerConfiguration()
 
-
 #Only if it's run
 if __name__ == "__main__":
 	""" Reading configuration """
-	"""
+	
 	appConfig = ConfigParser.ConfigParser()
-	appConfig.read("../cfg/config.ini")
-	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath") """
+	appConfig.read("./cfg/config.ini")
+	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
 	
 	print "Start web server..."
 	app.run(host='0.0.0.0')

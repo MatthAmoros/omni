@@ -2,6 +2,7 @@
 This class handle door controller life cycle.
 """
 import requests
+import json
 
 class DoorController:
 	
@@ -11,6 +12,7 @@ class DoorController:
 		self.masterUrl = ''
 		self.masterSecret = ''
 		self.configurationLoaded = 0
+		self.zoneEnabled = 0
 		print self.name  + " started."	
 	
 	def __str__(self):
@@ -21,7 +23,9 @@ class DoorController:
 		""" Asks master for configuration """
 		if len(self.masterUrl) > 0:
 			r = requests.get(self.masterUrl + '/configuration/' + self.name)
-			if r.status_code == "200":
+			print r.text
+			print str(r.status_code)
+			if r.status_code == 200:
 				#Request success
 				config = json.loads(r.text)
 				self.zoneId = config['zone']
@@ -63,9 +67,9 @@ class DoorController:
 			return -1
 			
 		if len(self.masterUrl) > 0:
-			print "Getting " + self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId)
-			r = requests.get(self.masterUrl + '/accessRule/' + self.zoneId + '/' + str(cardId))
-			if r.status_code == "200":
+			print "Getting " + self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId)
+			r = requests.get(self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId))
+			if r.status_code == 200:
 				return 1
 			else:
 				return -1

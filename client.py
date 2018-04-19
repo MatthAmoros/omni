@@ -109,24 +109,26 @@ def startReadingLoop():
 	try:
 		if mockReader == 0:		
 			reader = SimpleMFRC522.SimpleMFRC522()
-		print "Starting reader..."
+		print "Starting controller..."
 		while mustStop == 0 :
-			if mockReader == 0:
-				id, text = reader.read()
-			else:
-				sleep(5)
-				id = 22554655721354687
-				text = "hashedIdAndMasterSecret"
+			if doorCtrl.zoneEnabled == 1:	
+				""" Controller is enable, start reading """
+				if mockReader == 0:
+					id, text = reader.read()
+				else:
+					sleep(0.5)
+					id = 22554655721354687
+					text = "hashedIdAndMasterSecret"
+					
+				result = doorCtrl.validateCredential(id, text)
 				
-			result = doorCtrl.validateCredential(id, text)
-			
-			if result == 1:
-				print "Valid !"
+				if result == 1:
+					print str(id) + " valid !"
+				else:
+					print str(id) + " error !"
 			else:
-				print "Error"
-				
-			print(id)
-			print(text)
+				""" Controller is disable, wait for a valid configuration """
+				sleep(1)
 	except KeyboardInterrupt:
 		pass		
 	finally:

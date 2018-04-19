@@ -18,16 +18,22 @@ sh delpoy_requiered_modules.sh
 ```
 ## Running the tests
 
-To check installation, you can run
+Post installation checks can be ran like this :
 
 ```
 cd _deploy
 python test_python_packages.py
 ```
 
+To manually bind a client to a server execute the following curl command :
+
+```
+curl -X POST http://<client-hostname>:5555/adopt --data "master=http://<server-hostname>:5000/"
+```
+
 ## Deployment
 
-Add additional notes about how to deploy this on a live system
+TODO : Docker image
 
 ## Built With
 
