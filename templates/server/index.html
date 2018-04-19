@@ -1,0 +1,19 @@
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="Description" content="Access controller">
+</head>
+<body>
+<div id="header"></div> 
+<div id="main">
+
+<title>Hello from Flask</title>
+{% if clientCount %}
+  <h1>Hello we currently have {{ clientCount }} controller connected !</h1>
+{% else %}
+  <h1>Hello, World!</h1>
+{% endif %}
+</div>
+<div id="footer"></div>
+</body>
+</html>
