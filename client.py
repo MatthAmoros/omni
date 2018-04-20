@@ -18,6 +18,11 @@ from time import sleep
 try:
 	import RPi.GPIO
 	import lib.SimpleMFRC522 as SimpleMFRC522 #Credit to 
+	""" Setting output GPIO """
+	GPIO.setmode(GPIO.BOARD)
+	GPIO.setup(12, GPIO.OUT)
+	
+	
 	mockReader = 0
 	runningOnPi = 1
 except ImportError, e:
@@ -124,6 +129,11 @@ def startReadingLoop():
 				
 				if result == 1:
 					print str(id) + " valid !"
+					if runningOnPi == 1:
+						""" Send GPIO signal to open the door """
+						GPIO.output(12, GPIO.HIGH)
+						sleep(0.3)
+						GPIO.output(12, GPIO.LOW)
 				else:
 					print str(id) + " error !"
 			else:

@@ -5,10 +5,10 @@ import requests
 import json
 
 class DoorController:
-	
 	def __init__(self, name):
 		self.VERSION = "0.0.1"	
 		self.name = str(name)
+		self.type = "DOOR HID READER"
 		self.masterUrl = ''
 		self.masterSecret = ''
 		self.configurationLoaded = 0

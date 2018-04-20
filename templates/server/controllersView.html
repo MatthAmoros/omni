@@ -1,0 +1,10 @@
+ <div id="online-controllers">
+  {% for device in devices %}
+    <div id="{{ device.clientId }}">
+		<b> {{ device.description }} </b> <br/>
+		Zona : {{ device.zone }} <br/>
+		Tipo : {{ device.deviceType }} <br/>
+		Activado : {{ device.enabled }} <br/>
+		</div>
+  {% endfor %}
+  </div>

@@ -5,7 +5,7 @@ Then it handle basic data source interactions
 import configparser #ConfigParser class
 import pyodbc  #For MS SQL connection, via odbc
 
-from common import ClientConfiguration
+from common import DeviceConfiguration
 class SourceFactory:
 	#Sources enum
 	TYPE_DATABASE = "DB"
@@ -141,15 +141,15 @@ class SourceFactory:
 		
 		return canAccess
 
-	def loadClientConfiguration(self, clientId):
+	def loadDeviceConfiguration(self, clientId):
 		""" Loads configuration for specified clientId and returns it as an object """
-		config = ClientConfiguration(clientId)
+		config = DeviceConfiguration(clientId)
 		if self.sourceType == self.TYPE_DATABASE:	
 			connectionString = self.buildConnectionString()
 			try:
 				cnxn = pyodbc.connect(connectionString)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 ControllerId,ControllerCode,ZoneId,Enabled FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
+				cursor.execute('SELECT TOP 1 ZoneId,Enabled,ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
 				
 				""" 
 					Must return something like 
@@ -161,8 +161,10 @@ class SourceFactory:
 				
 				#Bind to actual configuration object	
 				if row is not None:	
-					config.zone = row[2]
-					config.enabled = row[3]
+					config.zone = row[0]
+					config.enabled = row[1]
+					config.deviceType = row[2]
+					config.description = row[3]
 				else:
 					print "No configuration found for client " +  str(clientId)			
 			except:

@@ -18,7 +18,7 @@ from lib.sourceFactory import SourceFactory
 CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
 
-clientCount = 0
+devicesConnected = []
 app = Flask(__name__, static_url_path='')
 
 #Flask definitions
@@ -36,12 +36,12 @@ def send_css(path):
 #View state
 @app.route("/state")
 def viewState():
-	return "States"
+	return render_template('./server/controllersView.html', devices=devicesConnected)
 
 #View settings
 @app.route("/settings")
 def viewCredentials():
-	return render_template('./server/settings.html', clientCount=str(clientCount))
+	return render_template('./server/settings.html')
 
 #Main view
 @app.route("/main")
@@ -51,7 +51,7 @@ def viewMain():
 #View index
 @app.route("/")
 def index():
-	return render_template('./server/index.html', clientCount=str(clientCount))
+	return render_template('./server/index.html')
 
 """ Communications endpoints """
 @app.route("/isAlive")
@@ -59,9 +59,7 @@ def isAlive():
     return "200"
     
 @app.route("/confirmAdopt/<clientId>")
-def confirmAdopt():		
-	global clientCount
-	clientCount += 1
+def confirmAdopt(clientId):
 	return "200"
     
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
@@ -84,7 +82,8 @@ def configuration(clientId):
 
 def getConfigurationByClientId(clientId):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	conf = source.loadClientConfiguration(clientId)
+	conf = source.loadDeviceConfiguration(clientId)
+	devicesConnected.append(conf)
 	return conf
 
 def loadServerConfiguration():
