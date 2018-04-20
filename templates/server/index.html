@@ -1,19 +1,38 @@
 <html>
 <head>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<meta name="Description" content="Access controller">
+	<meta name="Description" content="Access Controller, HID, Raspberry">	
+	<title>Access Controller</title>
+	<!-- Loading scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" defer> </script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./styles/site.css">
+
+	<!-- App specifics Starts here -->
+
+	<!-- 							-->
 </head>
 <body>
-<div id="header"></div> 
-<div id="main">
-
-<title>Hello from Flask</title>
-{% if clientCount %}
-  <h1>Hello we currently have {{ clientCount }} controller connected !</h1>
-{% else %}
-  <h1>Hello, World!</h1>
-{% endif %}
+<div>
+<nav class="navbar navbar-dark navbar-expand-lg header">
+    <a class="navbar-brand" href="#">Control de acceso</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav" data-role="navbar">
+            <a class="nav-item nav-link active" href="#" onclick="$('#main').load('./main');">Inicio <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link" href="#" onclick="$('#main').load('./state');">Estado del sistema</a>
+            <a class="nav-item nav-link" href="#" onclick="$('#main').load('./settings');">Ajustes</a>
+            <a class="nav-item nav-link" href="#">....</a>
+        </div>
+    </div>
+</nav>
 </div>
-<div id="footer"></div>
+<div class="container" id="main"></div>
+<div id="footer" class="footer"></div>
+<div id="snackbar">--</div>
+<div id="modalRegister"></div>
 </body>
 </html>
