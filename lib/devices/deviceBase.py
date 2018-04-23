@@ -1,25 +1,27 @@
 from threading import Thread
+from time import sleep
 
 class DeviceBase(object):
 	mustStop = 0
-    def run(self):
+	
+	def __init__(self, name):
+		self.VERSION = "0.0.1"	
+		self.name = str(name)
+		self.type = "NONE"
+		self.masterUrl = ''
+		self.masterSecret = ''
+		self.configurationLoaded = 0
+		self.zoneEnabled = 0
+		self.isRunning = False
+
+	def run(self):
 		""" Starts device main loop """
-		#Delcare thread
 		deviceLoop = Thread(target=self.mainLoop)
 		#Start thread
 		deviceLoop.start();
-
-		try:
-			while True :
-				sleep(0.3)
-		except KeyboardInterrupt:
-			mustStop = 1
-			pass
 		
-		print "Notify thread to stop..."
-		self.stopLoop()
-		sleep(1)
-		#Join threads
+		print "Device " + str(self.name) + " started"
+
 		deviceLoop.join()
 	
 	def mainLoop(self):
