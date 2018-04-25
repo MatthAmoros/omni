@@ -79,6 +79,7 @@ def adopt():
 				adopted = True
 				return "202" # Accepted
 			else:
+				print request.remote_addr
 				return "204" # No content
 		else:
 			return "405" # Method not allowed

@@ -1,4 +1,6 @@
 from socket import *
+import requests
+
 class VisibilityManager:	
 	
 	def __init__(self):
@@ -15,7 +17,7 @@ class VisibilityManager:
 	
 	def listenForDiscoveryDatagram(self):
 		# Bind the socket to the port
-		server_address = ('localhost', 54545)
+		server_address = ('0.0.0.0', 54545)
 		self.socket.bind(server_address)
 		self.socket.settimeout(1)
 		print "Starting up discovery on port 54545"
@@ -23,15 +25,18 @@ class VisibilityManager:
 		while self.mustStop == False:			
 			try:
 				data, address = self.socket.recvfrom(4096)
-				print str(data)
+				
 				if data == self.DISCOVERY_MESSAGE:
-					""" Client found """
-					print "Client found at " + str(address)
+					""" Client found """					
+					clientAdoptEndpoint = 'http://' + str(address[0]) + ':5555/adopt'
+					print "Client found at " + str(clientAdoptEndpoint)
+					r = requests.post(clientAdoptEndpoint, data = {'master':''})
+
 					return address
 			except KeyboardInterrupt:
 				break;
-			except:
-				pass
+			except timeout:
+				pass;
 		
 		print "Shutting down discovery"
 		self.socket.close()
