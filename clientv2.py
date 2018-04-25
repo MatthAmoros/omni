@@ -15,23 +15,6 @@ from uuid import getnode as get_mac
 from threading import Thread
 from time import sleep
 
-# Raspberry PI specifics imports
-try:
-	import RPi.GPIO
-	import lib.SimpleMFRC522 as SimpleMFRC522 #Credit to 
-	""" Setting output GPIO """
-	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(12, GPIO.OUT)	
-	
-	mockReader = 0
-	runningOnPi = 1
-except ImportError, e:
-	print "Module RPi.GPIO doesn't exist"
-except RuntimeError:
-	print "Not running on a Raspberry Pi board, mocking reader"
-	mockReader = 1	
-	runningOnPi = 0
-
 applicationStopping = False
 nodeId = get_mac()
 deviceObject = DeviceBase(nodeId)
