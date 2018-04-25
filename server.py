@@ -6,6 +6,7 @@ clients configuration and validate credentials.
 It can be run on any platform with python and flask installed
 """
 import ConfigParser
+from threading import Thread
 
 from flask import Flask
 from flask import request
@@ -14,6 +15,7 @@ from flask import render_template
 from flask import Flask, request, send_from_directory
 
 from lib.sourceFactory import SourceFactory
+from lib.visibilityManager import VisibilityManager
 
 CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
@@ -115,9 +117,20 @@ def preStartDiagnose():
 	else:
 		print " >> Datasource unreachable."
 
+
 #Only if it's run
 if __name__ == "__main__":
-	preStartDiagnose()		
-		
+	preStartDiagnose()
+
+	""" Start discovery manager """
+	visibilityManager = VisibilityManager()
+	discoveryThread = Thread(target=visibilityManager.listenForDiscoveryDatagram)
+	
+	discoveryThread.start()
+	
 	print "Start web server..."
 	app.run(host='0.0.0.0')
+	
+	visibilityManager.mustStop = True
+	discoveryThread.join()
+	

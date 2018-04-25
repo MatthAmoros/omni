@@ -5,6 +5,8 @@ This is the client, this module must be run on a Raspberry PI
 # Module imports
 from lib.devices.deviceFactory import DeviceFactory
 from lib.devices.deviceBase import DeviceBase
+from lib.visibilityManager import VisibilityManager
+
 # Flask imports
 from flask import Flask
 from flask import request
@@ -14,6 +16,8 @@ import requests
 from uuid import getnode as get_mac
 from threading import Thread
 from time import sleep
+
+adopted = False
 
 applicationStopping = False
 nodeId = get_mac()
@@ -71,6 +75,8 @@ def adopt():
 			if newMaster!= '':
 				deviceFactory.setMaster(newMaster)
 				loadConfiguration()
+				global adopted
+				adopted = True
 				return "202" # Accepted
 			else:
 				return "204" # No content
@@ -101,14 +107,19 @@ def startDeviceLoop():
 	""" Starts RFID reading loop """
 	try:
 		print "Starting device ..."
-
+		visibilityManager = VisibilityManager()
+		
 		while applicationStopping == False:
 			global deviceObject
 			if deviceObject.zoneEnabled == True and deviceObject.isRunning == False:
 				runWorker = False
-				deviceObject.run()				
-
-			sleep(1)				
+				deviceObject.run()
+				
+			if adopted == False:
+				""" Run discovery mode """
+				visibilityManager.sendDiscoveryDatagram()
+				
+			sleep(5)				
 	finally:
 		print "Gracefully closed device loop"
 
