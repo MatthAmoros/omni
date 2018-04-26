@@ -70,13 +70,14 @@ def adopt():
 	"""
 	if len(deviceFactory.masterUrl) == 0:
 		if request.method == 'POST':
+			global adopted
 			newMaster = request.form.get('master')
 			print 'Received ' + newMaster
 			if newMaster!= '':
 				""" Try with provided url """
 				deviceFactory.setMaster(newMaster)
 				loadConfiguration()
-				global adopted
+				
 				adopted = True
 				return "202" # Accepted
 			else: 
@@ -84,7 +85,7 @@ def adopt():
 				remoteUrl = 'http://' + str(request.remote_addr) + ':5000'
 				deviceFactory.setMaster(remoteUrl)
 				loadConfiguration()
-				global adopted
+
 				adopted = True
 				return "202" # Accepted
 		else:

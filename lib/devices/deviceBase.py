@@ -23,6 +23,11 @@ class DeviceBase(object):
 		print "Device " + str(self.name) + " started"
 
 		deviceLoop.join()
+		
+	def unloadDevice(self):
+		""" Unload device and instanciate an empty one"""
+		self.stopLoop()
+		self = DeviceBase(self.name)
 	
 	def mainLoop(self):
 		raise NotImplementedError('DeviceBase must be inherited')
