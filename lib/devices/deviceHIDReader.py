@@ -9,8 +9,6 @@ import SimpleMFRC522 as SimpleMFRC522
 
 """ Setting output GPIO """
 try:
-	GPIO.setmode(GPIO.BOARD)
-	GPIO.setup(12, GPIO.OUT)
 	runningOnPi = 1
 except RuntimeError:
 	print "Starting without GPIO"
