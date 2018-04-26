@@ -6,6 +6,7 @@ clients configuration and validate credentials.
 It can be run on any platform with python and flask installed
 """
 import ConfigParser
+import json
 from threading import Thread
 
 from flask import Flask
@@ -58,24 +59,30 @@ def index():
 """ Communications endpoints """
 @app.route("/isAlive")
 def isAlive():
-    return "200"
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     
 @app.route("/confirmAdopt/<clientId>")
 def confirmAdopt(clientId):
-	return "200"
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
 def validateCredential(zone, credential):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	canAccess = source.getOrCreateClientAccessRight(credential, zone)
-	return "401"
+
+	if canAccess:
+		return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+	else:
+		return json.dumps({'success':False}), 403, {'ContentType':'application/json'} 
     
 @app.route("/configuration/<clientId>")
 def configuration(clientId):
 	configuration = getConfigurationByClientId(clientId)
 	configuration.secret = SERVER_SECRET
+	
 	if configuration is None:
-		return "401"
+		return json.dumps({'success':False}), 204, {'ContentType':'application/json'} 
+		
 	print "Sending configuration for client " + str(clientId)
 	return jsonify(configuration.serialize()), "200"
 

@@ -13,6 +13,7 @@ from flask import request
 # Others
 import sys
 import requests
+import json
 from uuid import getnode as get_mac
 from threading import Thread
 from time import sleep
@@ -41,23 +42,23 @@ def shutdown():
 		shutdownFunc()
 	else:
 		print "Must stop with local device running ?"
-	return "200"
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 	
     
 @app.route("/isNodeFree")
 def isNodeFree():
 	""" Called to check if a master has been associated """
 	if len(doorCtrl.masterUrl) == 0:
-		return "200" # Available for adoption
+		return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 	else:
-		return "409" # Conflict
+		return json.dumps({'success':False}), 409, {'ContentType':'application/json'} 
 
 @app.route('/reloadConfiguration', methods=['POST'])
 def loadConfiguration():
 	""" Called by master to force reload configuration """
 	global deviceObject
 	deviceObject = deviceFactory.getConfiguration()
-	return "200";
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 @app.route('/adopt', methods=['POST'])
 def adopt():
@@ -79,7 +80,7 @@ def adopt():
 				loadConfiguration()
 				
 				adopted = True
-				return "202" # Accepted
+				return json.dumps({'success':True}), 202, {'ContentType':'application/json'} 
 			else: 
 				""" Without master url provided, try with caller url and default port """
 				remoteUrl = 'http://' + str(request.remote_addr) + ':5000'
@@ -87,11 +88,11 @@ def adopt():
 				loadConfiguration()
 
 				adopted = True
-				return "202" # Accepted
+				return json.dumps({'success':True}), 202, {'ContentType':'application/json'} 
 		else:
-			return "405" # Method not allowed
+			return json.dumps({'success':False}), 405, {'ContentType':'application/json'} 
 	else:
-		return "403" # Forbidden
+		return json.dumps({'success':False}), 403, {'ContentType':'application/json'} 
 			
 			
 @app.route('/adopt', methods=['GET'])
