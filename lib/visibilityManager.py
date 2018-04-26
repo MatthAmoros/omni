@@ -32,7 +32,6 @@ class VisibilityManager:
 					print "Client found at " + str(clientAdoptEndpoint)
 					r = requests.post(clientAdoptEndpoint, data = {'master':''})
 
-					return address
 			except KeyboardInterrupt:
 				break;
 			except timeout:

@@ -42,6 +42,8 @@ class HIDReader(DeviceBase):
 					""" Controller is enable, start reading """
 					if runningOnPi == 1:
 						id, text = reader.read_no_block()
+						#id, text = reader.read()
+						print str(id)
 					else:
 						sleep(0.5)
 						id = 22554655721354687
@@ -53,10 +55,13 @@ class HIDReader(DeviceBase):
 						if result == 1:
 							print str(id) + " valid !"
 							if runningOnPi == 1:
-								""" Send GPIO signal to open the door """
-								GPIO.output(12, GPIO.HIGH)
-								sleep(0.3)
-								GPIO.output(12, GPIO.LOW)
+								try:
+									""" Send GPIO signal to open the door """
+									GPIO.output(12, GPIO.HIGH)
+									sleep(0.3)
+									GPIO.output(12, GPIO.LOW)
+								except RuntimeError:
+									pass
 						else:
 							print str(id) + " error !"
 							
