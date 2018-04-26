@@ -73,14 +73,20 @@ def adopt():
 			newMaster = request.form.get('master')
 			print 'Received ' + newMaster
 			if newMaster!= '':
+				""" Try with provided url """
 				deviceFactory.setMaster(newMaster)
 				loadConfiguration()
 				global adopted
 				adopted = True
 				return "202" # Accepted
-			else:
-				print request.remote_addr
-				return "204" # No content
+			else: 
+				""" Without master url provided, try with caller url and default port """
+				remoteUrl = 'http://' + str(request.remote_addr) + ':5000'
+				deviceFactory.setMaster(remoteUrl)
+				loadConfiguration()
+				global adopted
+				adopted = True
+				return "202" # Accepted
 		else:
 			return "405" # Method not allowed
 	else:
