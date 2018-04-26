@@ -3,12 +3,9 @@ from time import sleep
 import requests
 import json
 
-#try:
-import RPi.GPIO as GPIO
-import SimpleMFRC522 as SimpleMFRC522
-
-""" Setting output GPIO """
 try:
+	import RPi.GPIO as GPIO
+	import SimpleMFRC522 as SimpleMFRC522
 	runningOnPi = 1
 except RuntimeError:
 	print "Starting without GPIO"
@@ -42,8 +39,6 @@ class HIDReader(DeviceBase):
 					""" Controller is enable, start reading """
 					if runningOnPi == 1:
 						id, text = reader.read_no_block()
-						#id, text = reader.read()
-						print str(id)
 					else:
 						sleep(0.5)
 						id = 22554655721354687
@@ -95,7 +90,7 @@ class HIDReader(DeviceBase):
 					return 1
 				else:
 					return -1
-			except ConnectionError:
+			except requests.ConnectionError:
 				""" Server cannot be joined, might be a network issue, try again next time
 					For now, return invalid card flag
 				 """
@@ -104,8 +99,7 @@ class HIDReader(DeviceBase):
 					return -1
 				else:
 					""" Server cannot be joined, let's try to forget master and reset client """
-					self.unloadDevice()
-					
+					self.unloadDevice()					
 		else:
 			print "Master URL not set. (" + self.masterUrl + ")"
 			return -1

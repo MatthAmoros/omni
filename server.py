@@ -68,10 +68,7 @@ def confirmAdopt(clientId):
 def validateCredential(zone, credential):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	canAccess = source.getOrCreateClientAccessRight(credential, zone)
-	if canAccess == True:
-		return "200"
-	else:
-		return "401"
+	return "401"
     
 @app.route("/configuration/<clientId>")
 def configuration(clientId):

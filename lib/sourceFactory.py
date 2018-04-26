@@ -117,7 +117,7 @@ class SourceFactory:
 						row = cursor.fetchone()
 						if row is not None:
 							""" Get access result """
-							canAccess = row[0]
+							canAccess = row[0]							
 				else:
 					""" This card is not registered, create new member """
 					cursor.execute('INSERT INTO Member(CardId) VALUES (' + str(cardId) + ')' )
@@ -128,7 +128,9 @@ class SourceFactory:
 					memberId = row[0]
 					""" Insert default group """
 					cursor.execute('INSERT INTO GroupMember(GroupId, MemberId) VALUES (1,' + str(memberId) + ')')
-					cnxn.commit()					
+					cnxn.commit()
+					""" By default, deny access """
+					canAccess = False			
 			except:
 				print "Could not connect to provided connection."					   
 			finally:
@@ -139,6 +141,7 @@ class SourceFactory:
 		else:
 			print "Not implemented"
 		
+		print str(canAccess)
 		return canAccess
 
 	def loadDeviceConfiguration(self, clientId):
