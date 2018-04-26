@@ -37,7 +37,7 @@ class HIDReader(DeviceBase):
 				reader = SimpleMFRC522.SimpleMFRC522()
 			print "Starting controller..."
 			while self.mustStop == 0 :
-				if self.zoneEnabled == 1:	
+				if self.zoneEnabled == 1:
 					self.isRunning = True
 					""" Controller is enable, start reading """
 					if runningOnPi == 1:
@@ -50,19 +50,18 @@ class HIDReader(DeviceBase):
 					""" If we read something """
 					if id != None:
 						result = self.validateCredential(id, text)
-					
+						if result == 1:
+							print str(id) + " valid !"
+							if runningOnPi == 1:
+								""" Send GPIO signal to open the door """
+								GPIO.output(12, GPIO.HIGH)
+								sleep(0.3)
+								GPIO.output(12, GPIO.LOW)
+						else:
+							print str(id) + " error !"
+							
 					""" Read every 200ms """
-					sleep(0.2)
-					
-					if result == 1:
-						print str(id) + " valid !"
-						if runningOnPi == 1:
-							""" Send GPIO signal to open the door """
-							GPIO.output(12, GPIO.HIGH)
-							sleep(0.3)
-							GPIO.output(12, GPIO.LOW)
-					else:
-						print str(id) + " error !"
+					sleep(0.2)				
 				else:
 					""" Controller is disable, wait for a valid configuration """
 					break
