@@ -41,13 +41,18 @@ class HIDReader(DeviceBase):
 					self.isRunning = True
 					""" Controller is enable, start reading """
 					if runningOnPi == 1:
-						id, text = reader.read()
+						id, text = reader.read_no_block()
 					else:
 						sleep(0.5)
 						id = 22554655721354687
 						text = "hashedIdAndMasterSecret"
 						
-					result = self.validateCredential(id, text)
+					""" If we read something """
+					if id != None:
+						result = self.validateCredential(id, text)
+					
+					""" Read every 200ms """
+					sleep(0.2)
 					
 					if result == 1:
 						print str(id) + " valid !"
