@@ -5,7 +5,7 @@ Then it handle basic data source interactions
 import configparser #ConfigParser class
 import pyodbc  #For MS SQL connection, via odbc
 
-from .common import DeviceConfiguration
+from .common import *
 class SourceFactory:
 	#Sources enum
 	TYPE_DATABASE = "DB"
@@ -135,14 +135,61 @@ class SourceFactory:
 				print("Could not connect to provided connection.")
 			finally:
 				#Cleaning up
-				cursor.close()
-				del cursor
+				if 'cursor' in locals():
+					cursor.close()
+					del cursor
+					
 				cnxn.close()
 		else:
 			print("Not implemented")
 		
 		return canAccess
 
+	def updateMemberInfo(self, member):
+		assert(isinstance(member, Member))
+		connectionString = self.buildConnectionString()
+		
+		try:
+			cnxn = pyodbc.connect(connectionString)
+			cursor = cnxn.cursor()
+			""" Update user info and get it out of 'Default' group """
+			cursor.execute('UPDATE AccessControl.dbo.Member SET Name=\''+ member.firstname + '\',LastName=\'' + member.lastname + '\' WHERE MemberId = ' + member.id)
+			cursor.execute('UPDATE AccessControl.dbo.GroupMember SET GroupId=2 WHERE MemberId = ' + member.id)
+			
+			cnxn.commit()
+		except:
+			print("Error !")
+			pass
+		finally:
+			cnxn.close()
+		
+	def getNotEnrolledMembers(self):
+		notEnrolledIds = []
+		connectionString = self.buildConnectionString()
+		try:
+			cnxn = pyodbc.connect(connectionString)
+			cursor = cnxn.cursor()
+			cursor.execute('SELECT MemberId, CardId FROM AccessControl.dbo.viewNotEnrolledMembersId')
+			
+			""" 
+				Return the list of not enrolled users
+			"""
+
+			for row in cursor.fetchall():
+				member = Member(row[0])
+				member.token = str(row[1])
+				
+				notEnrolledIds.append(member)
+		except:
+			print("Could not connect to provided connection.")	   
+		finally:
+			#Cleaning up
+			cursor.close()
+			del cursor
+			cnxn.close()
+			
+		return notEnrolledIds
+			
 	def loadDeviceConfiguration(self, clientId):
 		""" Loads configuration for specified clientId and returns it as an object """
 		config = DeviceConfiguration(clientId)
@@ -151,7 +198,7 @@ class SourceFactory:
 			try:
 				cnxn = pyodbc.connect(connectionString)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 ZoneId,Enabled,ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
+				cursor.execute('SELECT TOP 1 ZoneId, Enabled, ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
 				
 				""" 
 					Must return something like 

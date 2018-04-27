@@ -3,8 +3,13 @@
     <div id="{{ device.clientId }}">
 		<b> {{ device.description }} </b> <br/>
 		Zona : {{ device.zone }} <br/>
-		Tipo : {{ device.deviceType }} <br/>
+		{% if device.deviceType == 1 %}
+		Tipo : HID Reader <br/>
+		{% endif %}		
 		Activado : {{ device.enabled }} <br/>
+		{% if device.deviceType == 1 %}
+		<a href='#' ></a>
+		{% endif %}
 		</div>
   {% endfor %}
   </div>

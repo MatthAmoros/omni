@@ -17,6 +17,7 @@ from flask import Flask, request, send_from_directory
 
 from lib.sourceFactory import SourceFactory
 from lib.visibilityManager import VisibilityManager
+from lib.common import ServerSetting, DeviceConfiguration, Member
 
 CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
@@ -44,7 +45,24 @@ def viewState():
 #View settings
 @app.route("/settings")
 def viewCredentials():
-	return render_template('./server/settings.html')
+	""" Check devices and load settings """
+	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	settingAccess = ServerSetting('enroll')
+	settingAccess.parameters = source.getNotEnrolledMembers()
+	settings = []
+	settings.append(settingAccess)
+	return render_template('./server/settingsView.html', settings=settings)
+
+@app.route("/enroll", methods=['POST'])
+def enroll():
+	member = Member(request.form['Id'])
+	member.lastname = request.form['lastname']
+	member.firstname = request.form['firstname']
+	
+	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source.updateMemberInfo(member)
+	
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 
 #Main view
 @app.route("/main")
@@ -89,7 +107,15 @@ def configuration(clientId):
 def getConfigurationByClientId(clientId):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	conf = source.loadDeviceConfiguration(clientId)
+	
+	""" Update list """
+	for x in devicesConnected:
+		if x.clientId == clientId:
+			devicesConnected.remove(x)
+			break	
+
 	devicesConnected.append(conf)
+
 	return conf
 
 def loadServerConfiguration():
