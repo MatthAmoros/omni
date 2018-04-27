@@ -20,7 +20,7 @@ class DeviceBase(object):
 		#Start thread
 		deviceLoop.start();
 		
-		print "Device " + str(self.name) + " started"
+		print("Device " + str(self.name) + " started")
 
 		deviceLoop.join()
 		

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 """
-This is the client, this module must be run on a Raspberry PI
+This is the client, this module should be run on a Raspberry PI
+
 """
 # Module imports
 from lib.devices.deviceFactory import DeviceFactory
@@ -10,6 +11,7 @@ from lib.visibilityManager import VisibilityManager
 # Flask imports
 from flask import Flask
 from flask import request
+
 # Others
 import sys
 import requests
@@ -41,7 +43,7 @@ def shutdown():
 			raise RuntimeError('Not running with the Werkzeug Server')		
 		shutdownFunc()
 	else:
-		print "Must stop with local device running ?"
+		print("Must stop with local device running ?")
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 	
     
@@ -73,7 +75,7 @@ def adopt():
 		if request.method == 'POST':
 			global adopted
 			newMaster = request.form.get('master')
-			print 'Received ' + newMaster
+			print('Received ' + newMaster)
 			if newMaster!= '':
 				""" Try with provided url """
 				deviceFactory.setMaster(newMaster)
@@ -107,15 +109,15 @@ def getMaster():
 
 def startWebServer():
 	""" Starts Flask """
-	print "Start web server..."
+	print("Start web server...")
 	global app
 	app.run(host='0.0.0.0', port=int("5555"))
-	print "Web server stopped"
+	print("Web server stopped")
 
 def startDeviceLoop():
 	""" Starts RFID reading loop """
 	try:
-		print "Starting device ..."
+		print("Starting device ...")
 		visibilityManager = VisibilityManager()
 		
 		while applicationStopping == False:
@@ -130,7 +132,7 @@ def startDeviceLoop():
 				
 			sleep(5)				
 	finally:
-		print "Gracefully closed device loop"
+		print("Gracefully closed device loop")
 
 def main():
 	""" Main method, handle startup and shutdown """
@@ -151,11 +153,11 @@ def main():
 	# ===========================
 	# 		Shutting down
 	# ===========================
-	print "Shutting down"
+	print("Shutting down")
 
 	#Notify threads
 
-	print "Notify threads to stop..."
+	print("Notify threads to stop...")
 	""" First, stop device thread """
 	global deviceObject
 	global applicationStopping
@@ -176,7 +178,7 @@ def main():
 	
 	sleep(1)
 	#Join threads
-	print "Done."
+	print("Done.")
 
 # ===========================
 # 		Starting up

@@ -5,7 +5,7 @@ clients configuration and validate credentials.
 
 It can be run on any platform with python and flask installed
 """
-import ConfigParser
+import configparser
 import json
 from threading import Thread
 
@@ -83,7 +83,7 @@ def configuration(clientId):
 	if configuration is None:
 		return json.dumps({'success':False}), 204, {'ContentType':'application/json'} 
 		
-	print "Sending configuration for client " + str(clientId)
+	print("Sending configuration for client " + str(clientId))
 	return jsonify(configuration.serialize()), "200"
 
 def getConfigurationByClientId(clientId):
@@ -97,13 +97,13 @@ def loadServerConfiguration():
 	conf = source.loadServerConfiguration()
 
 def preStartDiagnose():
-	print "Pre-start diagnostic ..."
-	print "1) Loading application configuration ..."
+	print("Pre-start diagnostic ...")
+	print("1) Loading application configuration ...")
 	""" Reading configuration """
-	appConfig = ConfigParser.ConfigParser()
+	appConfig = configparser.ConfigParser()
 	appConfig.read("./cfg/config.ini")
 	
-	print "Sections found : " + str(appConfig.sections())
+	print("Sections found : " + str(appConfig.sections()))
 	
 	if len(appConfig.sections()) == 0:
 		raise RuntimeError("Could not open configuration file")
@@ -111,15 +111,15 @@ def preStartDiagnose():
 	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
 	SERVER_SECRET = appConfig.get("AppConstants", "Secret")
 	
-	print " >> Configuration OK"
+	print(" >> Configuration OK")
 	
-	print "2) Trying to reach datasource..."	
+	print("2) Trying to reach datasource...")
 	sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	dataSourceOk = sourceDbConnection.checkIsReachable()
 	if dataSourceOk == 1:
-		print " >> Datasource OK"
+		print(" >> Datasource OK")
 	else:
-		print " >> Datasource unreachable."
+		print(" >> Datasource unreachable.")
 
 
 #Only if it's run
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 	
 	discoveryThread.start()
 	
-	print "Start web server..."
+	print("Start web server...")
 	app.run(host='0.0.0.0')
 	
 	visibilityManager.mustStop = True
