@@ -4,7 +4,7 @@
 # Also changed to use the Broadcom pin mode
 
 import RPi.GPIO as GPIO
-import spi
+import spidev as spi
 import signal
 import time
   
