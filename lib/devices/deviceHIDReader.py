@@ -5,7 +5,7 @@ import json
 
 try:
 	import RPi.GPIO as GPIO
-	import SimpleMFRC522 as SimpleMFRC522
+	import .SimpleMFRC522 as SimpleMFRC522
 	runningOnPi = 1
 except RuntimeError:
 	print("Starting without GPIO")
