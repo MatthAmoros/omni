@@ -1,5 +1,5 @@
-from deviceHIDReader import HIDReader
-from deviceBase import DeviceBase
+from .deviceHIDReader import HIDReader
+from .deviceBase import DeviceBase
 import requests
 import json
 
@@ -21,8 +21,7 @@ class DeviceFactory:
 		
 		if len(self.masterUrl) > 0:
 			r = requests.get(self.masterUrl + '/configuration/' + self.name)
-			print r.text
-			print str(r.status_code)
+
 			if r.status_code == 200:
 				#Request success
 				config = json.loads(r.text)
@@ -43,11 +42,11 @@ class DeviceFactory:
 				device.configurationLoaded = 1
 				device.masterUrl = self.masterUrl
 						
-				print "Configuration loaded."
+				print("Configuration loaded.")
 				
 				return device
 			else:
-				print "Configuration loading failed."
+				print("Configuration loading failed.")
 				self.zoneId= 1
 				self.zoneEnabled = 1
 				self.zoneDayTimeOnly = 0
@@ -61,15 +60,15 @@ class DeviceFactory:
 	def setMaster(self, masterUrl):
 		""" Sets default master """
 		if(not masterUrl.startswith("http")):
-			print "Error, master is not an url"
+			print("Error, master is not a valid URL")
 			
 		if masterUrl.endswith('/'):
 			masterUrl = masterUrl[:-1] #Remove last '/'
 			
 		r = requests.get(masterUrl + '/confirmAdopt/' + str(self.name))
 		if r.status_code == 200:
-			print "Setting master url to " + masterUrl
+			print("Setting master URL to " + masterUrl)
 			self.masterUrl = masterUrl
 			self.getConfiguration()
 		else:
-			print "Error, invalid master response"
+			print("Error, invalid master response")

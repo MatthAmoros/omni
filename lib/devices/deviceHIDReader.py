@@ -1,4 +1,4 @@
-from deviceBase import DeviceBase
+from .deviceBase import DeviceBase
 from time import sleep
 import requests
 import json
@@ -8,7 +8,7 @@ try:
 	import SimpleMFRC522 as SimpleMFRC522
 	runningOnPi = 1
 except RuntimeError:
-	print "Starting without GPIO"
+	print("Starting without GPIO")
 	runningOnPi = 0
 	pass 
 
@@ -25,14 +25,14 @@ class HIDReader(DeviceBase):
 		self.zoneEnabled = 0
 		self.isRunning = False
 		self.retry = 0
-		print "HID Reader built !"
+		print("HID Reader built !")
 		
 	def mainLoop(self):
 		""" Starts RFID reading loop """
 		try:
 			if runningOnPi == 1:		
 				reader = SimpleMFRC522.SimpleMFRC522()
-			print "Starting controller..."
+			print("Starting controller...")
 			while self.mustStop == 0 :
 				if self.zoneEnabled == 1:
 					self.isRunning = True
@@ -48,7 +48,7 @@ class HIDReader(DeviceBase):
 					if id != None:
 						result = self.validateCredential(id, text)
 						if result == 1:
-							print str(id) + " valid !"
+							print(str(id) + " valid !")
 							if runningOnPi == 1:
 								try:
 									""" Send GPIO signal to open the door """
@@ -58,7 +58,7 @@ class HIDReader(DeviceBase):
 								except RuntimeError:
 									pass
 						else:
-							print str(id) + " error !"
+							print(str(id) + " error !")
 							
 					""" Read every 200ms """
 					sleep(0.2)				
@@ -66,7 +66,7 @@ class HIDReader(DeviceBase):
 					""" Controller is disable, wait for a valid configuration """
 					break
 		finally:
-			print "Reading loop stopped"
+			print("Reading loop stopped")
 
 		sleep(1)
 				
@@ -79,11 +79,11 @@ class HIDReader(DeviceBase):
 	def validateCredential(self, cardId, secret):
 		""" Validates provided credentials against master's db """
 		if not self.configurationLoaded:
-			print "No configuration loaded"
+			print("No configuration loaded")
 			return -1
 			
 		if len(self.masterUrl) > 0:
-			print "Getting " + self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId)
+			print("Getting " + self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId))
 			try:
 				r = requests.get(self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId))
 				if r.status_code == 200:
@@ -101,5 +101,5 @@ class HIDReader(DeviceBase):
 					""" Server cannot be joined, let's try to forget master and reset client """
 					self.unloadDevice()					
 		else:
-			print "Master URL not set. (" + self.masterUrl + ")"
+			print("Master URL not set. (" + self.masterUrl + ")")
 			return -1

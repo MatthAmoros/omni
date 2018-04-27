@@ -5,7 +5,7 @@ Then it handle basic data source interactions
 import configparser #ConfigParser class
 import pyodbc  #For MS SQL connection, via odbc
 
-from common import DeviceConfiguration
+from .common import DeviceConfiguration
 class SourceFactory:
 	#Sources enum
 	TYPE_DATABASE = "DB"
@@ -45,13 +45,13 @@ class SourceFactory:
 		""" Check data source is reachable """
 		if self.sourceType == self.TYPE_DATABASE:	
 			connectionString = self.buildConnectionString()
-			print "Connection string " + connectionString				
+			print("Connection string " + connectionString)
 			try:
 				cnxn = pyodbc.connect(connectionString)
 				cnxn.close()
 				return 1
 			except:
-				print "Could not connect to provided connection."		
+				print("Could not connect to provided connection.")
 				return 0	
 		elif self.sourceType == self.TYPE_FILE:
 			#Load from provided path
@@ -80,7 +80,7 @@ class SourceFactory:
 				,<EventDescription, nvarchar(50),>		
 				"""	
 			except RuntimeError:
-				print "Could not connect to provided connection."					   
+				print("Could not connect to provided connection.")
 			finally:
 				#Cleaning up
 				cursor.close()
@@ -88,10 +88,10 @@ class SourceFactory:
 				cnxn.close()
 		elif self.sourceType == self.TYPE_FILE:
 			#Load from provided path
-			print "Write to file"
+			print("Write to file")
 		elif self.sourceType == self.TYPE_WEB:
 			#Load from provided url	
-			print "Send to URL"
+			print("Send to URL")
 
 	def getOrCreateClientAccessRight(self, cardId, zoneId):
 		""" Load access rights for specified client / zone """
@@ -132,16 +132,15 @@ class SourceFactory:
 					""" By default, deny access """
 					canAccess = False			
 			except:
-				print "Could not connect to provided connection."					   
+				print("Could not connect to provided connection.")
 			finally:
 				#Cleaning up
 				cursor.close()
 				del cursor
 				cnxn.close()
 		else:
-			print "Not implemented"
+			print("Not implemented")
 		
-		print str(canAccess)
 		return canAccess
 
 	def loadDeviceConfiguration(self, clientId):
@@ -169,9 +168,9 @@ class SourceFactory:
 					config.deviceType = row[2]
 					config.description = row[3]
 				else:
-					print "No configuration found for client " +  str(clientId)			
+					print("No configuration found for client " +  str(clientId))
 			except:
-				print "Could not connect to provided connection."					   
+				print("Could not connect to provided connection.")	   
 			finally:
 				#Cleaning up
 				cursor.close()
@@ -181,7 +180,7 @@ class SourceFactory:
 			return config
 		elif self.sourceType == self.TYPE_FILE:
 			#Load from provided path
-			print "From file"
+			print("From file")
 		elif self.sourceType == self.TYPE_WEB:
 			#Load from provided url	
-			print "From URL"
+			print("From URL")
