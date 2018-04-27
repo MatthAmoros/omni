@@ -31,7 +31,7 @@ class HIDReader(DeviceBase):
 		""" Starts RFID reading loop """
 		try:
 			if runningOnPi == 1:		
-				reader = SimpleMFRC522.SimpleMFRC522()
+				reader = SimpleMFRC522()
 			print("Starting controller...")
 			while self.mustStop == 0 :
 				if self.zoneEnabled == 1:
