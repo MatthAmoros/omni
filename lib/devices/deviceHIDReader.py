@@ -39,6 +39,7 @@ class HIDReader(DeviceBase):
 					""" Controller is enable, start reading """
 					if runningOnPi == 1:
 						id, text = reader.read_no_block()
+						print(str(id))
 					else:
 						sleep(0.5)
 						id = 22554655721354687
