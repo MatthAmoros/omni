@@ -22,7 +22,7 @@ from lib.common import ServerSetting, DeviceConfiguration, Member
 CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
 
-devicesConnected = []
+connected_devices = []
 app = Flask(__name__, static_url_path='')
 
 #Flask definitions
@@ -39,12 +39,12 @@ def send_css(path):
 
 #View state
 @app.route("/state")
-def viewState():
+def view_state():
 	return render_template('./server/controllersView.html', devices=devicesConnected)
 
 #View settings
 @app.route("/settings")
-def viewCredentials():
+def view_credentials():
 	""" Check devices and load settings """
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
@@ -66,63 +66,63 @@ def enroll():
 
 #Main view
 @app.route("/main")
-def viewMain():
+def view_main():
 	return "main"
 
 #View index
 @app.route("/")
-def index():
+def view_index():
 	return render_template('./server/index.html')
 
 """ Communications endpoints """
 @app.route("/isAlive")
-def isAlive():
+def is_alive():
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     
 @app.route("/confirmAdopt/<clientId>")
-def confirmAdopt(clientId):
+def confirm_adopt(clientId):
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
     
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
-def validateCredential(zone, credential):
+def validate_credential(zone, credential):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	canAccess = source.getOrCreateClientAccessRight(credential, zone)
+	canAccess = source.get_or_create_client_access_rights(credential, zone)
 
 	if canAccess:
 		return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
 	else:
 		return json.dumps({'success':False}), 403, {'ContentType':'application/json'} 
     
-@app.route("/configuration/<clientId>")
-def configuration(clientId):
-	configuration = getConfigurationByClientId(clientId)
+@app.route("/configuration/<client_id>")
+def configuration(client_id):
+	configuration = get_configuration_by_client_id(client_id)
 	configuration.secret = SERVER_SECRET
 	
 	if configuration is None:
 		return json.dumps({'success':False}), 204, {'ContentType':'application/json'} 
 		
-	print("Sending configuration for client " + str(clientId))
+	print("Sending configuration for client " + str(client_id))
 	return jsonify(configuration.serialize()), "200"
 
-def getConfigurationByClientId(clientId):
+def get_configuration_by_client_id(client_id):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	conf = source.loadDeviceConfiguration(clientId)
+	conf = source.load_device_configuration(client_id)
 	
 	""" Update list """
-	for x in devicesConnected:
-		if x.clientId == clientId:
-			devicesConnected.remove(x)
+	for x in connected_devices:
+		if x.client_id == client_id:
+			connected_devices.remove(x)
 			break	
 
-	devicesConnected.append(conf)
+	connected_devices.append(conf)
 
 	return conf
 
-def loadServerConfiguration():
+def load_server_configuration():
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	conf = source.loadServerConfiguration()
+	conf = source.load_server_configuration()
 
-def preStartDiagnose():
+def pre_start_diagnose():
 	print("Pre-start diagnostic ...")
 	print("1) Loading application configuration ...")
 	""" Reading configuration """
@@ -140,27 +140,27 @@ def preStartDiagnose():
 	print(" >> Configuration OK")
 	
 	print("2) Trying to reach datasource...")
-	sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	dataSourceOk = sourceDbConnection.checkIsReachable()
-	if dataSourceOk == 1:
-		print(" >> Datasource OK")
-	else:
-		print(" >> Datasource unreachable.")
+	#sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	#dataSourceOk = sourceDbConnection.checkIsReachable()
+	#if dataSourceOk == 1:
+	#	print(" >> Datasource OK")
+	#else:
+	#	print(" >> Datasource unreachable.")
 
 
 #Only if it's run
 if __name__ == "__main__":
-	preStartDiagnose()
+	pre_start_diagnose()
 
 	""" Start discovery manager """
-	visibilityManager = VisibilityManager()
-	discoveryThread = Thread(target=visibilityManager.listenForDiscoveryDatagram)
+	visibility_manager = VisibilityManager()
+	discovery_thread = Thread(target=visibility_manager.listen_for_discovery_datagram)
 	
-	discoveryThread.start()
+	discovery_thread.start()
 	
 	print("Start web server...")
 	app.run(host='0.0.0.0')
 	
-	visibilityManager.mustStop = True
-	discoveryThread.join()
+	visibility_manager.must_stop = True
+	discovery_thread.join()
 	

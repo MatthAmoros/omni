@@ -12,64 +12,64 @@ class SourceFactory:
 	TYPE_WEB = "WB"
 	TYPE_FILE = "FL"
 	
-	def __init__(self, sourceType, parameter):
+	def __init__(self, source_type, parameter):
 		""" Instanciates a new data source according to data type """
-		assert (sourceType == "DB" or sourceType == "WB" or sourceType == "FL")
-		self.sourceType = sourceType
+		assert (source_type == "DB" or source_type == "WB" or source_type == "FL")
+		self.source_type = source_type
 		self.parameter = parameter
 
 	def __str__(self):
 		""" Prints out user-friendly string description """
-		return "Source : Type : " + self.sourceType + " with parameter " + self.parameter
+		return "Source : Type : " + self.source_type + " with parameter " + self.parameter
 		
-	def buildConnectionString(self):	
+	def _build_connection_string(self):	
 		""" If we are using a Database, self.parameter must contains a path
 			to the file that contains connection string information """		
-		connectionFile = configparser.ConfigParser()
-		connectionFile.read(self.parameter)
+		connection_file = configparser.ConfigParser()
+		connection_file.read(self.parameter)
 		
-		connectionString = "DRIVER={"+ connectionFile.get("ConnectionString", "driver") +"};" 
-		connectionString += "SERVER=" + connectionFile.get("ConnectionString", "server") + ';' + "PORT=49225;"		
-		connectionString +=  "DATABASE=" + connectionFile.get("ConnectionString", "database") + ';'
+		connection_string = "DRIVER={"+ connection_file.get("ConnectionString", "driver") +"};" 
+		connection_string += "SERVER=" + connection_file.get("ConnectionString", "server") + ';' + "PORT=49225;"		
+		connection_string +=  "DATABASE=" + connection_file.get("ConnectionString", "database") + ';'
 
 		""" Check if we are using trusted connection """
-		if connectionFile.get("ConnectionString", "trusted") != 'yes':
-			connectionString += "UID=" + connectionFile.get("ConnectionString", "user") + ';'
-			connectionString += "PWD=" + connectionFile.get("ConnectionString", "password")
+		if connection_file.get("ConnectionString", "trusted") != 'yes':
+			connection_string += "UID=" + connection_file.get("ConnectionString", "user") + ';'
+			connection_string += "PWD=" + connection_file.get("ConnectionString", "password")
 		else:
-			connectionString += "Trusted_Connection=yes;"
+			connection_string += "Trusted_Connection=yes;"
 			
-		return connectionString
+		return connection_string
 
-	def checkIsReachable(self):
+	def is_reachable(self):
 		""" Check data source is reachable """
-		if self.sourceType == self.TYPE_DATABASE:	
-			connectionString = self.buildConnectionString()
-			print("Connection string " + connectionString)
+		if self.source_type == self.TYPE_DATABASE:	
+			connection_string = self._build_connection_string()
+			print("Connection string " + connection_string)
 			try:
-				cnxn = pyodbc.connect(connectionString)
+				cnxn = pyodbc.connect(connection_string)
 				cnxn.close()
 				return 1
 			except:
 				print("Could not connect to provided connection.")
 				return 0	
-		elif self.sourceType == self.TYPE_FILE:
+		elif self.source_type == self.TYPE_FILE:
 			#Load from provided path
 			return 1
-		elif self.sourceType == self.TYPE_WEB:
+		elif self.source_type == self.TYPE_WEB:
 			#Load from provided url	
 			return 1
 		else:
 			return 0			
 
-	def logEvent(self, eventDescription, memberId):
+	def logEvent(self, event_description, member_id):
 		""" Loads configuration for specified clientId and returns it as an object """
-		if self.sourceType == self.TYPE_DATABASE:	
-			connectionString = self.buildConnectionString()
+		if self.source_type == self.TYPE_DATABASE:	
+			connection_string = self._build_connection_string()
 			try:
-				cnxn = pyodbc.connect(connectionString)
+				cnxn = pyodbc.connect(connection_string)
 				cursor = cnxn.cursor()
-				cursor.execute('INSERT INTO [dbo].[History]	([MemberId],[EventDescription]) VALUES (' + str(memberId) + ',\'' + str(eventDescription) + '\')')
+				cursor.execute('INSERT INTO [dbo].[History]	([MemberId],[EventDescription]) VALUES (' + str(member_id) + ',\'' + str(event_description) + '\')')
 				cnxn.commit()
 				""" 
 				INSERT INTO [dbo].[History]
@@ -86,51 +86,51 @@ class SourceFactory:
 				cursor.close()
 				del cursor
 				cnxn.close()
-		elif self.sourceType == self.TYPE_FILE:
+		elif self.source_type == self.TYPE_FILE:
 			#Load from provided path
 			print("Write to file")
-		elif self.sourceType == self.TYPE_WEB:
+		elif self.source_type == self.TYPE_WEB:
 			#Load from provided url	
 			print("Send to URL")
 
-	def getOrCreateClientAccessRight(self, cardId, zoneId):
+	def get_or_create_client_access_rights(self, card_id, zone_id):
 		""" Load access rights for specified client / zone """
-		canAccess = False
-		if self.sourceType == self.TYPE_DATABASE:	
-			connectionString = self.buildConnectionString()
+		can_access = False
+		if self.source_type == self.TYPE_DATABASE:	
+			connection_string = self._build_connection_string()
 			try:
-				cnxn = pyodbc.connect(connectionString)
+				cnxn = pyodbc.connect(connection_string)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 MemberId FROM Member WHERE CardId =' + str(cardId))
+				cursor.execute('SELECT TOP 1 MemberId FROM Member WHERE CardId =' + str(card_id))
 				
 				row = cursor.fetchone()
 				if row is not None:
 					""" This card is registered, get access rights """
-					memberId = row[0]
-					cursor.execute('SELECT TOP 1 GroupId FROM GroupMember WHERE MemberId =' + str(memberId))
+					member_id = row[0]
+					cursor.execute('SELECT TOP 1 GroupId FROM GroupMember WHERE MemberId =' + str(member_id))
 					row = cursor.fetchone()
 					
 					if row is not None: 
 						""" This member is associated to a groupe """
-						groupId = row[0]
-						cursor.execute('SELECT TOP 1 CanAccess FROM ZoneAccess WHERE GroupId =' + str(groupId) + 'AND ZoneId =' + str(zoneId))
+						group_id = row[0]
+						cursor.execute('SELECT TOP 1 CanAccess FROM ZoneAccess WHERE GroupId =' + str(group_id) + 'AND ZoneId =' + str(zone_id))
 						row = cursor.fetchone()
 						if row is not None:
 							""" Get access result """
-							canAccess = row[0]							
+							can_access = row[0]							
 				else:
 					""" This card is not registered, create new member """
-					cursor.execute('INSERT INTO Member(CardId) VALUES (' + str(cardId) + ')' )
+					cursor.execute('INSERT INTO Member(CardId) VALUES (' + str(card_id) + ')' )
 					cnxn.commit()
-					cursor.execute('SELECT TOP 1 MemberId FROM Member WHERE CardId =' + str(cardId))
+					cursor.execute('SELECT TOP 1 MemberId FROM Member WHERE CardId =' + str(card_id))
 					""" Retrieve memberId """
 					row = cursor.fetchone()
-					memberId = row[0]
+					member_id = row[0]
 					""" Insert default group """
-					cursor.execute('INSERT INTO GroupMember(GroupId, MemberId) VALUES (1,' + str(memberId) + ')')
+					cursor.execute('INSERT INTO GroupMember(GroupId, MemberId) VALUES (1,' + str(member_id) + ')')
 					cnxn.commit()
 					""" By default, deny access """
-					canAccess = False			
+					can_access = False			
 			except:
 				print("Could not connect to provided connection.")
 			finally:
@@ -143,14 +143,14 @@ class SourceFactory:
 		else:
 			print("Not implemented")
 		
-		return canAccess
+		return can_access
 
-	def updateMemberInfo(self, member):
+	def update_member_info(self, member):
 		assert(isinstance(member, Member))
-		connectionString = self.buildConnectionString()
+		connection_string = self._build_connection_string()
 		
 		try:
-			cnxn = pyodbc.connect(connectionString)
+			cnxn = pyodbc.connect(connection_string)
 			cursor = cnxn.cursor()
 			""" Update user info and get it out of 'Default' group """
 			cursor.execute('UPDATE AccessControl.dbo.Member SET Name=\''+ member.firstname + '\',LastName=\'' + member.lastname + '\' WHERE MemberId = ' + member.id)
@@ -163,11 +163,11 @@ class SourceFactory:
 		finally:
 			cnxn.close()
 		
-	def getNotEnrolledMembers(self):
-		notEnrolledIds = []
-		connectionString = self.buildConnectionString()
+	def get_not_enrolled_members(self):
+		not_enrolled_ids = []
+		connection_string = self._build_connection_string()
 		try:
-			cnxn = pyodbc.connect(connectionString)
+			cnxn = pyodbc.connect(connection_string)
 			cursor = cnxn.cursor()
 			cursor.execute('SELECT MemberId, CardId FROM AccessControl.dbo.viewNotEnrolledMembersId')
 			
@@ -177,9 +177,8 @@ class SourceFactory:
 
 			for row in cursor.fetchall():
 				member = Member(row[0])
-				member.token = str(row[1])
-				
-				notEnrolledIds.append(member)
+				member.token = str(row[1])				
+				not_enrolled_ids.append(member)				
 		except:
 			print("Could not connect to provided connection.")	   
 		finally:
@@ -188,17 +187,17 @@ class SourceFactory:
 			del cursor
 			cnxn.close()
 			
-		return notEnrolledIds
+		return not_enrolled_ids
 			
-	def loadDeviceConfiguration(self, clientId):
+	def load_device_configuration(self, client_id):
 		""" Loads configuration for specified clientId and returns it as an object """
-		config = DeviceConfiguration(clientId)
-		if self.sourceType == self.TYPE_DATABASE:	
-			connectionString = self.buildConnectionString()
+		config = DeviceConfiguration(client_id)
+		if self.source_type == self.TYPE_DATABASE:	
+			connection_string = self._build_connection_string()
 			try:
-				cnxn = pyodbc.connect(connectionString)
+				cnxn = pyodbc.connect(connection_string)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 ZoneId, Enabled, ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(clientId))
+				cursor.execute('SELECT TOP 1 ZoneId, Enabled, ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(client_id))
 				
 				""" 
 					Must return something like 
@@ -215,7 +214,7 @@ class SourceFactory:
 					config.deviceType = row[2]
 					config.description = row[3]
 				else:
-					print("No configuration found for client " +  str(clientId))
+					print("No configuration found for client " +  str(client_id))
 			except:
 				print("Could not connect to provided connection.")	   
 			finally:
@@ -225,9 +224,9 @@ class SourceFactory:
 				cnxn.close()
 				
 			return config
-		elif self.sourceType == self.TYPE_FILE:
+		elif self.source_type == self.TYPE_FILE:
 			#Load from provided path
 			print("From file")
-		elif self.sourceType == self.TYPE_WEB:
+		elif self.source_type == self.TYPE_WEB:
 			#Load from provided url	
 			print("From URL")

@@ -8,19 +8,19 @@ class DeviceFactory:
 		self.VERSION = "0.0.1"	
 		self.name = str(name)
 		self.type = "NONE"
-		self.masterUrl = ''
-		self.masterSecret = ''
-		self.configurationLoaded = 0
-		self.zoneEnabled = 0
+		self.master_url = ''
+		self.master_secret = ''
+		self.is_configuration_loaded = True
+		self.is_zone_enabled = True
 		self.isRunning = False
 		return
 
-	def getConfiguration(self):
+	def get_configuration(self):
 		""" Asks master for configuration """
 		device = DeviceBase(self.name)
 		
-		if len(self.masterUrl) > 0:
-			r = requests.get(self.masterUrl + '/configuration/' + self.name)
+		if len(self.master_url) > 0:
+			r = requests.get(self.master_url + '/configuration/' + self.name)
 
 			if r.status_code == 200:
 				#Request success
@@ -35,40 +35,42 @@ class DeviceFactory:
 					""" Disable """
 					device = DeviceBase(self.name)
 					
-				device.zoneId = config['zone']
-				device.zoneEnabled = config['enabled']
-				device.zoneDayTimeOnly = config['dayTimeOnly']
-				device.masterSecret = config['secret']
-				device.configurationLoaded = 1
-				device.masterUrl = self.masterUrl
+				device.zone_id = config['zone']
+				
+				device.is_zone_enabled = config['enabled']
+				device.is_zone_day_time_only = config['dayTimeOnly']				
+				device.is_configuration_loaded = True
+				
+				device.master_secret = config['secret']
+				device.master_url = self.master_url
 						
 				print("Configuration loaded.")
 				
 				return device
 			else:
 				print("Configuration loading failed.")
-				self.zoneId= 1
-				self.zoneEnabled = 1
-				self.zoneDayTimeOnly = 0
+				self.zone_id = 1
+				self.is_zone_enabled = False
+				self.is_zone_day_time_only = False
 				return device
 		else:
-			self.zoneId = 1
-			self.zoneEnabled = 1
-			self.zoneDayTimeOnly = 0
+			self.zone_id = 1
+			self.is_zone_enabled = True
+			self.is_zone_day_time_only = True
 			return device
 		
-	def setMaster(self, masterUrl):
+	def set_master(self, master_url):
 		""" Sets default master """
-		if(not masterUrl.startswith("http")):
+		if(not master_url.startswith("http")):
 			print("Error, master is not a valid URL")
 			
-		if masterUrl.endswith('/'):
-			masterUrl = masterUrl[:-1] #Remove last '/'
+		if master_url.endswith('/'):
+			master_url = master_url[:-1] #Remove last '/'
 			
-		r = requests.get(masterUrl + '/confirmAdopt/' + str(self.name))
+		r = requests.get(master_url + '/confirmAdopt/' + str(self.name))
 		if r.status_code == 200:
-			print("Setting master URL to " + masterUrl)
-			self.masterUrl = masterUrl
-			self.getConfiguration()
+			print("Setting master URL to " + master_url)
+			self.master_url = master_url
+			self.get_configuration()
 		else:
 			print("Error, invalid master response")

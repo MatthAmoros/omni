@@ -10,12 +10,12 @@ class VisibilityManager:
 		self.mustStop = False
 		self.DISCOVERY_MESSAGE = bytes(str("42 !").encode('utf-8'))
 		
-	def sendDiscoveryDatagram(self):
+	def send_discovery_datagram(self):
 		""" Broadcast a message to tell the world your are here ... """
 		self.socket
 		self.socket.sendto(self.DISCOVERY_MESSAGE, ('255.255.255.255', 54545))
 	
-	def listenForDiscoveryDatagram(self):
+	def listen_for_discovery_datagram(self):
 		# Bind the socket to the port
 		server_address = ('0.0.0.0', 54545)
 		self.socket.bind(server_address)
@@ -28,10 +28,14 @@ class VisibilityManager:
 				
 				if data == self.DISCOVERY_MESSAGE:
 					""" Client found """					
-					clientAdoptEndpoint = 'http://' + str(address[0]) + ':5555/adopt'
-					print("Client found at " + str(clientAdoptEndpoint))
-					r = requests.post(clientAdoptEndpoint, data = {'master':''})
-
+					client_adoption_endpoint = 'http://' + str(address[0]) + ':5555/adopt'
+					print("Client found at " + str(client_adoption_endpoint))
+					
+					try:
+						r = requests.post(client_adoption_endpoint, data = {'master':''})
+					except requests.exceptions.ConnectionError:
+						print("Connection timed out with client endpoint " + str(client_adoption_endpoint))
+					
 			except KeyboardInterrupt:
 				break;
 			except timeout:

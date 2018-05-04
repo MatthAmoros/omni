@@ -6,38 +6,30 @@ import json
 try:
 	import RPi.GPIO as GPIO
 	from .SimpleMFRC522 import SimpleMFRC522 as SimpleMFRC522 #Credit to Simon Monk https://github.com/simonmonk/
-	runningOnPi = 1
+	is_running_on_pi = True
 except RuntimeError:
 	print("Starting without GPIO")
-	runningOnPi = 0
+	is_running_on_pi = False
 	pass 
 
-mustStop = 0
-	
 class HIDReader(DeviceBase):
 	def __init__(self, name):
-		self.VERSION = "0.0.1"	
-		self.name = str(name)
-		self.type = "NONE"
-		self.masterUrl = ''
-		self.masterSecret = ''
-		self.configurationLoaded = 0
-		self.zoneEnabled = 0
-		self.isRunning = False
-		self.retry = 0
+		DeviceBase.__init__(self, name)
 		print("HID Reader built !")
 		
-	def mainLoop(self):
+	def main_loop(self):
 		""" Starts RFID reading loop """
 		try:
-			if runningOnPi == 1:		
+			if is_running_on_pi == True:		
 				reader = SimpleMFRC522()
+				
 			print("Starting controller...")
-			while self.mustStop == 0 :
-				if self.zoneEnabled == 1:
-					self.isRunning = True
+			
+			while self.must_stop == False :
+				if self.is_zone_enabled == True:
+					self.is_running = True
 					""" Controller is enable, start reading """
-					if runningOnPi == 1:
+					if is_running_on_pi == True:
 						id, text = reader.read_no_block()
 						print(str(id))
 					else:
@@ -47,10 +39,11 @@ class HIDReader(DeviceBase):
 						
 					""" If we read something """
 					if id != None:
-						result = self.validateCredential(id, text)
+						result = self.validate_credential(id, text)
 						if result == 1:
 							print(str(id) + " valid !")
-							if runningOnPi == 1:
+							
+							if is_running_on_pi == True:
 								try:
 									""" Send GPIO signal to open the door """
 									GPIO.output(12, GPIO.HIGH)
@@ -58,6 +51,7 @@ class HIDReader(DeviceBase):
 									GPIO.output(12, GPIO.LOW)
 								except RuntimeError:
 									pass
+									
 						else:
 							print(str(id) + " error !")
 							
@@ -71,22 +65,22 @@ class HIDReader(DeviceBase):
 
 		sleep(1)
 				
-	def stopLoop(self):
-		if runningOnPi == 1:
+	def stop_loop(self):
+		if is_running_on_pi == True:
 			GPIO.cleanup()
 			
-		self.mustStop = 1
+		self.must_stop = True
 
-	def validateCredential(self, cardId, secret):
+	def validate_credential(self, card_id, secret):
 		""" Validates provided credentials against master's db """
-		if not self.configurationLoaded:
+		if not self.is_configuration_loaded:
 			print("No configuration loaded")
 			return -1
 			
-		if len(self.masterUrl) > 0:
-			print("Getting " + self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId))
+		if len(self.master_url) > 0:
+			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
 			try:
-				r = requests.get(self.masterUrl + '/accessRule/' + str(self.zoneId) + '/' + str(cardId))
+				r = requests.get(self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
 				if r.status_code == 200:
 					return 1
 				else:
@@ -100,7 +94,7 @@ class HIDReader(DeviceBase):
 					return -1
 				else:
 					""" Server cannot be joined, let's try to forget master and reset client """
-					self.unloadDevice()					
+					self.unload_deviceevice()					
 		else:
-			print("Master URL not set. (" + self.masterUrl + ")")
+			print("Master URL not set. (" + self.master_url + ")")
 			return -1
