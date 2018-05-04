@@ -1,3 +1,10 @@
+""" 
+	HIDReader device, using MFRC522 controller
+"""
+
+__all__ = ['HIDReader']
+__version__ = '0.1'
+
 from .deviceBase import DeviceBase
 from time import sleep
 import requests

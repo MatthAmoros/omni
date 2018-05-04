@@ -36,7 +36,7 @@ class DeviceBase(object):
 		self = DeviceBase(self.name)
 	
 	def main_loop(self):
-		raise NotImplementedError('DeviceBase must be inherited')
+		raise NotImplementedError('main_loop must be overloaded')
 		
 	def stop_loop(self):
-		raise NotImplementedError('DeviceBase must be inherited')
+		raise NotImplementedError('main_loop must be overloaded')

@@ -1,3 +1,11 @@
+"""
+	VisibilityManager, operate a socket to send or listen for specific UDP packet
+	Stray clients call 'send_discovery_datagram' to broadcast an UDP message.
+	Servers listen with 'listen_for_discovery_datagram' for the same message and adopt captured clients
+"""
+__all__ = ['DeviceFactory']
+__version__ = '0.1'
+
 from socket import *
 import requests
 
@@ -12,7 +20,6 @@ class VisibilityManager:
 		
 	def send_discovery_datagram(self):
 		""" Broadcast a message to tell the world your are here ... """
-		self.socket
 		self.socket.sendto(self.DISCOVERY_MESSAGE, ('255.255.255.255', 54545))
 	
 	def listen_for_discovery_datagram(self):

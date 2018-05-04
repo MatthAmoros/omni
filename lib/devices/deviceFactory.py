@@ -1,3 +1,9 @@
+"""
+	DeviceFactory, returns device according to passed type
+"""
+__all__ = ['DeviceFactory']
+__version__ = '0.1'
+
 from .deviceHIDReader import HIDReader
 from .deviceBase import DeviceBase
 import requests

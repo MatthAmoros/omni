@@ -5,6 +5,8 @@ clients configuration and validate credentials.
 
 It can be run on any platform with python and flask installed
 """
+__version__ = '0.1'
+
 import configparser
 import json
 from threading import Thread

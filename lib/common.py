@@ -2,6 +2,9 @@
 This class is shared between clients and servers to exchange
 configuration information
 """
+__all__ = ['DeviceConfiguration', 'Member', 'ServerSetting']
+__version__ = '0.1'
+
 class DeviceConfiguration:
 	zone = 0 #Zone Id that identify door controller location
 	enabled = 0 #Controller enabled ?

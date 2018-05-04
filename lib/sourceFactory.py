@@ -2,6 +2,9 @@
 This class return a data source according to source type.
 Then it handle basic data source interactions
 """
+__all__ = ['SourceFactory']
+__version__ = '0.1'
+
 import configparser #ConfigParser class
 import pyodbc  #For MS SQL connection, via odbc
 
