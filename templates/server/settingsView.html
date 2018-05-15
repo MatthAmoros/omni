@@ -1,0 +1,22 @@
+ <div id="settings">
+  {% for setting in settings %}
+		{% if setting.type == 'enroll' %}
+		<br />
+		Listado de los usuarios en espera de ingreso :
+		<br />
+			{% for member in setting.parameters %}
+				<form action="{{ url_for('enroll') }}" method="post" id="enroll-{{ member.id }}">
+					Identificacion : {{ member.token }}
+					<input type="hidden" name="Id" value="{{ member.id }}"
+					Nombre:<br />
+					<input type="text" name="firstname" placeholder="Nombre" value="">
+					<br>
+					Apellido:<br />
+					<input type="text" name="lastname" placeholder="Apellido" value="">
+					<br /><br />
+					<input type="submit" value="Guardar">
+				</form> 
+			{% endfor %}
+		{% endif %}
+  {% endfor %}
+  </div>

@@ -2,25 +2,24 @@
 	HIDReader device, using MFRC522 controller
 """
 
-__all__ = ['HIDReader']
+__all__ = ['RC522Reader']
 __version__ = '0.1'
 
 from .deviceBase import DeviceBase
 from time import sleep
 import requests
 import json
-import serial
-
 
 try:
 	import RPi.GPIO as GPIO
+	from .SimpleMFRC522 import SimpleMFRC522 as SimpleMFRC522 #Credit to Simon Monk https://github.com/simonmonk/
 	is_running_on_pi = True
 except RuntimeError:
 	print("Starting without GPIO")
 	is_running_on_pi = False
 	pass
 
-class HIDReader(DeviceBase):
+class RC522Reader(DeviceBase):
 	def __init__(self, name):
 		DeviceBase.__init__(self, name)
 		print("HID Reader built !")
@@ -28,43 +27,46 @@ class HIDReader(DeviceBase):
 	def main_loop(self):
 		""" Starts RFID reading loop """
 		try:
+			if is_running_on_pi == True:
+				reader = SimpleMFRC522()
+
 			print("Starting controller...")
-			with serial.Serial('/dev/serial0', 115200, timeout=1) as ser:
-				while self.must_stop == False :
-					if self.is_zone_enabled == True:
-						self.is_running = True
-						""" Controller is enable, start reading """
-						if is_running_on_pi == True:
-							s = ser.read(100)
-							print(str(s))
-						else:
-							sleep(0.5)
-							id = 22554655721354687
-							text = "hashedIdAndMasterSecret"
 
-						""" If we read something """
-						if id != None:
-							result = self.validate_credential(id, text)
-							if result == 1:
-								print(str(id) + " valid !")
-
-								if is_running_on_pi == True:
-									try:
-										""" Send GPIO signal to open the door """
-										GPIO.output(12, GPIO.HIGH)
-										sleep(0.3)
-										GPIO.output(12, GPIO.LOW)
-									except RuntimeError:
-										pass
-
-							else:
-								print(str(id) + " error !")
-
-						""" Read every 200ms """
-						sleep(0.2)
+			while self.must_stop == False :
+				if self.is_zone_enabled == True:
+					self.is_running = True
+					""" Controller is enable, start reading """
+					if is_running_on_pi == True:
+						id, text = reader.read_no_block()
+						print(str(id))
 					else:
-						""" Controller is disable, wait for a valid configuration """
-						break
+						sleep(0.5)
+						id = 22554655721354687
+						text = "hashedIdAndMasterSecret"
+
+					""" If we read something """
+					if id != None:
+						result = self.validate_credential(id, text)
+						if result == 1:
+							print(str(id) + " valid !")
+
+							if is_running_on_pi == True:
+								try:
+									""" Send GPIO signal to open the door """
+									GPIO.output(12, GPIO.HIGH)
+									sleep(0.3)
+									GPIO.output(12, GPIO.LOW)
+								except RuntimeError:
+									pass
+
+						else:
+							print(str(id) + " error !")
+
+					""" Read every 200ms """
+					sleep(0.2)
+				else:
+					""" Controller is disable, wait for a valid configuration """
+					break
 		finally:
 			print("Reading loop stopped")
 
