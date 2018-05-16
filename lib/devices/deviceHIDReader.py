@@ -5,11 +5,11 @@
 __all__ = ['HIDReader']
 __version__ = '0.1'
 
-from .deviceBase import DeviceBase
+from deviceBase import DeviceBase
+from protocols.wiegand import WiegandReader
 from time import sleep
 import requests
 import json
-import serial
 
 
 try:
@@ -29,46 +29,45 @@ class HIDReader(DeviceBase):
 		""" Starts RFID reading loop """
 		try:
 			print("Starting controller...")
-			with serial.Serial('/dev/serial0', 115200, timeout=1) as ser:
+			GPIO.setup(23, GPIO.OUT)
+
+			with WiegandReader(GPIO, 14, 15, self._on_data_read) as wiegand_reader:
 				while self.must_stop == False :
 					if self.is_zone_enabled == True:
 						self.is_running = True
 						""" Controller is enable, start reading """
 						if is_running_on_pi == True:
-							s = ser.read(100)
-							print(str(s))
+							sleep(0.3)
+							""" Waiting for callback interupt """
 						else:
 							sleep(0.5)
 							id = 22554655721354687
 							text = "hashedIdAndMasterSecret"
 
-						""" If we read something """
-						if id != None:
-							result = self.validate_credential(id, text)
-							if result == 1:
-								print(str(id) + " valid !")
-
-								if is_running_on_pi == True:
-									try:
-										""" Send GPIO signal to open the door """
-										GPIO.output(12, GPIO.HIGH)
-										sleep(0.3)
-										GPIO.output(12, GPIO.LOW)
-									except RuntimeError:
-										pass
-
-							else:
-								print(str(id) + " error !")
-
-						""" Read every 200ms """
-						sleep(0.2)
 					else:
 						""" Controller is disable, wait for a valid configuration """
 						break
 		finally:
 			print("Reading loop stopped")
+			wiegand_reader.cancel()
 
 		sleep(1)
+
+	def _on_data_read(bits, value):
+		if bits > 0:
+			result = self.validate_credential(str(value), 'CARD')
+			if result == 1:
+				print(str(value) + " valid !")
+				if is_running_on_pi == True:
+					try:
+						""" Send GPIO signal to open the door """
+						GPIO.output(23, GPIO.HIGH)
+						sleep(0.3)
+						GPIO.output(23, GPIO.LOW)
+					except RuntimeError:
+						pass
+			else:
+				print(str(value) + " error !")
 
 	def stop_loop(self):
 		if is_running_on_pi == True:
