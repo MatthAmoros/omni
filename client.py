@@ -63,6 +63,7 @@ def load_configuration():
 	""" Called by master to force reload configuration """
 	global device_object
 	device_object = device_factory.get_configuration()
+
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route('/adopt', methods=['POST'])
@@ -89,7 +90,7 @@ def adopt():
 				device_factory.set_master(remote_url)
 
 			""" Success """
-			load_configuration()
+			#load_configuration()
 			adopted = True
 			return json.dumps({'success':True}), 202, {'ContentType':'application/json'}
 		else:

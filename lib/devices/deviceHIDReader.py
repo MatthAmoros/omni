@@ -29,27 +29,24 @@ class HIDReader(DeviceBase):
 		""" Starts RFID reading loop """
 		try:
 			print("Starting controller...")
-			GPIO.setup(23, GPIO.OUT)
-
-			with WiegandReader(GPIO, 14, 15, self._on_data_read) as wiegand_reader:
-				while self.must_stop == False :
-					if self.is_zone_enabled == True:
-						self.is_running = True
-						""" Controller is enable, start reading """
-						if is_running_on_pi == True:
+			if is_running_on_pi == True:
+				GPIO.setup(23, GPIO.OUT)
+				print("Setting up external vlaidation signal to BCM 23")
+				with WiegandReader(GPIO, 14, 15, self._on_data_read) as wiegand_reader:
+					print("Wiegand listener started")
+					while self.must_stop == False :
+						if self.is_zone_enabled == True:
+							self.is_running = True
+							""" Controller is enable, start reading """
 							sleep(0.3)
 							""" Waiting for callback interupt """
 						else:
-							sleep(0.5)
-							id = 22554655721354687
-							text = "hashedIdAndMasterSecret"
-
-					else:
-						""" Controller is disable, wait for a valid configuration """
-						break
+							""" Controller is disable, wait for a valid configuration """
+							break
 		finally:
 			print("Reading loop stopped")
-			wiegand_reader.cancel()
+			if is_running_on_pi == True and wiegand_reader != None:
+				wiegand_reader.cancel()
 
 		sleep(1)
 
