@@ -49,7 +49,7 @@ class HIDReader(DeviceBase):
 				""" Notify loaded """
 				GPIO.setup(self._led_pin_BCM, GPIO.OUT)
 				GPIO.setup(self._action_pin_BCM, GPIO.OUT)
-				GPIO.output(self._led_pin_BCM, GPIO.LOW)
+				GPIO.output(self._led_pin_BCM, GPIO.HIGH)
 				GPIO.output(self._action_pin_BCM, GPIO.LOW)
 				self.blink_led()
 
@@ -74,10 +74,12 @@ class HIDReader(DeviceBase):
 
 	def blink_led(self):
 		GPIO.output(self._led_pin_BCM, GPIO.LOW)
-		sleep(0.5)
+		sleep(0.2)
 		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
-		sleep(0.5)
+		sleep(0.2)
 		GPIO.output(self._led_pin_BCM, GPIO.LOW)
+		sleep(0.2)
+		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
 
 	def action_open(self):
 		GPIO.output(self._action_pin_BCM, GPIO.HIGH)
@@ -92,6 +94,7 @@ class HIDReader(DeviceBase):
 					try:
 						""" Send GPIO signal to open the door """
 						self.action_open()
+						self.blink_led()
 						sleep(1)
 						print(str(value) + " valid !")
 					except RuntimeError:
