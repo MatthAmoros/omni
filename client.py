@@ -89,7 +89,7 @@ def adopt():
 				device_factory.set_master(remote_url)
 
 			""" Success """
-			#load_configuration()
+			load_configuration()
 			adopted = True
 			return json.dumps({'success':True}), 202, {'ContentType':'application/json'}
 		else:
