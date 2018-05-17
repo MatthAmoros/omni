@@ -80,11 +80,9 @@ class HIDReader(DeviceBase):
 
 
 	def action_open(self):
-		GPIO.output(self._led_pin_BCM, GPIO.LOW)
 		GPIO.output(self._action_pin_BCM, GPIO.HIGH)
 		sleep(1)
 		GPIO.output(self._action_pin_BCM, GPIO.LOW)
-		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
 
 	def _on_data_read(self, bits, value):
 		if bits > 0:
