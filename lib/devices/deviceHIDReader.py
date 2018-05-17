@@ -21,14 +21,28 @@ except RuntimeError:
 	pass
 
 class HIDReader(DeviceBase):
-	def __init__(self, name, action_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
+	def __init__(self, name, action_pin_BCM=23, led_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
 		DeviceBase.__init__(self, name)
 
 		self._data0_pin_BCM = data0_pin_BCM
 		self._data1_pin_BCM = data1_pin_BCM
-
+		self._led_pin_BCM = led_pin_BCM
+		self._action_pin_BCM = action_pin_BCM
+		"""
+			Set action gpio to 0V
+		"""
 		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(action_pin_BCM, GPIO.OUT)
+		if self._action_pin_BCM == self._led_pin_BCM:
+			GPIO.setup(self._action_pin_BCM, GPIO.OUT)
+			GPIO.setup(self._action_pin_BCM, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+		else:
+			GPIO.setup(self._led_pin_BCM, GPIO.OUT)
+			GPIO.setup(self._led_pin_BCM, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+		"""
+			Blink to show loaded
+		"""
+		self.blink_led()
 		print("HID Reader built !")
 
 	def main_loop(self):
@@ -63,18 +77,26 @@ class HIDReader(DeviceBase):
 				if is_running_on_pi == True:
 					try:
 						""" Send GPIO signal to open the door """
-						GPIO.output(23, GPIO.HIGH)
-						sleep(0.5)
-						GPIO.output(23, GPIO.LOW)
-						sleep(0.5)
-						GPIO.output(23, GPIO.HIGH)
-						sleep(0.5)
-						GPIO.output(23, GPIO.LOW)
+						self.set_action_OK()
 						print(str(value) + " valid !")
 					except RuntimeError:
 						pass
 			else:
 				print(str(value) + " error !")
+
+	def blink_led(self):
+		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
+		sleep(0.2)
+		GPIO.output(self._led_pin_BCM, GPIO.LOW)
+		sleep(0.2)
+		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
+		sleep(0.2)
+		GPIO.output(self._led_pin_BCM, GPIO.LOW)
+
+	def set_action_OK (self):
+		self.blink_led()
+		GPIO.output(self._action_pin_BCM, GPIO.HIGH)
+		sleep(1)
 
 	def stop_loop(self):
 		if is_running_on_pi == True:
