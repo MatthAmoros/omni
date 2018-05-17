@@ -39,11 +39,17 @@ class HIDReader(DeviceBase):
 		"""
 		print("HID Reader built !")
 
+
 	def main_loop(self):
 		""" Starts RFID reading loop """
 		try:
 			print("Starting controller...")
 			if is_running_on_pi == True:
+				
+				""" Notify loaded """
+				GPIO.output(self._led_pin_BCM, GPIO.LOW)
+				GPIO.output(self._action_pin_BCM, GPIO.LOW)
+				self.blink_led()
 
 				print("Setting up external vlaidation signal to BCM 23")
 				with WiegandReader(GPIO, self._data0_pin_BCM, self._data1_pin_BCM, self._on_data_read) as wiegand_reader:
@@ -64,6 +70,18 @@ class HIDReader(DeviceBase):
 
 		sleep(1)
 
+	def blink_led(self):
+		GPIO.output(self._led_pin_BCM, GPIO.LOW)
+		sleep(0.5)
+		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
+		sleep(0.5)
+		GPIO.output(self._led_pin_BCM, GPIO.LOW)
+
+	def action_open(self):
+		GPIO.output(self._action_pin_BCM, GPIO.HIGH)
+		sleep(0.5)
+		GPIO.output(self._action_pin_BCM, GPIO.LOW)
+
 	def _on_data_read(self, bits, value):
 		if bits > 0:
 			result = self.validate_credential(str(value), 'CARD')
@@ -71,7 +89,7 @@ class HIDReader(DeviceBase):
 				if is_running_on_pi == True:
 					try:
 						""" Send GPIO signal to open the door """
-						GPIO.output(self._action_pin_BCM, GPIO.HIGH)
+						self.action_open()
 						sleep(1)
 						print(str(value) + " valid !")
 					except RuntimeError:
