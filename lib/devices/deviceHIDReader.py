@@ -56,7 +56,7 @@ class HIDReader(DeviceBase):
 
 		sleep(1)
 
-	def _on_data_read(bits, value):
+	def _on_data_read(self, bits, value):
 		if bits > 0:
 			result = self.validate_credential(str(value), 'CARD')
 			if result == 1:

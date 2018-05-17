@@ -94,7 +94,7 @@ class WiegandReader:
         """
         Cancel the Wiegand decoder.
         """
-
+        self.gpio.setmode(GPIO.BCM)
         self.gpio.remove_event_detect(self.gpio_0)
         self.gpio.remove_event_detect(self.gpio_1)
         self.gpio.cleanup()
