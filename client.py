@@ -122,8 +122,8 @@ def start_device_loop():
 		visibility_manager = VisibilityManager()
 
 		while application_stopping == False:
-			global deviceObject
-			print("Device configuration (in device loop) : " + str(device_object))
+			global device_object
+			
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
 				run_worker = False
 				print("Initialize main device loop.")
