@@ -80,7 +80,7 @@ def adopt():
 			global adopted
 			new_master_url = request.form.get('master')
 
-			if new_master_url!= '':
+			if new_master_url != '':
 				""" Try with provided url """
 				device_factory.set_master(new_master_url)
 			else:

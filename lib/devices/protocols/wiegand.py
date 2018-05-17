@@ -36,6 +36,12 @@ class WiegandReader:
         self.is_reading = False
         self.is_timedout = False
         self.bit_size = bit_size
+
+        """
+        Avoid warning about ports already in use
+        """
+        self.gpio.setwarnings(False)
+
         """
         Set wiring index mode
         """
