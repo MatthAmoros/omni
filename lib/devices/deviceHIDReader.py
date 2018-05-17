@@ -49,7 +49,8 @@ class HIDReader(DeviceBase):
 				""" Notify loaded """
 				GPIO.setup(self._led_pin_BCM, GPIO.OUT)
 				GPIO.setup(self._action_pin_BCM, GPIO.OUT)
-				GPIO.output(self._led_pin_BCM, GPIO.HIGH)
+				""" Green light, device loaded """
+				GPIO.output(self._led_pin_BCM, GPIO.LOW)
 				GPIO.output(self._action_pin_BCM, GPIO.LOW)
 				self.blink_led()
 
@@ -73,13 +74,10 @@ class HIDReader(DeviceBase):
 		sleep(1)
 
 	def blink_led(self):
-		GPIO.output(self._led_pin_BCM, GPIO.LOW)
-		sleep(0.2)
 		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
-		sleep(0.2)
+		sleep(2)
 		GPIO.output(self._led_pin_BCM, GPIO.LOW)
-		sleep(0.2)
-		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
+
 
 	def action_open(self):
 		GPIO.output(self._led_pin_BCM, GPIO.LOW)
@@ -102,6 +100,7 @@ class HIDReader(DeviceBase):
 						pass
 			else:
 				print(str(value) + " error !")
+				self.blink_led()
 
 	def stop_loop(self):
 		if is_running_on_pi == True:
