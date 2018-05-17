@@ -21,7 +21,7 @@ except RuntimeError:
 	pass
 
 class HIDReader(DeviceBase):
-	def __init__(self, name, action_pin_BCM=23, led_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
+	def __init__(self, name, action_pin_BCM=24, led_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
 		DeviceBase.__init__(self, name)
 
 		self._data0_pin_BCM = data0_pin_BCM
@@ -45,8 +45,10 @@ class HIDReader(DeviceBase):
 		try:
 			print("Starting controller...")
 			if is_running_on_pi == True:
-				
+
 				""" Notify loaded """
+				GPIO.setup(self._led_pin_BCM, GPIO.OUT)
+				GPIO.setup(self._action_pin_BCM, GPIO.OUT)
 				GPIO.output(self._led_pin_BCM, GPIO.LOW)
 				GPIO.output(self._action_pin_BCM, GPIO.LOW)
 				self.blink_led()
