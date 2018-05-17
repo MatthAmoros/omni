@@ -102,7 +102,6 @@ class HIDReader(DeviceBase):
 						pass
 			else:
 				print(str(value) + " error !")
-				self.blink_led()
 
 	def stop_loop(self):
 		if is_running_on_pi == True:
