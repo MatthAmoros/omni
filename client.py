@@ -79,7 +79,6 @@ def adopt():
 		if request.method == 'POST':
 			global adopted
 			new_master_url = request.form.get('master')
-			print('Received ' + new_master_url)
 
 			if new_master_url!= '':
 				""" Try with provided url """
@@ -126,6 +125,7 @@ def start_device_loop():
 			global deviceObject
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
 				run_worker = False
+				print("Initialize main device loop.")
 				device_object.run()
 
 			if adopted == False:

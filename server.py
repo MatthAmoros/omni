@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This script launch the server, used as a master to handle 
+This script launch the server, used as a master to handle
 clients configuration and validate credentials.
 
 It can be run on any platform with python and flask installed
@@ -60,11 +60,11 @@ def enroll():
 	member = Member(request.form['Id'])
 	member.lastname = request.form['lastname']
 	member.firstname = request.form['firstname']
-	
+
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	source.updateMemberInfo(member)
-	
-	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 #Main view
 @app.route("/main")
@@ -79,42 +79,42 @@ def view_index():
 """ Communications endpoints """
 @app.route("/isAlive")
 def is_alive():
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-    
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
 @app.route("/confirmAdopt/<clientId>")
 def confirm_adopt(clientId):
-	return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-    
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
 def validate_credential(zone, credential):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	canAccess = source.get_or_create_client_access_rights(credential, zone)
 
 	if canAccess:
-		return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+		return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 	else:
-		return json.dumps({'success':False}), 403, {'ContentType':'application/json'} 
-    
+		return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
 @app.route("/configuration/<client_id>")
 def configuration(client_id):
 	configuration = get_configuration_by_client_id(client_id)
 	configuration.secret = SERVER_SECRET
-	
+
 	if configuration is None:
-		return json.dumps({'success':False}), 204, {'ContentType':'application/json'} 
-		
+		return json.dumps({'success':False}), 204, {'ContentType':'application/json'}
+
 	print("Sending configuration for client " + str(client_id))
 	return jsonify(configuration.serialize()), "200"
 
 def get_configuration_by_client_id(client_id):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	conf = source.load_device_configuration(client_id)
-	
+
 	""" Update list """
 	for x in connected_devices:
 		if x.client_id == client_id:
 			connected_devices.remove(x)
-			break	
+			break
 
 	connected_devices.append(conf)
 
@@ -130,24 +130,24 @@ def pre_start_diagnose():
 	""" Reading configuration """
 	appConfig = configparser.ConfigParser()
 	appConfig.read("./cfg/config.ini")
-	
+
 	print("Sections found : " + str(appConfig.sections()))
-	
+
 	if len(appConfig.sections()) == 0:
 		raise RuntimeError("Could not open configuration file")
-			
+
 	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
 	SERVER_SECRET = appConfig.get("AppConstants", "Secret")
-	
+
 	print(" >> Configuration OK")
-	
+
 	print("2) Trying to reach datasource...")
-	#sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	#dataSourceOk = sourceDbConnection.checkIsReachable()
-	#if dataSourceOk == 1:
-	#	print(" >> Datasource OK")
-	#else:
-	#	print(" >> Datasource unreachable.")
+	sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	dataSourceOk = sourceDbConnection.is_reachable()
+	if dataSourceOk == 1:
+		print(" >> Datasource OK")
+	else:
+		print(" >> Datasource unreachable.")
 
 
 #Only if it's run
@@ -157,12 +157,11 @@ if __name__ == "__main__":
 	""" Start discovery manager """
 	visibility_manager = VisibilityManager()
 	discovery_thread = Thread(target=visibility_manager.listen_for_discovery_datagram)
-	
+
 	discovery_thread.start()
-	
+
 	print("Start web server...")
 	app.run(host='0.0.0.0')
-	
+
 	visibility_manager.must_stop = True
 	discovery_thread.join()
-	
