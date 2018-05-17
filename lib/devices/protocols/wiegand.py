@@ -8,6 +8,14 @@ bits=26 value=45883139
 bits=26 value=45883139
 bits=26 value=45883139
 bits=26 value=12442091
+# Set the signal handler
+#signal.signal(signal.SIGALRM, self._on_timedout)
+#signal.setitimer(signal.ITIMER_REAL, 0.1) #Alarm in 100ms
+
+def _on_timedout(self, signum, frame):
+    signal.setitimer(signal.ITIMER_REAL, 0)          # Disable the alarm
+    self.is_reading = False
+    self.callback(self.bits, self.num)
 
 """
 
@@ -52,22 +60,13 @@ class WiegandReader:
         self.gpio.add_event_detect(self.gpio_0, GPIO.FALLING, callback=self._on_data_received)
         self.gpio.add_event_detect(self.gpio_1, GPIO.FALLING, callback=self._on_data_received)
 
-        # Set the signal handler and a 5-second alarm
-        #signal.signal(signal.SIGALRM, self._on_timedout)
-
-"""
-    def _on_timedout(self, signum, frame):
-        signal.setitimer(signal.ITIMER_REAL, 0)          # Disable the alarm
-        self.is_reading = False
-        self.callback(self.bits, self.num)
-"""
     def _on_data_received(self, gpio):
         if self.is_reading == False:
             self.bits = 1
             self.num = 0
 
             self.is_reading = True
-            signal.setitimer(signal.ITIMER_REAL, 0.1) #Alarm in 100ms
+
         else:
             self.bits += 1
             self.num = self.num << 1
