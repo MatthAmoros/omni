@@ -60,13 +60,13 @@ class HIDReader(DeviceBase):
 		if bits > 0:
 			result = self.validate_credential(str(value), 'CARD')
 			if result == 1:
-				print(str(value) + " valid !")
 				if is_running_on_pi == True:
 					try:
 						""" Send GPIO signal to open the door """
 						GPIO.output(23, GPIO.HIGH)
-						sleep(0.3)
+						sleep(2)
 						GPIO.output(23, GPIO.LOW)
+						print(str(value) + " valid !")
 					except RuntimeError:
 						pass
 			else:
