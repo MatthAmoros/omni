@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import signal, os
-
+import RPi.GPIO as GPIO
 """
 bits=26 value=12442091
 bits=26 value=45883139
