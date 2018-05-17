@@ -60,11 +60,16 @@ class WiegandReader:
         self.gpio.setup(self.gpio_0, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         self.gpio.setup(self.gpio_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
+    def __enter__(self):
         """
         When DATA0 = 0 or DATA1 = 0 data is transmitted
         """
         self.gpio.add_event_detect(self.gpio_0, GPIO.FALLING, callback=self._on_data_received)
         self.gpio.add_event_detect(self.gpio_1, GPIO.FALLING, callback=self._on_data_received)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.cancel()
 
     def _on_data_received(self, gpio):
         if self.is_reading == False:
