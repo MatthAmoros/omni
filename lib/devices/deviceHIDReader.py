@@ -21,8 +21,14 @@ except RuntimeError:
 	pass
 
 class HIDReader(DeviceBase):
-	def __init__(self, name):
+	def __init__(self, name, action_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
 		DeviceBase.__init__(self, name)
+
+		self._data0_pin_BCM = data0_pin_BCM
+		self._data1_pin_BCM = data1_pin_BCM
+
+		GPIO.setmode(GPIO.BCM)
+		GPIO.setup(action_pin_BCM, GPIO.OUT)
 		print("HID Reader built !")
 
 	def main_loop(self):
@@ -30,9 +36,9 @@ class HIDReader(DeviceBase):
 		try:
 			print("Starting controller...")
 			if is_running_on_pi == True:
-				GPIO.setup(23, GPIO.OUT)
+
 				print("Setting up external vlaidation signal to BCM 23")
-				with WiegandReader(GPIO, 14, 15, self._on_data_read) as wiegand_reader:
+				with WiegandReader(GPIO, self._data0_pin_BCM, self._data1_pin_BCM, self._on_data_read) as wiegand_reader:
 					print("Wiegand listener started")
 					while self.must_stop == False :
 						if self.is_zone_enabled == True:
