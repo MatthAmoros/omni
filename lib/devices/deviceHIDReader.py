@@ -82,9 +82,11 @@ class HIDReader(DeviceBase):
 		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
 
 	def action_open(self):
+		GPIO.output(self._led_pin_BCM, GPIO.LOW)
 		GPIO.output(self._action_pin_BCM, GPIO.HIGH)
-		sleep(0.5)
+		sleep(1)
 		GPIO.output(self._action_pin_BCM, GPIO.LOW)
+		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
 
 	def _on_data_read(self, bits, value):
 		if bits > 0:
@@ -94,13 +96,13 @@ class HIDReader(DeviceBase):
 					try:
 						""" Send GPIO signal to open the door """
 						self.action_open()
-						self.blink_led()
 						sleep(1)
 						print(str(value) + " valid !")
 					except RuntimeError:
 						pass
 			else:
 				print(str(value) + " error !")
+				self.blink_led()
 
 	def stop_loop(self):
 		if is_running_on_pi == True:
