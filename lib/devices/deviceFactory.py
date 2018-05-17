@@ -77,6 +77,5 @@ class DeviceFactory:
 		if r.status_code == 200:
 			print("Setting master URL to " + master_url)
 			self.master_url = master_url
-			self.get_configuration()
 		else:
 			print("Error, invalid master response")

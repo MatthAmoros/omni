@@ -12,7 +12,7 @@ bits=26 value=12442091
 """
 
 class WiegandReader:
-    def __init__(self, gpio, board_gpio_data0, board_gpio_data1, callback, bit_timeout=5):
+    def __init__(self, gpio, board_gpio_data0, board_gpio_data1, callback, bit_size=26):
         """
             gpio is meant to be RPI.GPIO module
             board_gpio_data0 : DATA0 wire
@@ -27,7 +27,7 @@ class WiegandReader:
 
         self.is_reading = False
         self.is_timedout = False
-
+        self.bit_size = bit_size
         """
         Set wiring index mode
         """
@@ -53,14 +53,14 @@ class WiegandReader:
         self.gpio.add_event_detect(self.gpio_1, GPIO.FALLING, callback=self._on_data_received)
 
         # Set the signal handler and a 5-second alarm
-        signal.signal(signal.SIGALRM, self._on_timedout)
+        #signal.signal(signal.SIGALRM, self._on_timedout)
 
-
+"""
     def _on_timedout(self, signum, frame):
         signal.setitimer(signal.ITIMER_REAL, 0)          # Disable the alarm
         self.is_reading = False
         self.callback(self.bits, self.num)
-
+"""
     def _on_data_received(self, gpio):
         if self.is_reading == False:
             self.bits = 1
@@ -74,6 +74,10 @@ class WiegandReader:
 
         if gpio == self.gpio_1:
             self.num = self.num | 1
+
+        if self.bits == self.bit_size
+            self.is_reading = False
+            self.callback(self.bits, self.num)
 
     def cancel(self):
 
