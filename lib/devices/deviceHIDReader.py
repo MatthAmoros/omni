@@ -28,22 +28,15 @@ class HIDReader(DeviceBase):
 		self._data1_pin_BCM = data1_pin_BCM
 		self._led_pin_BCM = led_pin_BCM
 		self._action_pin_BCM = action_pin_BCM
+
 		"""
 			Set action gpio to 0V
 		"""
-
 		GPIO.setmode(GPIO.BCM)
 
 		"""
 			Blink to show loaded
 		"""
-		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
-		sleep(0.2)
-		GPIO.output(self._led_pin_BCM, GPIO.LOW)
-		sleep(0.2)
-		GPIO.output(self._led_pin_BCM, GPIO.HIGH)
-		sleep(0.2)
-		GPIO.output(self._led_pin_BCM, GPIO.LOW)
 		print("HID Reader built !")
 
 	def main_loop(self):
