@@ -33,12 +33,7 @@ class HIDReader(DeviceBase):
 		"""
 
 		GPIO.setmode(GPIO.BCM)
-"""
-		if self._action_pin_BCM != self._led_pin_BCM:
-			GPIO.setup(self._action_pin_BCM, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
 
-		GPIO.setup(self._led_pin_BCM, GPIO.OUT, pull_up_down=GPIO.PUD_DOWN)
-"""
 		"""
 			Blink to show loaded
 		"""
