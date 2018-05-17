@@ -74,7 +74,7 @@ class WiegandReader:
         if gpio == self.gpio_1:
             self.num = self.num | 1
 
-        if self.bits == self.bit_size
+        if self.bits == self.bit_size:
             self.is_reading = False
             self.callback(self.bits, self.num)
 
