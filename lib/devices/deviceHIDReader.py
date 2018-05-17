@@ -64,7 +64,11 @@ class HIDReader(DeviceBase):
 					try:
 						""" Send GPIO signal to open the door """
 						GPIO.output(23, GPIO.HIGH)
-						sleep(2)
+						sleep(0.5)
+						GPIO.output(23, GPIO.LOW)
+						sleep(0.5)
+						GPIO.output(23, GPIO.HIGH)
+						sleep(0.5)
 						GPIO.output(23, GPIO.LOW)
 						print(str(value) + " valid !")
 					except RuntimeError:
