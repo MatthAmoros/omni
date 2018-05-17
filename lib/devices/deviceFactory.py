@@ -51,7 +51,6 @@ class DeviceFactory:
 				device.master_url = self.master_url
 
 				print("Configuration loaded.")
-				print(str(device))
 
 				return device
 			else:
