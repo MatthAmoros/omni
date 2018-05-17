@@ -51,7 +51,7 @@ class HIDReader(DeviceBase):
 							break
 		finally:
 			print("Reading loop stopped")
-			if is_running_on_pi == True and wiegand_reader != None:
+			if is_running_on_pi == True and wiegand_reader:
 				wiegand_reader.cancel()
 
 		sleep(1)
