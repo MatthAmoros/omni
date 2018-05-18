@@ -1,5 +1,5 @@
 # ==================================
-# access-ctrl-hid server dockerfile
+# omni server dockerfile
 # ===================================
 
 # Use an official Python runtime as a parent image
@@ -33,11 +33,11 @@ EXPOSE 5000
 EXPOSE 54545
 
 # Pull from git
-RUN git clone http://github.com/SunPaz/access-ctrl-hid
+RUN git clone http://github.com/SunPaz/omni
 
 # Copy connection string file
-COPY connectionString.sql /app/access-ctrl-hid/cfg/
+COPY connectionString.sql /app/omni/cfg/
 
 # Start server
-WORKDIR /app/access-ctrl-hid
+WORKDIR /app/omni
 CMD ["python", "./server.py"]
