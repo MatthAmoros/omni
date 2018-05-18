@@ -61,8 +61,6 @@ class HIDReader(DeviceBase):
 						if self.is_zone_enabled == True:
 							self.is_running = True
 							""" Controller is enable, start reading """
-							sleep(0.3)
-							""" Waiting for callback interupt """
 						else:
 							""" Controller is disable, wait for a valid configuration """
 							break

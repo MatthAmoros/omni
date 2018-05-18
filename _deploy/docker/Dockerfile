@@ -20,10 +20,8 @@ RUN echo "Description=FreeTDS Driver" >> /etc/odbcinst.ini
 RUN echo "Driver=/usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so" >> /etc/odbcinst.ini
 RUN echo "Setup=/usr/lib/x86_64-linux-gnu/odbc/libtdsS.so" >> /etc/odbcinst.ini
 
-# Set the working directory to /app
-WORKDIR /app
-
 # Copy the current directory contents into the container at /app
+WORKDIR /app
 ADD . /app
 
 # Install any needed packages specified in python-pip-list
@@ -37,5 +35,9 @@ EXPOSE 54545
 # Pull from git
 RUN git clone http://github.com/SunPaz/access-ctrl-hid
 
-# Run server.py when the container launches
-CMD ["python", "/app/access-ctrl-hid/server.py"]
+# Copy connection string file
+COPY connectionString.sql /app/access-ctrl-hid/cfg/
+
+# Start server
+WORKDIR /app/access-ctrl-hid
+CMD ["python", "./server.py"]

@@ -33,6 +33,9 @@ class WiegandReader:
 
         self.callback = callback
 
+        self.bits = 1
+        self.num = 0
+
         self.is_reading = False
         self.is_timedout = False
         self.bit_size = bit_size
@@ -72,22 +75,17 @@ class WiegandReader:
         self.cancel()
 
     def _on_data_received(self, gpio):
-        if self.is_reading == False:
-            self.bits = 1
-            self.num = 0
-
-            self.is_reading = True
-
-        else:
-            self.bits += 1
-            self.num = self.num << 1
+        self.bits += 1
+        self.num = self.num << 1
 
         if gpio == self.gpio_1:
             self.num = self.num | 1
 
         if self.bits == self.bit_size:
-            self.is_reading = False
             self.callback(self.bits, self.num)
+            """ Reset counters """
+            self.bits = 1
+            self.num = 0
 
     def cancel(self):
 

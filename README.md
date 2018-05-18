@@ -35,11 +35,15 @@ curl -X POST http://<client-hostname>:5555/adopt --data "master=http://<server-h
 
 To deploy server application :
 
-Navigate to "./_deploy/docker" and then execute the following docker commands :
+Navigate to "./cfg/" and edit file connectionString.example with your database credentials then save it in "./_deploy/docker/connectionString.sql".
+Note : To deploy database, you can use the script located in "./_deploy/database/".
+
+Navigate to "./_deploy/docker/" and then execute the following docker commands :
 
 ```
-sudo docker build . -t access-ctrl-server
-docker run -t access-ctrl-server
+docker build . -t access-ctrl-server
+docker run --net=host -d access-ctrl-server
+docker ps
 ```
 
 ## Built With
