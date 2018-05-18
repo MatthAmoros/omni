@@ -33,7 +33,14 @@ curl -X POST http://<client-hostname>:5555/adopt --data "master=http://<server-h
 
 ## Deployment
 
-TODO : Docker image
+To deploy server application :
+
+Navigate to "./_deploy/docker" and then execute the following docker commands :
+
+```
+sudo docker build . -t access-ctrl-server
+docker run -t access-ctrl-server
+```
 
 ## Built With
 
@@ -48,7 +55,7 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags). 
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/your/project/tags).
 
 ## Authors
 

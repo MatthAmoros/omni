@@ -3,7 +3,7 @@
 # ===================================
 
 # Use an official Python runtime as a parent image
-FROM python:2
+FROM python:3
 
 RUN apt-get update && apt-get install -y \
 	nano \
@@ -30,12 +30,12 @@ ADD . /app
 RUN pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r python-pip-list.txt
 
-# Make port 5000 (default) available to the world outside this container
+# Make port 5000 (web server) and 54545 (discovery)  (default) available to the world outside this container
 EXPOSE 5000
+EXPOSE 54545
 
 # Pull from git
 RUN git clone http://github.com/SunPaz/access-ctrl-hid
 
-
 # Run server.py when the container launches
-CMD ["python", "access-ctrl-hid/server.py"]
+CMD ["python", "/app/access-ctrl-hid/server.py"]
