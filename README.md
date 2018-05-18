@@ -1,17 +1,17 @@
-# Access-Ctrl-HID
+# Omni
 
-An access controller based on HID card technology and Raspberry PI
+Omni aims to control various elements of a connected factory.
 
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-### Installing
+### Installing client module
 
 On your raspberry Pi board :
-Python / Packet Manager (pip) and main packages (RPi.GPIO
+Python / Packet Manager (pip) and main packages (RPi.GPIO)
 ```
-git clone http://github.com/SunPaz/access-ctrl-hid
+git clone http://github.com/SunPaz/omni
 cd _deploy
 chmod 740 delpoy_requiered_modules.sh
 sh delpoy_requiered_modules.sh
@@ -25,13 +25,7 @@ cd _deploy
 python test_python_packages.py
 ```
 
-To manually bind a client to a server execute the following curl command :
-
-```
-curl -X POST http://<client-hostname>:5555/adopt --data "master=http://<server-hostname>:5000/"
-```
-
-## Deployment
+## Installing server application
 
 To deploy server application :
 
@@ -45,6 +39,10 @@ docker build . -t access-ctrl-server
 docker run --net=host -d access-ctrl-server
 docker ps
 ```
+
+## Getting started
+
+TODO
 
 ## Built With
 
