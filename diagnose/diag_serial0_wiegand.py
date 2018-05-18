@@ -17,7 +17,6 @@ bits=26 value=12442091
 if __name__ == "__main__":
     import time
 
-
     def callback(bits, value):
         print("bits={} value={}".format(bits, value))
 

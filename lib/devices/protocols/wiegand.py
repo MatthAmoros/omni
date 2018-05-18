@@ -39,6 +39,7 @@ class WiegandReader:
         self.is_reading = False
         self.is_timedout = False
         self.bit_size = bit_size
+        self.string_code = ""
 
         """
         Avoid warning about ports already in use
@@ -80,9 +81,14 @@ class WiegandReader:
 
         if gpio == self.gpio_1:
             self.num = self.num | 1
+            self.string_code = self.string_code + "1"
+        else:
+            self.string_code = self.string_code + "0"
 
         if self.bits == self.bit_size:
             self.callback(self.bits, self.num)
+            print(self.string_code)
+            self.string_code = ""
             """ Reset counters """
             self.bits = 1
             self.num = 0
