@@ -61,6 +61,8 @@ class HIDReader(DeviceBase):
 						if self.is_zone_enabled == True:
 							self.is_running = True
 							""" Controller is enable, start reading """
+							#Prevent over-header
+							sleep(1)
 						else:
 							""" Controller is disable, wait for a valid configuration """
 							break
