@@ -19,9 +19,7 @@ if __name__ == "__main__":
    def callback(bits, value):
       print("bits={} value={}".format(bits, value))
 
-   pi = GPIO
-
-   w = wiegand.WiegandReader(pi, 14, 15, callback)
+   w = wiegand.WiegandReader(GPIO, 14, 15, self._on_data_read)
 
    while True:
        time.sleep(300)
