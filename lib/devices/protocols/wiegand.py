@@ -76,8 +76,9 @@ class WiegandReader:
         self.cancel()
 
     def _on_data_received(self, gpio):
-        self.bits += 1
-        self.num = self.num << 1
+        if self.bits > 1:
+            self.bits += 1
+            self.num = self.num << 1
 
         if gpio == self.gpio_1:
             self.num = self.num | 1
