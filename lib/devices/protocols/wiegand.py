@@ -33,7 +33,7 @@ class WiegandReader:
 
         self.callback = callback
 
-        self.bits = 0
+        self.bits = 1
         self.num = 0
 
         self.is_reading = False
@@ -75,9 +75,10 @@ class WiegandReader:
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.cancel()
 
-    def _on_data_received(self, gpio):
-        self.bits += 1
-        self.num = self.num << 1
+    def _on_data_received(self, gpio):        
+        if self.bits > 1:
+            self.bits += 1
+            self.num = self.num << 1
 
         if gpio == self.gpio_1:
             self.num = self.num | 1
@@ -90,7 +91,7 @@ class WiegandReader:
             print(self.string_code)
             self.string_code = ""
             """ Reset counters """
-            self.bits = 0
+            self.bits = 1
             self.num = 0
 
     def cancel(self):
