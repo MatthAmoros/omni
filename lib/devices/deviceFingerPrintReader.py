@@ -2,7 +2,7 @@
 	HIDReader device, using MFRC522 controller
 """
 
-__all__ = ['HIDReader']
+__all__ = ['FingerPrintReader']
 __version__ = '0.1'
 
 from .deviceBase import DeviceBase
@@ -20,12 +20,10 @@ except RuntimeError:
 	is_running_on_pi = False
 	pass
 
-class HIDReader(DeviceBase):
-	def __init__(self, name, action_pin_BCM=24, led_pin_BCM=23, data0_pin_BCM=14, data1_pin_BCM=15):
+class FingerPrintReader(DeviceBase):
+	def __init__(self, name, action_pin_BCM=24, led_pin_BCM=23):
 		DeviceBase.__init__(self, name)
 
-		self._data0_pin_BCM = data0_pin_BCM
-		self._data1_pin_BCM = data1_pin_BCM
 		self._led_pin_BCM = led_pin_BCM
 		self._action_pin_BCM = action_pin_BCM
 
@@ -37,7 +35,7 @@ class HIDReader(DeviceBase):
 		"""
 			Blink to show loaded
 		"""
-		print("HID Reader built !")
+		print("FingerPrint reader built !")
 
 
 	def main_loop(self):
@@ -55,17 +53,7 @@ class HIDReader(DeviceBase):
 				self.blink_led()
 
 				print("Setting up external vlaidation signal to BCM " + str(self._action_pin_BCM))
-				with WiegandReader(GPIO, self._data0_pin_BCM, self._data1_pin_BCM, self._on_data_read) as wiegand_reader:
-					print("Wiegand listener started")
-					while self.must_stop == False :
-						if self.is_zone_enabled == True:
-							self.is_running = True
-							""" Controller is enable, start reading """
-							#Prevent over-header
-							sleep(1)
-						else:
-							""" Controller is disable, wait for a valid configuration """
-							break
+				""" TODO : Reading from usb """
 		finally:
 			print("Reading loop stopped")
 			if is_running_on_pi == True and wiegand_reader:
@@ -86,7 +74,7 @@ class HIDReader(DeviceBase):
 
 	def _on_data_read(self, bits, value):
 		if bits > 0:
-			result = self.validate_credential(str(value), 'CARD')
+			result = self.validate_credential(str(value), 'FINGER')
 			if result == 1:
 				if is_running_on_pi == True:
 					try:

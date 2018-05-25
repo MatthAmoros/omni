@@ -5,6 +5,7 @@ __all__ = ['DeviceFactory']
 __version__ = '0.1'
 
 from .deviceHIDReader import HIDReader
+from .deviceFingerPrintReader import FingerPrintReader
 from .deviceBase import DeviceBase
 import requests
 import json
@@ -34,6 +35,9 @@ class DeviceFactory:
 				if config['deviceType'] == 1:
 					""" HID Reader """
 					device = HIDReader(self.name)
+				if config['deviceType'] == 2:
+					""" FingerPrint Reader """
+					device = FingerPrintReader(self.name)
 				elif config['deviceType'] == 0:
 					""" None """
 					device = DeviceBase(self.name)

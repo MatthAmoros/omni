@@ -40,9 +40,18 @@ docker run --net=host -d access-ctrl-server
 docker ps
 ```
 
-## Getting started
+## Basic setup
 
 TODO
+
+## Supported devices / roles
+
+Role : Access controller
+  - HID iClass R-640X-300
+  - [TODO] Digital Person
+Role : Energy Manager
+ - [TODO]
+
 
 ## Built With
 
