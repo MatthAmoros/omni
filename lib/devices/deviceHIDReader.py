@@ -39,7 +39,7 @@ class HIDReader(DeviceBase):
 		"""
 		print("HID Reader built !")
 
-
+	#Overrided from DeviceBase
 	def main_loop(self):
 		""" Starts RFID reading loop """
 		try:
@@ -100,6 +100,7 @@ class HIDReader(DeviceBase):
 				print(str(value) + " error !")
 				self.blink_led()
 
+	#Overrided from DeviceBase
 	def stop_loop(self):
 		if is_running_on_pi == True:
 			GPIO.cleanup()

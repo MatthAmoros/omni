@@ -37,7 +37,7 @@ class FingerPrintReader(DeviceBase):
 		"""
 		print("FingerPrint reader built !")
 
-
+    #Overrided from DeviceBase
 	def main_loop(self):
 		""" Starts RFID reading loop """
 		try:
@@ -88,6 +88,7 @@ class FingerPrintReader(DeviceBase):
 				print(str(value) + " error !")
 				self.blink_led()
 
+    #Overrided from DeviceBase
 	def stop_loop(self):
 		if is_running_on_pi == True:
 			GPIO.cleanup()

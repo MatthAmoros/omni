@@ -12,7 +12,8 @@ RUN apt-get update && apt-get install -y \
 	freetds-dev \
 	freetds-bin \
 	unixodbc-dev \
-	tdsodbc
+	tdsodbc \
+	apache2-dev
 
 #Add FreeTDS to odbc drivers
 RUN echo "[FreeTDS]" >> /etc/odbcinst.ini
@@ -37,7 +38,11 @@ RUN git clone http://github.com/SunPaz/omni
 
 # Copy connection string file
 COPY connectionString.sql /app/omni/cfg/
+COPY omni-site.conf /etc/apache2/sites-available/
+COPY omni.wsgi /app/omni/
+
+RUN /etc/init.d/apache2 reload
 
 # Start server
 WORKDIR /app/omni
-CMD ["python", "./server.py"]
+CMD ["sudo", "/etc/init.d/apache2 reload"]

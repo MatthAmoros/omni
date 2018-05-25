@@ -144,8 +144,8 @@ def main():
 	web_server_thread = Thread(target=start_web_server)
 	device_thread = Thread(target=start_device_loop)
 	#Start processes
-	web_server_thread.start()
 	device_thread.start()
+	web_server_thread.start()
 
 	try:
 		while True:

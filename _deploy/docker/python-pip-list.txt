@@ -3,3 +3,4 @@ pyodbc
 pysha3
 configparser
 requests
+mod_wsgi
