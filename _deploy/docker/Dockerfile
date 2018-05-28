@@ -13,7 +13,9 @@ RUN apt-get update && apt-get install -y \
 	freetds-bin \
 	unixodbc-dev \
 	tdsodbc \
-	apache2-dev
+	apache2 \
+	apache2-dev \
+	libapache2-mod-wsgi-py3
 
 #Add FreeTDS to odbc drivers
 RUN echo "[FreeTDS]" >> /etc/odbcinst.ini
@@ -38,11 +40,18 @@ RUN git clone http://github.com/SunPaz/omni
 
 # Copy connection string file
 COPY connectionString.sql /app/omni/cfg/
-COPY omni-site.conf /etc/apache2/sites-available/
+COPY omni.local.conf /etc/apache2/sites-available/
+RUN echo "Listen 5000" >> /etc/apache2/ports.conf
+RUN a2ensite omni.local
 COPY omni.wsgi /app/omni/
+RUN mkdir /app/omni/www/
+RUN mkdir /app/omni/www/logs
 
-RUN /etc/init.d/apache2 reload
+RUN a2enmod wsgi
+RUN /etc/init.d/apache2 restart
 
 # Start server
 WORKDIR /app/omni
-CMD ["sudo", "/etc/init.d/apache2 reload"]
+CMD ["/bin/bash"]
+
+# Then run docker run -it --entrypoint=/bin/bash --net=host <image>

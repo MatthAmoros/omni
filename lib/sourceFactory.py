@@ -5,7 +5,7 @@ Then it handle basic data source interactions
 __all__ = ['SourceFactory']
 __version__ = '0.1'
 
-import configparser #ConfigParser class
+from configparser import ConfigParser #ConfigParser class
 import pyodbc  #For MS SQL connection, via odbc
 
 from .common import *
@@ -28,7 +28,7 @@ class SourceFactory:
 	def _build_connection_string(self):
 		""" If we are using a Database, self.parameter must contains a path
 			to the file that contains connection string information """
-		connection_file = configparser.ConfigParser()
+		connection_file = ConfigParser()
 		connection_file.read(self.parameter)
 
 		connection_string = "DRIVER={"+ connection_file.get("ConnectionString", "driver") +"};"
@@ -118,9 +118,9 @@ class SourceFactory:
 							""" Get access result """
 							can_access = row[0]
 							if can_access == True:
-								self.logEvent(member_name + " marcó en la zona " + str(zone_id) + ", autorizado", member_id)
+								self.logEvent(member_name + " marco en la zona " + str(zone_id) + ", autorizado", member_id)
 							else:
-								self.logEvent(member_name + " marcó en la zona " + str(zone_id) + ", no autorizado", member_id)
+								self.logEvent(member_name + " marco en la zona " + str(zone_id) + ", no autorizado", member_id)
 				else:
 					""" This card is not registered, create new member """
 					cursor.execute('INSERT INTO Member(CardId) VALUES (' + str(card_id) + ')' )

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This is the client, it starts a web server to handle basic communication
 with the master then runs a device_loop that while act depending on loaded configuration

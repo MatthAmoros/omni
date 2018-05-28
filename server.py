@@ -1,13 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 This script launch the server, used as a master to handle
 clients configuration and validate credentials.
 
-It can be run on any platform with python and flask installed
+It can be run on any platform with python and pip requierments installed
 """
 __version__ = '0.1'
 
-import configparser
+from configparser import ConfigParser
 import json
 from threading import Thread
 
@@ -127,9 +127,10 @@ def load_server_configuration():
 def pre_start_diagnose():
 	print("Pre-start diagnostic ...")
 	print("1) Loading application configuration ...")
+
 	""" Reading configuration """
-	appConfig = configparser.ConfigParser()
-	appConfig.read("./cfg/config.ini")
+	appConfig = ConfigParser()
+	appConfig.read('./cfg/config.ini')
 
 	print("Sections found : " + str(appConfig.sections()))
 
@@ -161,7 +162,7 @@ if __name__ == "__main__":
 	discovery_thread.start()
 
 	print("Start web server...")
-	app.run(host='0.0.0.0')
+	app.run(host='0.0.0.0', port=5000)
 
 	visibility_manager.must_stop = True
 	discovery_thread.join()

@@ -1,4 +1,6 @@
 #!/usr/bin/python
 import sys
-sys.path.insert(0, '/app/omni')
+path='/app/omni'
+if path not in sys.path:
+    sys.path.append(path)
 from server import app as application
