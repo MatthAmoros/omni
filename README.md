@@ -35,8 +35,8 @@ Note : To deploy database, you can use the script located in "./_deploy/database
 Navigate to "./_deploy/docker/" and then execute the following docker commands :
 
 ```
-docker build . -t access-ctrl-server
-docker run --net=host -d access-ctrl-server
+docker build . -t omni-server
+docker run -it --entrypoint=/bin/bash --net=host omni-server
 docker ps
 ```
 
