@@ -1,6 +1,6 @@
 # Omni
 
-Omni aims to control various elements of a connected factory.
+Omni aims to be a centralized Factory 4.0 controller.
 
 ## Getting Started
 
