@@ -6,7 +6,13 @@ __all__ = ['SourceFactory']
 __version__ = '0.1'
 
 from configparser import ConfigParser #ConfigParser class
-import pyodbc  #For MS SQL connection, via odbc
+import platform
+
+proc = platform.processor()
+if proc == "":
+	print("RaspberryPI detected, client mode loaded.")
+else:
+	import pyodbc  #For MS SQL connection, via odbc
 
 from .common import *
 class SourceFactory:
