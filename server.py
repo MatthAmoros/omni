@@ -21,7 +21,7 @@ from lib.sourceFactory import SourceFactory
 from lib.visibilityManager import VisibilityManager
 from lib.common import ServerSetting, DeviceConfiguration, Member
 
-CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
+CONNECTION_FILE_PATH = "/app/omni/cfg/connectionString.sql" #Default
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
 
 connected_devices = []
