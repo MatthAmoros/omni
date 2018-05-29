@@ -3,7 +3,7 @@
 # ===================================
 
 # Use an official Python runtime as a parent image
-FROM python:3
+FROM python:3-slim-stretch
 
 RUN apt-get update && apt-get install -y \
 	nano \
@@ -14,8 +14,10 @@ RUN apt-get update && apt-get install -y \
 	unixodbc-dev \
 	tdsodbc \
 	apache2 \
-	apache2-dev \
-	libapache2-mod-wsgi-py3
+	apache2-dev
+# mod_WSGI packaged is not compatible with Python > 3.4 (@ operator not recognized)
+# We will add it using pip
+
 
 #Add FreeTDS to odbc drivers
 RUN echo "[FreeTDS]" >> /etc/odbcinst.ini
@@ -40,18 +42,20 @@ RUN git clone http://github.com/SunPaz/omni
 
 # Copy connection string file
 COPY connectionString.sql /app/omni/cfg/
+# Setting up Apache2 / mod_wsgi
 COPY omni.local.conf /etc/apache2/sites-available/
 RUN echo "Listen 5000" >> /etc/apache2/ports.conf
 RUN a2ensite omni.local
 COPY omni.wsgi /app/omni/
 RUN mkdir /app/omni/www/
 RUN mkdir /app/omni/www/logs
-
-RUN a2enmod wsgi
+# Setting module WSGI and Python Path
+RUN mod_wsgi-express module-config >> /etc/apache2/apache2.conf
+#RUN a2enmod wsgi
 RUN /etc/init.d/apache2 restart
 
 # Start server
 WORKDIR /app/omni
-CMD ["/bin/bash"]
+CMD ["/etc/init.d/apache2 start && python /app/omni/discover_client.py"]
 
 # Then run docker run -it --entrypoint=/bin/bash --net=host <image>
