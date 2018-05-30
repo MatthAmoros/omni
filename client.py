@@ -6,6 +6,7 @@ with the master then runs a device_loop that while act depending on loaded confi
 __version__ = '0.1'
 
 import sys
+print("Current PYTHONPATH : " + str(sys.path))
 import requests
 import json
 
