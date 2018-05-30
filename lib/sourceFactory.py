@@ -8,8 +8,7 @@ __version__ = '0.1'
 from configparser import ConfigParser #ConfigParser class
 import platform
 
-proc = platform.processor()
-if proc == "ARM":
+if platform.processor() == "ARM":
 	print("RaspberryPI detected, client mode loaded.")
 else:
 	import pyodbc  #For MS SQL connection, via odbc
