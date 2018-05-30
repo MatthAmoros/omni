@@ -14,39 +14,53 @@ class DeviceConfiguration:
 	secret = "" #Server secret, for future cryptographic uses
 	deviceType = 0
 	description = ""
-	
+
 	def __init__(self, client_id):
 		self.client_id = client_id
-	
+
 	def __str___(self):
 		return "Configuration : " + str(description) + " Zone : " + str(self.zone) + " Enabled : " + str(self.enabled) + " DayTimeOnly : " + str(self.day_time_only) + " AuthorizeOnly : " + str(self.authorize_only + " DeviceType : " + str(self.deviceTpe))
-		
+
 	def serialize(self):
 		"""Serializes current object instance (used with jsonify)"""
 		return { 'description': self.description, 'zone' : self.zone, 'enabled' : self.enabled, 'dayTimeOnly' : self.day_time_only, 'authorizeOnly' : self.authorize_only, 'secret' : self.secret, 'deviceType' : self.deviceType}
+
+class DeviceStatus:
+	client_id = 0
+	is_in_error = False
+	error_status = ""
+
+	def __init__(self, client_id, in_error, error_status):
+		self.client_id = client_id
+		self.is_in_error = in_error
+		self.error_status = error_status
+
+	def serialize(self):
+		"""Serializes current object instance (used with jsonify)"""
+		return { 'client_id': self.client_id, 'is_in_error' : self.is_in_error, 'error_status' : self.error_status }
 
 class Member:
 	token = ''
 	name = ''
 	lastname = ''
-	
+
 	def __init__(self, id):
 		self.id = id
 		self.token = ''
 		self.name = ''
 		self.lastname = ''
-		
+
 	def __str___(self):
-		return "Member : " + str(self.id) + " | " + str(self.token) + " | " + str(self.name) + " | " + str(self.lastname) 
+		return "Member : " + str(self.id) + " | " + str(self.token) + " | " + str(self.name) + " | " + str(self.lastname)
 
 class ServerSetting:
 	def __init__(self, settingType):
 		self.type = settingType
 		self.parameters = []
-	
+
 	def __str___(self):
 		return "Setting : " + str(self.type) + " | " + str(self.parameters)
-		
+
 	def serialize(self):
 		"""Serializes current object instance (used with jsonify)"""
 		return { 'type': self.type, 'parameters' : self.parameters}
