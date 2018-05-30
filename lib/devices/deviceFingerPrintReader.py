@@ -14,7 +14,8 @@ import json
 try:
 	import RPi.GPIO as GPIO
 	is_running_on_pi = True
-except RuntimeError:
+except Exception as e:
+	print(e)
 	print("Starting without GPIO")
 	is_running_on_pi = False
 	pass
