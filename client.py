@@ -5,9 +5,7 @@ with the master then runs a device_loop that while act depending on loaded confi
 """
 __version__ = '0.1'
 
-import os, sys
-sys.path.append(os.path.join(os.path.dirname(__file__), "lib"))
-
+import sys
 import requests
 import json
 
