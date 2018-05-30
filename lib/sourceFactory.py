@@ -59,8 +59,8 @@ class SourceFactory:
 				cnxn = pyodbc.connect(connection_string)
 				cnxn.close()
 				return 1
-			except:
-				print("Could not connect to provided connection.")
+			except Exception as e:
+				print("Could not connect to provided connection. (" + str(e) + ")")
 				return 0
 		elif self.source_type == self.TYPE_FILE:
 			#Load from provided path
