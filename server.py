@@ -65,10 +65,9 @@ def view_settings():
 	""" Check devices and load settings """
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
-	settingAccess.parameters = source.get_not_enrolled_members()
 	settings = []
 	settings.append(settingAccess)
-	return render_template('./server/enrollView.html', settings=settings)
+	return render_template('./server/settingsView.html', settings=settings)
 
 @app.route("/enroll", methods=['POST'])
 def enroll():
