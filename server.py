@@ -54,7 +54,7 @@ def view_credentials():
 	""" Check devices and load settings """
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
-	settingAccess.parameters = source.getNotEnrolledMembers()
+	settingAccess.parameters = source.get_not_enrolled_members()
 	settings = []
 	settings.append(settingAccess)
 	return render_template('./server/settingsView.html', settings=settings)
@@ -66,7 +66,7 @@ def enroll():
 	member.firstname = request.form['firstname']
 
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	source.updateMemberInfo(member)
+	source.update_member_info(member)
 
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
@@ -108,7 +108,7 @@ def configuration(client_id):
 		return json.dumps({'success':False}), 204, {'ContentType':'application/json'}
 
 	print("Sending configuration for client " + str(client_id))
-	return jsonify(configuration.serialize()), "200"
+	return jsonify(configuration.serialize()), 200, {'ContentType':'application/json'}
 
 def get_configuration_by_client_id(client_id):
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
