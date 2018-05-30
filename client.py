@@ -6,7 +6,6 @@ with the master then runs a device_loop that while act depending on loaded confi
 __version__ = '0.1'
 
 import sys
-print("Current PYTHONPATH : " + str(sys.path))
 import requests
 import json
 
@@ -66,7 +65,7 @@ def load_configuration():
 	""" Called by master to force reload configuration """
 	global device_object
 	device_object = device_factory.get_configuration()
-
+	
 	return json.dumps({'success':device_object.is_in_error}), 200, {'ContentType':'application/json'}
 
 @app.route('/adopt', methods=['POST'])
