@@ -6,7 +6,6 @@ __all__ = ['FingerPrintReader']
 __version__ = '0.1'
 
 from .deviceBase import DeviceBase
-from .protocols.wiegand import WiegandReader
 from time import sleep
 import requests
 import json
