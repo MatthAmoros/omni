@@ -89,8 +89,8 @@ def is_alive():
 def confirm_adopt(clientId):
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@app.route("/report/state/<clientId>", methods=['POST'])
-def confirm_adopt(clientId):
+@app.route("/report/state", methods=['POST'])
+def report_state():
     device_status = DeviceStatus(request.form['client_id'], request.form['is_in_error'], request.form['error_status'])
     for x in connected_devices:
         if x.client_id == device_status.client_id:
