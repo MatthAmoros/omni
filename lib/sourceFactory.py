@@ -140,8 +140,8 @@ class SourceFactory:
 					cnxn.commit()
 					""" By default, deny access """
 					can_access = False
-			except:
-				print("Could not connect to provided connection.")
+			except Exception as e:
+				print("Could not connect to provided connection. (" + str(e) + ")")
 			finally:
 				#Cleaning up
 				if 'cursor' in locals():
@@ -188,12 +188,13 @@ class SourceFactory:
 				member = Member(row[0])
 				member.token = str(row[1])
 				not_enrolled_ids.append(member)
-		except:
-			print("Could not connect to provided connection.")
+		except Exception as e:
+			print("Could not connect to provided connection. (" + str(e) + ")")
 		finally:
-			#Cleaning up
-			cursor.close()
-			del cursor
+			if 'cursor' in locals():
+				#Cleaning up
+				cursor.close()
+				del cursor
 			cnxn.close()
 
 		return not_enrolled_ids
@@ -225,7 +226,7 @@ class SourceFactory:
 				else:
 					print("No configuration found for client " +  str(client_id))
 			except:
-				print("Could not connect to provided connection.")
+				print("Could not connect to provided connection. (" + str(connection_string) + ")")
 			finally:
 				#Cleaning up
 				cursor.close()
