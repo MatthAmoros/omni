@@ -6,19 +6,19 @@
 		<b> {{ device.description }} </b> <br/>
     <div class="alert alert-primary" role="alert">
     IP : {{ device.endpoint }} <br/>
-		Zona : {{ device.zone }} <br/>
+		Zone : {{ device.zone }} <br/>
 		{% if device.deviceType == 1 %}
-		Tipo : HID Reader <br/>
+		Type : HID Reader <br/>
 		{% endif %}
-		Activado : {{ device.enabled }} <br/>
+		Enabled : {{ device.enabled }} <br/>
     </div>
     {% if device.is_in_error %}
     <div class="alert alert-warning" role="alert">
-      Estado : {{ device.error_status }}
+      Status : {{ device.error_status }}
     </div>
     {% else %}
     <div class="alert alert-success" role="alert">
-      Estado : OK
+      Status : OK
     </div>
     {% endif %}
 		</div>
