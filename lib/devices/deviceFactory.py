@@ -103,4 +103,4 @@ class DeviceFactory:
 			print("Setting master URL to " + master_url)
 			self.master_url = master_url
 		else:
-			print("Error, invalid master response")
+			print("Error, invalid master response (" + str(r.status_code) + ")")
