@@ -14,11 +14,13 @@ try:
 	from lib.devices.deviceFactory import DeviceFactory
 	from lib.devices.deviceBase import DeviceBase
 	from lib.visibilityManager import VisibilityManager
+	from lib.common import DeviceStatus
 except ModuleNotFoundError:
 	sys.exit("Business modules not found")
 else:
 	from flask import Flask
 	from flask import request
+	from flask import jsonify
 	from uuid import getnode as get_mac
 	from threading import Thread
 	from time import sleep
@@ -64,7 +66,7 @@ def load_configuration():
 	global device_object
 	device_object = device_factory.get_configuration()
 
-	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+	return json.dumps({'success':device_object.is_in_error}), 200, {'ContentType':'application/json'}
 
 @app.route('/adopt', methods=['POST'])
 def adopt():
@@ -103,6 +105,14 @@ def get_master():
 	""" Returns current master """
 	if request.method == 'GET':
 		return device_factory.master_url
+
+
+@app.route('/state', methods=['GET'])
+def get_status():
+	""" Returns current configuraiton """
+	global device_object
+	device_status = DeviceStatus(device_object.name, device_object.is_in_error, device_object.error_status)
+	return jsonify(device_status.serialize()), 200, {'ContentType':'application/json'}
 
 # ===========================
 # 		Threads declarations
