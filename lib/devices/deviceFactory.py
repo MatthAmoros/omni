@@ -7,8 +7,8 @@ __version__ = '0.1'
 import platform
 
 proc = platform.processor()
-if proc == "":
-	""" Hidding RaspberryPi only devices """
+if proc == "ARM":
+	""" Loading RaspberryPi only devices """
 	from .deviceHIDReader import HIDReader
 
 from .deviceFingerPrintReader import FingerPrintReader
