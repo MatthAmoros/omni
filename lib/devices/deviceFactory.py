@@ -61,12 +61,17 @@ class DeviceFactory:
 					device.master_secret = config['secret']
 					device.master_url = self.master_url
 
+					device.is_in_error = False
+					device.error_status = ""
+
 					print("Configuration loaded.")
 				except NameError:
 					print("Device type not supported by current platform. Configuration aborted.")
 					device.zone_id = 1
 					device.is_zone_enabled = False
 					device.is_zone_day_time_only = False
+					device.is_in_error = True
+					device.error_status = "Device type not supported by current platform"
 				finally:
 					return device
 			else:
@@ -74,11 +79,15 @@ class DeviceFactory:
 				device.zone_id = 1
 				device.is_zone_enabled = False
 				device.is_zone_day_time_only = False
+				device.is_in_error = True
+				device.error_status = "Configuration loading failed. (Server response : " + str(r.status_code) + ")"
 				return device
 		else:
 			self.zone_id = 1
 			self.is_zone_enabled = True
 			self.is_zone_day_time_only = True
+			device.is_in_error = True
+			device.error_status = "No master URL defined"
 			return device
 
 	def set_master(self, master_url):
