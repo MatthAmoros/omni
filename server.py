@@ -19,7 +19,7 @@ from flask import Flask, request, send_from_directory
 
 from lib.sourceFactory import SourceFactory
 from lib.visibilityManager import VisibilityManager
-from lib.common import ServerSetting, DeviceConfiguration, Member
+from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus
 
 if __name__ == "__main__":
     CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
@@ -88,6 +88,17 @@ def is_alive():
 @app.route("/confirmAdopt/<clientId>")
 def confirm_adopt(clientId):
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
+@app.route("/report/state/<clientId>", methods=['POST'])
+def confirm_adopt(clientId):
+    device_status = DeviceStatus(request.form['client_id'], request.form['is_in_error'], request.form['error_status'])
+	for x in connected_devices:
+		if x.client_id == device_status.client_id:
+			x.is_in_error = device_status.device_status
+            x.error_status = device_status.error_status
+			break
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+
 
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
 def validate_credential(zone, credential):
