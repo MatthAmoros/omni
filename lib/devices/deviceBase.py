@@ -14,11 +14,13 @@ class DeviceBase(object):
 
 		self.master_url = ''
 		self.master_secret = ''
+		self.error_status = ""
 
 		self.is_configuration_loaded = False
 		self.is_zone_enabled = False
 		self.is_running = False
-		self.must_stop = False
+		self.is_in_error = False
+		self.must_stop = False		
 
 	def __str__(self):
 		return "Zone enabled " + str(self.is_zone_enabled) + " | Running " + str(self.is_running) + " | Configuration loaded " + str(self.is_configuration_loaded) + " | Must stop " + str(self.must_stop)
