@@ -33,7 +33,7 @@ ADD . /app
 RUN pip install --upgrade pip
 RUN pip install --trusted-host pypi.python.org -r python-pip-list.txt
 
-# Make port 5000 (web server) and 54545 (discovery)  (default) available to the world outside this container
+# Make port 5000 (web server), 54545 (discovery) and 49225 (ODBC)  (default) available to the world outside this container
 EXPOSE 5000
 EXPOSE 54545
 
@@ -56,6 +56,6 @@ RUN /etc/init.d/apache2 restart
 
 # Start server
 WORKDIR /app/omni
-CMD ["/etc/init.d/apache2 start && python /app/omni/discover_client.py"]
+CMD service apache2 start && python /app/omni/discover_client.py && /bin/bash
 
-# Then run docker run -it --entrypoint=/bin/bash --net=host <image>
+# Then run docker run -it --net=host <image>
