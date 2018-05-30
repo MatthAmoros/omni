@@ -91,11 +91,13 @@ def confirm_adopt(clientId):
 
 @app.route("/report/state", methods=['POST'])
 def report_state():
-    device_status = DeviceStatus(request.form['client_id'], request.form['is_in_error'], request.form['error_status'])
+    data = request.data
+    device_status_data = json.loads(data)
+    
     for x in connected_devices:
-        if x.client_id == device_status.client_id:
-            x.is_in_error = device_status.device_status
-            x.error_status = device_status.error_status
+        if x.client_id == device_status_data['client_id']:
+            x.is_in_error = device_status_data['is_in_error']
+            x.error_status = device_status_data['error_status']
             break
     return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
