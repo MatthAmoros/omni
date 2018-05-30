@@ -4,7 +4,13 @@
 __all__ = ['DeviceFactory']
 __version__ = '0.1'
 
-from .deviceHIDReader import HIDReader
+import platform
+
+proc = platform.processor()
+if proc == "":
+	""" Hidding RaspberryPi only devices """
+	from .deviceHIDReader import HIDReader
+
 from .deviceFingerPrintReader import FingerPrintReader
 from .deviceBase import DeviceBase
 import requests
@@ -58,7 +64,7 @@ class DeviceFactory:
 
 				return device
 			else:
-				print("Configuration loading failed.")
+				print("Configuration loading failed. (Server response : " + str(r.status_code) + ")")
 				self.zone_id = 1
 				self.is_zone_enabled = False
 				self.is_zone_day_time_only = False
