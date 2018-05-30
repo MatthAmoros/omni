@@ -44,20 +44,31 @@ def send_css(path):
     return send_from_directory('./templates/static/styles', path)
 
 #View state
-@app.route("/state")
+@app.route("/stateView")
 def view_state():
-	return render_template('./server/controllersView.html', devices=connected_devices)
+	return render_template('./server/stateView.html', devices=connected_devices)
 
-#View settings
-@app.route("/settings")
-def view_credentials():
+#View enroll
+@app.route("/enrollView")
+def view_enroll():
 	""" Check devices and load settings """
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
 	settingAccess.parameters = source.get_not_enrolled_members()
 	settings = []
 	settings.append(settingAccess)
-	return render_template('./server/settingsView.html', settings=settings)
+	return render_template('./server/enrollView.html', settings=settings)
+
+#View settings
+@app.route("/settingsView")
+def view_settings():
+	""" Check devices and load settings """
+	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	settingAccess = ServerSetting('enroll')
+	settingAccess.parameters = source.get_not_enrolled_members()
+	settings = []
+	settings.append(settingAccess)
+	return render_template('./server/enrollView.html', settings=settings)
 
 @app.route("/enroll", methods=['POST'])
 def enroll():
