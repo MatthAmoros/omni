@@ -5,11 +5,16 @@
 		Zona : {{ device.zone }} <br/>
 		{% if device.deviceType == 1 %}
 		Tipo : HID Reader <br/>
-		{% endif %}		
+		{% endif %}
 		Activado : {{ device.enabled }} <br/>
 		{% if device.deviceType == 1 %}
 		<a href='#' ></a>
 		{% endif %}
 		</div>
+    {% if device.is_in_error %}
+    Estado : {{ device.error_status }}
+    {% else %}
+    Estado : OK
+    {% endif %}
   {% endfor %}
   </div>
