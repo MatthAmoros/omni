@@ -46,7 +46,7 @@ def send_css(path):
 #View state
 @app.route("/state")
 def view_state():
-	return render_template('./server/controllersView.html', devices=devicesConnected)
+	return render_template('./server/controllersView.html', devices=connected_devices)
 
 #View settings
 @app.route("/settings")
