@@ -87,19 +87,18 @@ def is_alive():
 
 @app.route("/confirmAdopt/<clientId>")
 def confirm_adopt(clientId):
-	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/report/state", methods=['POST'])
 def report_state():
-    data = request.data
-    device_status_data = json.loads(data)
-    
-    for x in connected_devices:
-        if x.client_id == device_status_data['client_id']:
-            x.is_in_error = device_status_data['is_in_error']
-            x.error_status = device_status_data['error_status']
-            break
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
+	data = request.data
+	device_status_data = json.loads(data)
+	for x in connected_devices:
+		if x.client_id == device_status_data['client_id']:
+			x.is_in_error = device_status_data['is_in_error']
+			x.error_status = device_status_data['error_status']
+			break
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
 def validate_credential(zone, credential):
@@ -115,6 +114,11 @@ def validate_credential(zone, credential):
 def configuration(client_id):
 	configuration = get_configuration_by_client_id(client_id)
 	configuration.secret = SERVER_SECRET
+	""" Update client endpoint """
+	for x in connected_devices:
+		if x.client_id == client_id:
+			x.endpoint = str(request.remote_addr)
+			break
 
 	if configuration is None:
 		return json.dumps({'success':False}), 204, {'ContentType':'application/json'}

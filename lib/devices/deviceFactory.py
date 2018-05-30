@@ -33,6 +33,7 @@ class DeviceFactory:
 		device = DeviceBase(self.name)
 
 		if len(self.master_url) > 0:
+			device.master_url = self.master_url
 			r = requests.get(self.master_url + '/configuration/' + self.name)
 
 			if r.status_code == 200:
@@ -68,12 +69,11 @@ class DeviceFactory:
 				except NameError:
 					print("Device type not supported by current platform. Configuration aborted.")
 					device.zone_id = 1
+
 					device.is_zone_enabled = False
 					device.is_zone_day_time_only = False
 					device.is_in_error = True
 					device.error_status = "Device type not supported by current platform"
-				finally:
-					return device
 			else:
 				print("Configuration loading failed. (Server response : " + str(r.status_code) + ")")
 				device.zone_id = 1
@@ -81,14 +81,15 @@ class DeviceFactory:
 				device.is_zone_day_time_only = False
 				device.is_in_error = True
 				device.error_status = "Configuration loading failed. (Server response : " + str(r.status_code) + ")"
-				return device
 		else:
 			self.zone_id = 1
 			self.is_zone_enabled = True
 			self.is_zone_day_time_only = True
 			device.is_in_error = True
 			device.error_status = "No master URL defined"
-			return device
+
+		device.report_state()
+		return device
 
 	def set_master(self, master_url):
 		""" Sets default master """

@@ -1,17 +1,28 @@
  <div id="online-controllers">
+   <br/> </br>
   {% for device in devices %}
+  <div class="card" style="width: 18rem;">
     <div id="{{ device.clientId }}">
 		<b> {{ device.description }} </b> <br/>
+    <div class="alert alert-primary" role="alert">
+    IP : {{ device.endpoint }} <br/>
 		Zona : {{ device.zone }} <br/>
 		{% if device.deviceType == 1 %}
 		Tipo : HID Reader <br/>
 		{% endif %}
 		Activado : {{ device.enabled }} <br/>
+    </div>
     {% if device.is_in_error %}
-    Estado : {{ device.error_status }}
+    <div class="alert alert-warning" role="alert">
+      Estado : {{ device.error_status }}
+    </div>
     {% else %}
-    Estado : OK
+    <div class="alert alert-success" role="alert">
+      Estado : OK
+    </div>
     {% endif %}
 		</div>
+  </div>
+  <br/>
   {% endfor %}
   </div>
