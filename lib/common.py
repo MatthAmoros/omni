@@ -43,6 +43,7 @@ class Member:
 	token = ''
 	name = ''
 	lastname = ''
+	groupId = 1
 
 	def __init__(self, id):
 		self.id = id
@@ -52,6 +53,17 @@ class Member:
 
 	def __str___(self):
 		return "Member : " + str(self.id) + " | " + str(self.token) + " | " + str(self.name) + " | " + str(self.lastname)
+
+class Group:
+	id = 0
+	name = ''
+
+	def __init__(self, id, name):
+		self.id = id
+		self.name = name
+
+	def __str___(self):
+		return "Group : " + str(self.id) + " | " + str(self.name) + " | "
 
 class ServerSetting:
 	def __init__(self, settingType):

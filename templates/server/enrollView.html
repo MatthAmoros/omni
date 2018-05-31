@@ -5,7 +5,8 @@
 		List of users waiting for enrollment :
 		<br />
 			{% for member in setting.parameters %}
-				<form action="{{ url_for('enroll') }}" method="post" id="enroll-{{ member.id }}">
+			<div class="card" style="width: 18rem;">
+				<form action="{{ url_for('enroll') }}" method="post" id="enroll-{{ member.id }}" class="enrollForm">
 					Identity : {{ member.token }}
 					<input type="hidden" name="Id" value="{{ member.id }}"
 					Firstname:<br />
@@ -13,9 +14,37 @@
 					<br>
 					Lastname : <br />
 					<input type="text" name="lastname" placeholder="Apellido" value="">
+					<br />
+					<label for="group">Member of :</label>
+					<select class="form-control" name="groupId" id="group">
+						{% for group in setting.groups %}
+						<option value="{{ group.id }}">{{ group.name }}</option>
+						{% endfor %}
+					</select>
 					<br /><br />
 					<input type="submit" value="Guardar">
 				</form>
+			</div>
+			<script>
+			// this is the id of the form
+			$("#enroll-{{ member.id }}").submit(function(e) {
+
+					var url = "{{ url_for('enroll') }}"; // the script where you handle the form input.
+
+					$.ajax({
+								 type: "POST",
+								 url: url,
+								 data: $("#enroll-{{ member.id }}").serialize(), // serializes the form's elements.
+								 success: function(data)
+								 {
+										 alert("Member successfully saved."); // show response from the php script.
+										 $("#enroll-{{ member.id }}").remove();
+								 }
+							 });
+
+					e.preventDefault(); // avoid to execute the actual submit of the form.
+			});
+			</script>
 			{% endfor %}
 		{% endif %}
   {% endfor %}

@@ -13,7 +13,7 @@ if platform.processor() == "ARM":
 else:
 	import pyodbc  #For MS SQL connection, via odbc
 
-from .common import *
+from .common import Member, Group, DeviceConfiguration
 class SourceFactory:
 	#Sources enum
 	TYPE_DATABASE = "DB"
@@ -59,7 +59,7 @@ class SourceFactory:
 				cnxn.close()
 				return 1
 			except Exception as e:
-				print("Could not connect to provided connection. (" + str(e) + ")")
+				print("Error :: is_reachable :: " + str(e))
 				return 0
 		elif self.source_type == self.TYPE_FILE:
 			#Load from provided path
@@ -82,8 +82,8 @@ class SourceFactory:
 				"""
 
 				"""
-			except RuntimeError:
-				print("Could not connect to provided connection.")
+			except Exception as e:
+				print("Error :: logEvent :: " + str(e))
 			finally:
 				#Cleaning up
 				cursor.close()
@@ -140,7 +140,7 @@ class SourceFactory:
 					""" By default, deny access """
 					can_access = False
 			except Exception as e:
-				print("Could not connect to provided connection. (" + str(e) + ")")
+				print("Error :: get_or_create_client_access_rights :: " + str(e))
 			finally:
 				#Cleaning up
 				if 'cursor' in locals():
@@ -162,14 +162,40 @@ class SourceFactory:
 			cursor = cnxn.cursor()
 			""" Update user info and get it out of 'Default' group """
 			cursor.execute('UPDATE AccessControl.dbo.Member SET Name=\''+ member.firstname + '\',LastName=\'' + member.lastname + '\' WHERE MemberId = ' + member.id)
-			cursor.execute('UPDATE AccessControl.dbo.GroupMember SET GroupId=2 WHERE MemberId = ' + member.id)
+			cursor.execute('UPDATE AccessControl.dbo.GroupMember SET GroupId='+ member.groupId +' WHERE MemberId = ' + member.id)
 
 			cnxn.commit()
-		except:
-			print("Error !")
+		except Exception as e:
+			print("Error :: update_member_info :: " + str(e))
 			pass
 		finally:
 			cnxn.close()
+
+	def get_members_groups(self):
+		groups = []
+		connection_string = self._build_connection_string()
+		try:
+			cnxn = pyodbc.connect(connection_string)
+			cursor = cnxn.cursor()
+			cursor.execute('SELECT TOP 100 GroupId,Description FROM AccessControl.dbo.[Group]')
+
+			"""
+				Return the list of available groups
+			"""
+
+			for row in cursor.fetchall():
+				group = Group(row[0], row[1])
+				groups.append(group)
+		except Exception as e:
+			print("Error :: get_members_groups :: " + str(e))
+		finally:
+			if 'cursor' in locals():
+				#Cleaning up
+				cursor.close()
+				del cursor
+			cnxn.close()
+
+		return groups
 
 	def get_not_enrolled_members(self):
 		not_enrolled_ids = []
@@ -177,7 +203,7 @@ class SourceFactory:
 		try:
 			cnxn = pyodbc.connect(connection_string)
 			cursor = cnxn.cursor()
-			cursor.execute('SELECT MemberId, CardId FROM AccessControl.dbo.viewNotEnrolledMembersId')
+			cursor.execute('SELECT TOP 100 MemberId, CardId FROM AccessControl.dbo.viewNotEnrolledMembersId')
 
 			"""
 				Return the list of not enrolled users
@@ -188,7 +214,7 @@ class SourceFactory:
 				member.token = str(row[1])
 				not_enrolled_ids.append(member)
 		except Exception as e:
-			print("Could not connect to provided connection. (" + str(e) + ")")
+			print("Error :: get_not_enrolled_members :: " + str(e))
 		finally:
 			if 'cursor' in locals():
 				#Cleaning up
@@ -225,7 +251,7 @@ class SourceFactory:
 				else:
 					print("No configuration found for client " +  str(client_id))
 			except:
-				print("Could not connect to provided connection. (" + str(connection_string) + ")")
+				print("Error :: load_device_configuration :: " + str(e))
 			finally:
 				#Cleaning up
 				cursor.close()

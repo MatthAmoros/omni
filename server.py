@@ -55,6 +55,7 @@ def view_enroll():
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
 	settingAccess.parameters = source.get_not_enrolled_members()
+	settingAccess.groups = source.get_members_groups()
 	settings = []
 	settings.append(settingAccess)
 	return render_template('./server/enrollView.html', settings=settings)
@@ -74,6 +75,7 @@ def enroll():
 	member = Member(request.form['Id'])
 	member.lastname = request.form['lastname']
 	member.firstname = request.form['firstname']
+	member.groupId = request.form['groupId']
 
 	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	source.update_member_info(member)
