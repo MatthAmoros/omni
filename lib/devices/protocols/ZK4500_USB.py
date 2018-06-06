@@ -36,6 +36,40 @@ class ZKReader:
 		time.sleep(1)
 		ret = self.dev.ctrl_transfer(REQUEST_TYPE_HOST_TO_DEVICE_CLASS, 0xe1, 0x00, 0x01, None, timeout)
 
+	def read_registers(self):
+		""" Read registers """
+		device_registers = []
+		for i in range(10, 14):
+			ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, i, 1, timeout)
+			device_registers.append(ret)
+
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x98, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x99, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x8c, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x59, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x9c, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x9a, 1, timeout)
+		device_registers.append(ret)
+		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x9b, 1, timeout)
+		device_registers.append(ret)
+
+
+
+		for i in range(59, 89):
+			ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, i, 1, timeout)
+			device_registers.append(ret)
+
+		for i in range(99, 139):
+			ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, i, 1, timeout)
+			device_registers.append(ret)
+
+		self.device_registers = device_registers
+
 	def begin_capture(self):
 		""" Start receiving  """
 
