@@ -48,6 +48,7 @@ TODO
 
 Role : Access controller
   - HID iClass R-640X-300
+  - RC522 Reader
   - [TODO] ZK4500
   - [TODO] Digital Persona URU 4000
 
