@@ -58,8 +58,6 @@ class ZKReader:
 		ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, 0x9b, 1, timeout)
 		device_registers.append(ret)
 
-
-
 		for i in range(59, 89):
 			ret = dev.ctrl_transfer(REQUEST_TYPE_DEVICE_TO_HOST_CLASS, 0xe7, 0x00, i, 1, timeout)
 			device_registers.append(ret)
@@ -70,7 +68,7 @@ class ZKReader:
 
 		self.device_registers = device_registers
 
-	def begin_capture(self):
+	def instant_capture(self):
 		""" Start receiving  """
 
 		""" Capture image """
@@ -93,3 +91,5 @@ class ZKReader:
 			except KeyboardInterrupt:
 				print("Closed")
 				break;
+
+		return frame
