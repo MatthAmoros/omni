@@ -28,21 +28,18 @@
 			<script>
 			// this is the id of the form
 			$("#enroll-{{ member.id }}").submit(function(e) {
-
-					var url = "{{ url_for('enroll') }}"; // the script where you handle the form input.
-
+					var url = "{{ url_for('enroll') }}";
 					$.ajax({
 								 type: "POST",
 								 url: url,
-								 data: $("#enroll-{{ member.id }}").serialize(), // serializes the form's elements.
+								 data: $("#enroll-{{ member.id }}").serialize(),
 								 success: function(data)
 								 {
-										 alert("Member successfully saved."); // show response from the php script.
-										 $("#enroll-{{ member.id }}").remove();
+										 alert("Member successfully saved.");
+										 $("#enroll-{{ member.id }}").remove(); //Hide saved member
 								 }
 							 });
-
-					e.preventDefault(); // avoid to execute the actual submit of the form.
+					e.preventDefault();
 			});
 			</script>
 			{% endfor %}
