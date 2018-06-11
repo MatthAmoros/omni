@@ -48,9 +48,11 @@ TODO
 
 Role : Access controller
   - HID iClass R-640X-300
-  - [TODO] Digital Person
+  - [TODO] ZK4500
+  - [TODO] Digital Persona URU 4000
+
 Role : Energy Manager
- - [TODO]
+  - [TODO]
 
 
 ## Built With
