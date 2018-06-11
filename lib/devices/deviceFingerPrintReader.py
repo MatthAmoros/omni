@@ -30,7 +30,8 @@ class FingerPrintReader(DeviceBase):
 		"""
 			Set action gpio to 0V
 		"""
-		GPIO.setmode(GPIO.BCM)
+		if is_running_on_pi == True:
+			GPIO.setmode(GPIO.BCM)
 
 		"""
 			Blink to show loaded
@@ -53,11 +54,22 @@ class FingerPrintReader(DeviceBase):
 				self.blink_led()
 
 				print("Setting up external vlaidation signal to BCM " + str(self._action_pin_BCM))
-				""" TODO : Reading from usb """
+			""" TODO : Reading from usb """
+			while self.must_stop == False :
+				if self.is_zone_enabled == True:
+					self.is_running = True
+					""" Controller is enable, start reading """
+					#Prevent over-header
+					sleep(1)
+
+		except KeyboardInterrupt:
+			print("Stopped by user")
+		except Exception as e:
+			print("Error :: main_loop :: " + str(e))
 		finally:
 			print("Reading loop stopped")
-			if is_running_on_pi == True and wiegand_reader:
-				wiegand_reader.cancel()
+			if is_running_on_pi == True:
+				print("Stop")
 
 		sleep(1)
 
