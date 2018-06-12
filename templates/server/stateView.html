@@ -10,6 +10,12 @@
 		{% if device.deviceType == 1 %}
 		Type : HID Reader <br/>
 		{% endif %}
+		{% if device.deviceType == 2 %}
+		Type : FingerPrint Reader <br/>
+		{% endif %}
+		{% if device.deviceType == 3 %}
+		Type : Power Meter <br/>
+		{% endif %}
 		Enabled : {{ device.enabled }} <br/>
     </div>
     {% if device.is_in_error %}
@@ -22,7 +28,25 @@
     </div>
     {% endif %}
 		</div>
+		<input type="button" value="Force reload config" id="btnFrceReload-{{ device.clientId }}"/>
   </div>
   <br/>
+	<script>
+	$(document).ready(function() {
+		$('#btnFrceReload-{{ device.clientId }}').click(function() {
+			var url = "http://{{ device.endpoint }}:5555/reloadConfiguration";
+			$.ajax({
+						 type: "POST",
+						 url: url,
+						 data: '',
+						 success: function(data)
+						 {
+								 alert("Reloading in progress...")
+								 location.reload();
+						 }
+					 });
+		});
+	})
+	</script>
   {% endfor %}
   </div>
