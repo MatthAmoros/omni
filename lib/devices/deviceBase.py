@@ -51,7 +51,7 @@ class DeviceBase(object):
 		if len(self.master_url) > 0:
 			r = requests.post(self.master_url + '/report/state', json={"client_id": str(self.client_id), "is_in_error" : str(self.is_in_error), "error_status" : str(self.error_status) })
 			if str(r.status_code) == "200":
-				print("Successfully reported status to server")
+				print("Successfully reported status [" + str(self.error_status) + "] to server")
 			else:
 				print("An error ocurred while reporting status : (server response " + str(r.status_code) + ")")
 		else:
