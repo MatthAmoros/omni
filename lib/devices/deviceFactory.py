@@ -63,17 +63,18 @@ class DeviceFactory:
 					device.master_url = self.master_url
 
 					device.is_in_error = False
-					device.error_status = ""
+					device.error_status = "OK"
 
 					print("Configuration loaded.")
-				except NameError:
-					print("Device type not supported by current platform. Configuration aborted.")
+				except Exception as e:
+					error_message = "Device type not supported by current platform. Configuration aborted. (" + str(e) + ")"
+					print(error_message)
 					device.zone_id = 1
 
 					device.is_zone_enabled = False
 					device.is_zone_day_time_only = False
 					device.is_in_error = True
-					device.error_status = "Device type not supported by current platform"
+					device.error_status = error_message
 			else:
 				print("Configuration loading failed. (Server response : " + str(r.status_code) + ")")
 				device.zone_id = 1
