@@ -5,6 +5,7 @@ query_styles = Blueprint('query_styles', __name__, template_folder='templates')
 view_index = Blueprint('view_index', __name__, template_folder='templates')
 edp_is_alive = Blueprint('edp_is_alive', __name__, template_folder='templates')
 edp_confirm_adopt = Blueprint('edp_confirm_adopt', __name__, template_folder='templates')
+view_access_management = Blueprint('view_access_management', __name__, template_folder='templates')
 
 """ Ressources """
 #Javascript directory
@@ -22,6 +23,11 @@ def send_css(path):
 @view_index.route("/")
 def index():
 	return render_template('./server/index.html')
+
+#View index
+@view_access_management.route("/accessManagementView")
+def index():
+	return render_template('./server/accessManagement/accessManagementView.html')
 
 """ Communication endpoints """
 @edp_is_alive.route("/isAlive")

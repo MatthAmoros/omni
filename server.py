@@ -12,7 +12,7 @@ import json
 from threading import Thread
 """ Flask imports """
 from flask import Flask, request, send_from_directory, render_template, jsonify, request, Blueprint
-from web.router import query_js, query_styles, view_index, edp_is_alive, edp_confirm_adopt
+from web.router import query_js, query_styles, view_index, edp_is_alive, edp_confirm_adopt, view_access_management
 """ Business import """
 from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
@@ -33,6 +33,7 @@ app.register_blueprint(query_styles)
 app.register_blueprint(view_index)
 app.register_blueprint(edp_confirm_adopt)
 app.register_blueprint(edp_is_alive)
+app.register_blueprint(view_access_management)
 
 """ Flask routing definition """
 """ TODO : Put everything in the "router.py" file """
@@ -54,14 +55,22 @@ def view_enroll():
 	settings.append(settingAccess)
 	return render_template('./server/accessManagement/enrollView.html', settings=settings)
 
+#View group
+@app.route("/groupView")
+def view_groups():
+	return render_template('./server/accessManagement/groupView.html')
+
 #View settings
 @app.route("/settingsView")
 def view_settings():
 	""" Check devices and load settings """
 	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	""" TODO : Return settings according to devices types """
 	settingAccess = ServerSetting('enroll')
+
 	settings = []
 	settings.append(settingAccess)
+
 	return render_template('./server/common/settingsView.html', settings=settings)
 
 @app.route("/enroll", methods=['POST'])
