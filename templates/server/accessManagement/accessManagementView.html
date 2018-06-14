@@ -1,0 +1,25 @@
+<div id="mySidenav" class="sidenav">
+	<div class="sidenavOnglet" onclick="openNav();" />
+	<div>
+	  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	  <a href="#" onclick="$('#view').load('./enrollView'); closeNav();">Enroll</a>
+	  <a href="#">Users</a>
+	  <a href="#" onclick="$('#view').load('./groupView'); closeNav();">Groups</a>
+	  <a href="#">History</a>
+  </div>
+</div>
+
+<script>
+/* Set the width of the side navigation to 250px */
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+}
+
+/* Set the width of the side navigation to 20 */
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "20px";
+}
+</script>
+
+<div id="view">
+</div>
