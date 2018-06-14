@@ -6,17 +6,14 @@ clients configuration and validate credentials.
 It can be run on any platform with python and pip requierments installed
 """
 __version__ = '0.1'
-
+"""  """
 from configparser import ConfigParser
 import json
 from threading import Thread
-
-from flask import Flask
-from flask import request
-from flask import jsonify
-from flask import render_template
-from flask import Flask, request, send_from_directory
-
+""" Flask imports """
+from flask import Flask, request, send_from_directory, render_template, jsonify, request, Blueprint
+from web.router import query_js, query_styles, view_index, edp_is_alive, edp_confirm_adopt
+""" Business import """
 from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
 from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus
@@ -27,26 +24,23 @@ else:
     CONNECTION_FILE_PATH = "/app/omni/cfg/connectionString.sql" #Default
 
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
-
 connected_devices = []
 app = Flask(__name__, static_url_path='')
 
-#Flask definitions
-""" Front end """
-#Javascript directory
-@app.route('/js/<path:path>')
-def send_js(path):
-    return send_from_directory('./templates/static/js', path)
+""" Loading static routing blueprints (static pages, ressources queries) """
+app.register_blueprint(query_js)
+app.register_blueprint(query_styles)
+app.register_blueprint(view_index)
+app.register_blueprint(edp_confirm_adopt)
+app.register_blueprint(edp_is_alive)
 
-#CSS directory
-@app.route('/styles/<path:path>')
-def send_css(path):
-    return send_from_directory('./templates/static/styles', path)
+""" Flask routing definition """
+""" TODO : Put everything in the "router.py" file """
 
 #View state
 @app.route("/stateView")
 def view_state():
-	return render_template('./server/stateView.html', devices=connected_devices)
+	return render_template('./server/system/stateView.html', devices=connected_devices)
 
 #View enroll
 @app.route("/enrollView")
@@ -58,7 +52,7 @@ def view_enroll():
 	settingAccess.groups = source.get_members_groups()
 	settings = []
 	settings.append(settingAccess)
-	return render_template('./server/enrollView.html', settings=settings)
+	return render_template('./server/accessManagement/enrollView.html', settings=settings)
 
 #View settings
 @app.route("/settingsView")
@@ -68,7 +62,7 @@ def view_settings():
 	settingAccess = ServerSetting('enroll')
 	settings = []
 	settings.append(settingAccess)
-	return render_template('./server/settingsView.html', settings=settings)
+	return render_template('./server/common/settingsView.html', settings=settings)
 
 @app.route("/enroll", methods=['POST'])
 def enroll():
@@ -81,25 +75,6 @@ def enroll():
 	source.update_member_info(member)
 
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-
-#Main view
-@app.route("/main")
-def view_main():
-	return "main"
-
-#View index
-@app.route("/")
-def view_index():
-	return render_template('./server/index.html')
-
-""" Communications endpoints """
-@app.route("/isAlive")
-def is_alive():
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-
-@app.route("/confirmAdopt/<clientId>")
-def confirm_adopt(clientId):
-    return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/report/state", methods=['POST'])
 def report_state():

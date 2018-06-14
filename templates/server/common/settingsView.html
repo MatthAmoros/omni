@@ -1,0 +1,24 @@
+<div>
+	<br/> </br>
+
+	 {% for setting in settings %}
+		 {% if setting.type == 'enroll' %}
+		  <div class="card" style="width: 18rem;">
+				<div class="alert alert-primary" role="alert">
+		 <a href="#" onclick="$('#main').load('./enrollView');"> Enroll users</a>
+				</div>
+		 <br />
+		  </div>
+			<br />
+		 {% endif %}
+		 {% if setting.type == 'currentMeter' %}
+		 <br />
+		  <div class="card" style="width: 18rem;">
+				<div class="alert alert-primary" role="alert">
+		 <a href="#"> Set current meters</a>
+				</div>
+		  </div>
+		 <br />
+		 {% endif %}
+	 {% endfor %}
+<div>
