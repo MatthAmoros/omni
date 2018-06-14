@@ -1,8 +1,9 @@
 """
 This class is shared between clients and servers to exchange
-configuration information
+configuration information. They are not meant to have any logics,
+but formalize a common interface.
 """
-__all__ = ['DeviceConfiguration', 'Member', 'ServerSetting']
+__all__ = ['DeviceConfiguration', 'DeviceStatus', 'Member', 'ServerSetting']
 __version__ = '0.1'
 
 class DeviceConfiguration:
