@@ -14,7 +14,7 @@ else:
 	import pyodbc  #For MS SQL connection, via odbc
 
 from .common import Member, Group, DeviceConfiguration
-class SourceFactory:
+class DataSource:
 	#Sources enum
 	TYPE_DATABASE = "DB"
 	TYPE_WEB = "WB"
@@ -96,6 +96,35 @@ class SourceFactory:
 			#Load from provided url
 			print("Send to URL")
 
+	def get_member_associated_to_credential(self, credential):
+		if self.source_type == self.TYPE_DATABASE:
+			connection_string = self._build_connection_string()
+			try:
+				cnxn = pyodbc.connect(connection_string)
+				cursor = cnxn.cursor()
+				""" Get member id associated to provided token """
+				cursor.execute('SELECT TOP 1 MemberId FROM CredentialMember WHERE Token =' + str(credential))
+				row = cursor.fetchone()
+				if row is not None:
+					""" Get member associated to previsouly found id """
+					cursor.execute('SELECT TOP 1 MemberId, Name, LastName FROM Member WHERE MemberId =' + str(row[0]))
+					row = cursor.fetchone()
+					if row is not None:
+						#Cleaning up
+						if 'cursor' in locals():
+							cursor.close()
+							del cursor
+						return row[0], str(row[1]) + " " + str(row[2])
+			except Exception as e:
+				print("Error :: get_member_associated_to_credential :: " + str(e))
+			""" In case of error or not found """
+			#Cleaning up
+			if 'cursor' in locals():
+				cursor.close()
+				del cursor
+			return
+
+
 	def get_or_create_client_access_rights(self, card_id, zone_id):
 		""" Load access rights for specified client / zone """
 		can_access = False
@@ -104,13 +133,13 @@ class SourceFactory:
 			try:
 				cnxn = pyodbc.connect(connection_string)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 MemberId, Name, LastName FROM Member WHERE CardId =' + str(card_id))
 
-				row = cursor.fetchone()
-				if row is not None:
+				m_id, m_name = self.get_member_associated_to_credential(card_id)
+
+				if m_id is not None:
 					""" This card is registered, get access rights """
-					member_id = row[0]
-					member_name = str(row[1]) + " " + str(row[2])
+					member_id = m_id
+					member_name = m_name
 					cursor.execute('SELECT TOP 1 GroupId FROM GroupMember WHERE MemberId =' + str(member_id))
 					row = cursor.fetchone()
 
@@ -129,6 +158,7 @@ class SourceFactory:
 				else:
 					""" This card is not registered, create new member """
 					cursor.execute('INSERT INTO Member(CardId) VALUES (' + str(card_id) + ')' )
+					cursor.execute('INSERT INTO CredentialMember(Token) VALUES (' + str(card_id) + ')' )
 					cnxn.commit()
 					cursor.execute('SELECT TOP 1 MemberId FROM Member WHERE CardId =' + str(card_id))
 					""" Retrieve memberId """
