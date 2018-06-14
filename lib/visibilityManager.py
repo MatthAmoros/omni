@@ -15,7 +15,7 @@ class VisibilityManager:
 		self.socket = socket(AF_INET, SOCK_DGRAM)
 		self.socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 		self.socket.setsockopt(SOL_SOCKET, SO_BROADCAST, 1)
-		self.mustStop = False
+		self.must_stop = False
 		self.DISCOVERY_MESSAGE = bytes(str("42 !").encode('utf-8'))
 
 	def send_discovery_datagram(self, port=54545):
@@ -29,7 +29,7 @@ class VisibilityManager:
 		self.socket.settimeout(1)
 		print("Starting up discovery on port " + str(port))
 
-		while self.mustStop == False:
+		while self.must_stop == False:
 			try:
 				data, address = self.socket.recvfrom(4096)
 

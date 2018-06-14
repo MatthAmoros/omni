@@ -17,7 +17,7 @@ from flask import jsonify
 from flask import render_template
 from flask import Flask, request, send_from_directory
 
-from lib.sourceFactory import SourceFactory
+from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
 from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus
 
@@ -52,7 +52,7 @@ def view_state():
 @app.route("/enrollView")
 def view_enroll():
 	""" Check devices and load settings """
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
 	settingAccess.parameters = source.get_not_enrolled_members()
 	settingAccess.groups = source.get_members_groups()
@@ -64,7 +64,7 @@ def view_enroll():
 @app.route("/settingsView")
 def view_settings():
 	""" Check devices and load settings """
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	settingAccess = ServerSetting('enroll')
 	settings = []
 	settings.append(settingAccess)
@@ -77,7 +77,7 @@ def enroll():
 	member.firstname = request.form['firstname']
 	member.groupId = request.form['groupId']
 
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	source.update_member_info(member)
 
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
@@ -114,7 +114,7 @@ def report_state():
 
 @app.route("/accessRule/<zone>/<credential>", methods=['GET'])
 def validate_credential(zone, credential):
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	canAccess = source.get_or_create_client_access_rights(credential, zone)
 
 	if canAccess:
@@ -139,7 +139,7 @@ def configuration(client_id):
 	return jsonify(configuration.serialize()), 200, {'ContentType':'application/json'}
 
 def get_configuration_by_client_id(client_id):
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	conf = source.load_device_configuration(client_id)
 
 	""" Update list """
@@ -153,7 +153,7 @@ def get_configuration_by_client_id(client_id):
 	return conf
 
 def load_server_configuration():
-	source = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	conf = source.load_server_configuration()
 
 def pre_start_diagnose():
@@ -175,7 +175,7 @@ def pre_start_diagnose():
 	print(" >> Configuration OK")
 
 	print("2) Trying to reach datasource...")
-	sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
+	sourceDbConnection = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	dataSourceOk = sourceDbConnection.is_reachable()
 	if dataSourceOk == 1:
 		print(" >> Datasource OK")
@@ -195,6 +195,7 @@ if __name__ == "__main__":
 
 	print("Start web server...")
 	app.run(host='0.0.0.0', port=5000)
-
+	print("Web server stopped.")
 	visibility_manager.must_stop = True
+	print("Waiting for secondaries threads")
 	discovery_thread.join()
