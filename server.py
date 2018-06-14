@@ -9,6 +9,7 @@ __version__ = '0.1'
 """  """
 from configparser import ConfigParser
 import json
+import time
 from threading import Thread
 """ Flask imports """
 from flask import Flask, request, send_from_directory, render_template, jsonify, request, Blueprint
@@ -26,6 +27,7 @@ else:
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
 connected_devices = []
 app = Flask(__name__, static_url_path='')
+start_time = time.time()
 
 """ Loading static routing blueprints (static pages, ressources queries) """
 app.register_blueprint(query_js)
@@ -41,7 +43,7 @@ app.register_blueprint(view_access_management)
 #View state
 @app.route("/stateView")
 def view_state():
-	return render_template('./server/system/stateView.html', devices=connected_devices)
+	return render_template('./server/system/stateView.html', devices=connected_devices, uptime=get_uptime())
 
 #View enroll
 @app.route("/enrollView")
@@ -135,6 +137,12 @@ def get_configuration_by_client_id(client_id):
 	connected_devices.append(conf)
 
 	return conf
+
+def get_uptime():
+	from datetime import timedelta
+	uptime_string = str(timedelta(seconds = time.time() - start_time))
+
+	return uptime_string
 
 def load_server_configuration():
 	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
