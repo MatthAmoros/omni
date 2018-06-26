@@ -6,25 +6,29 @@ clients configuration and validate credentials.
 It can be run on any platform with python and pip requierments installed
 """
 __version__ = '0.1'
+
 """  """
 from configparser import ConfigParser
 import json
 import time
 from threading import Thread
+
 """ Flask imports """
 from flask import Flask, request, send_from_directory, render_template, jsonify, request, Blueprint
 from web.router import query_js, query_styles, view_index, edp_is_alive, edp_confirm_adopt, view_access_management
+
 """ Business import """
 from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
 from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus
 
+""" When called by external WSGI server """
 if __name__ == "__main__":
     CONNECTION_FILE_PATH = "./cfg/connectionString.sql" #Default
 else:
     CONNECTION_FILE_PATH = "/app/omni/cfg/connectionString.sql" #Default
 
-SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
+SERVER_SECRET = "DaSecretVectorUsedToHashCommunication" #Default
 connected_devices = []
 app = Flask(__name__, static_url_path='')
 start_time = time.time()
