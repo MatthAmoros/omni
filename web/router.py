@@ -1,4 +1,5 @@
 from flask import Flask, request, send_from_directory, render_template, jsonify, request, Blueprint
+import json
 
 query_js = Blueprint('query_js', __name__, template_folder='templates')
 query_styles = Blueprint('query_styles', __name__, template_folder='templates')
