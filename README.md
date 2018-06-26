@@ -1,6 +1,6 @@
 # Omni
 
-Omni aims to be a centralized Factory 4.0 controller.
+Omni aims to be a centralized Industry 4.0 controller.
 
 ## Getting Started
 
@@ -47,10 +47,12 @@ TODO
 ## Supported devices / roles
 
 Role : Access controller
-  - HID iClass R-640X-300
-  - RC522 Reader
-  - [TODO] ZK4500
-  - [TODO] Digital Persona URU 4000
+  - HID iClass R-640X-300 Card Reader
+  - RC522 Card Reader
+	-[TESTING] ZFM 20 (Adafruit sensor)
+  - [TODO] ZK4500 Fingerprint Reader
+  - [TODO] Digital Persona URU 4000 Fingerprint Reader
+	- [TODO] Fprint Fingerprint reader library compatibility
 
 Role : Energy Manager
   - [TODO]
