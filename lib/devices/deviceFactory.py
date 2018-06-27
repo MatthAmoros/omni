@@ -11,7 +11,8 @@ if proc == "ARM":
 	""" Loading RaspberryPi only devices """
 	from .deviceHIDReader import HIDReader
 
-from .deviceFingerPrintReader import FingerPrintReader
+from .deviceZK45FingerPrintReader import ZK45Reader
+from .deviceZFM20FingerPrintReader import ZFM20Reader
 from .deviceBase import DeviceBase
 import requests
 import json
@@ -44,8 +45,11 @@ class DeviceFactory:
 						""" HID Reader """
 						device = HIDReader(self.name)
 					if config['deviceType'] == 2:
-						""" FingerPrint Reader """
-						device = FingerPrintReader(self.name)
+						""" ZK45Reader """
+						device = ZK45Reader(self.name)
+					if config['deviceType'] == 3:
+						""" ZFM20Reader """
+						device = ZFM20Reader(self.name)
 					elif config['deviceType'] == 0:
 						""" None """
 						device = DeviceBase(self.name)

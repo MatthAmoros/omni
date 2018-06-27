@@ -3,7 +3,7 @@ import struct
 import time
 
 """
-Main source :
+Initial work :
 Copyright (C) 2015 Bastian Raschke <bastian.raschke@posteo.de>
 All rights reserved.
 
@@ -11,6 +11,8 @@ All rights reserved.
 
 Changes :
 __enter__ / __exit__ / upload_image
+enroll_user / match_fingerprint
+@author: Matthieu AMOROS
 """
 
 """ Converters """
@@ -29,7 +31,7 @@ def shiftLeft(n, x):
 	return (n << x)
 
 
-## Baotou start byte
+## Start byte
 FINGERPRINT_STARTCODE = 0xEF01
 
 ## Packet identification
@@ -121,6 +123,8 @@ FINGERPRINT_PACKETRESPONSEFAIL = 0x0E
 FINGERPRINT_ERROR_TIMEOUT = 0xFF
 FINGERPRINT_ERROR_BADPACKET = 0xFE
 
+## Constants
+FINGERPRINT_ACCURACY_MINI_SCORE = 80
 
 class ZFM20_Device(object):
 	"""
@@ -1212,25 +1216,85 @@ class ZFM20_Device(object):
 
 		return completePayload
 
-if __name__ == "__main__":
-	with ZFM20_Device() as device:
-		if device.verify_password() == True:
-			## Waiting for finger
-			while (device.read_image() == False):
-				time.sleep(1)
+	def enroll_user(self, capture_count=4):
+		"""
+		Take a picture, get characterics and repeat n times
+		@param capture_count : How many times do we capture the fingerprint
 
+		@return array [capture_index][characterics]
+		"""
+		user_characteristics = []
+		captured = 0
+
+		#Check connection
+		if self.verify_password() == True:
+			while(captured < capture_count):
+				## Waiting for finger
+				print("Waiting for finger")
+				while (self.read_image() == False):
+					time.sleep(2)
+
+				## Converts read image to characteristics and stores it in charbuffer 2
+				self.convert_image(0x02)
+
+				## Download characteristics
+				characteristics = self.download_characteristics(0x02)
+
+				## Append to user characterics
+				user_characteristics.append((captured, characteristics))
+				captured += 1
+
+		return user_characteristics
+
+	def match_fingerprint_characteristics(self, characteristics = [0]):
+		"""
+		Take a picture of user finger and send matching characteristics
+		@return boolean : True when characteristics match
+		"""
+		## Check connection
+		if self.verify_password() == True:
+			## Upload characteristics
+			if self.upload_characteristics(charBufferNumber = 0x01, characteristicsData = characteristics) == True:
+				## Waiting for finger
+				print("Waiting for finger")
+				while (self.read_image() == False):
+					time.sleep(2)
+
+				## Converts read image to characteristics and stores it in charbuffer 2
+				self.convert_image(0x02)
+
+				score = 0
+
+				try:
+					score = self.compare_characteristics()
+				except:
+					pass
+
+				return (score >= FINGERPRINT_ACCURACY_MINI_SCORE)
+
+	def activate_fingerprint_control(self):
+		"""
+			Try to read a fingerprint and extract characteristics
+			@return characteristics or 0x00 if nothing was read
+		"""
+		if (self.read_image() == True):
 			## Converts read image to characteristics and stores it in charbuffer 2
-			device.convert_image(0x02)
+			self.convert_image(0x02)
 
 			## Download characteristics
-			characteristics = device.download_characteristics(0x02)
+			characteristics = self.download_characteristics(0x02)
 
-			## Compares the charbuffers and creates a template
-			device.create_template()
+			return characteristics
+		else:
+			return 0x00
 
-			## Gets new position number (the counting starts at 0, so we do not need to increment)
-			positionNumber = device.get_template_count()
 
-			## Saves template at new position number
-			if ( device.store_template(positionNumber) == True ):
-				print('Enrolled')
+if __name__ == "__main__":
+	with ZFM20_Device() as device:
+		user_chars = device.enroll_user()
+
+		if(len(user_chars) > 0):
+			print("Enrolled")
+			print(user_chars)
+		else:
+			print("Error")

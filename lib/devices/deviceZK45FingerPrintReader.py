@@ -20,7 +20,7 @@ except Exception as e:
 	is_running_on_pi = False
 	pass
 
-class FingerPrintReader(DeviceBase):
+class ZK45Reader(DeviceBase):
 	def __init__(self, name, action_pin_BCM=24, led_pin_BCM=23):
 		DeviceBase.__init__(self, name)
 
