@@ -169,7 +169,7 @@ class ZFM20_Device(object):
 		self.__password = password
 
 		## Initialize PySerial connection
-		self.__serial = serial.Serial(port = port, baudrate = baudRate, bytesize = serial.EIGHTBITS, timeout = 2)
+		self.__serial = serial.Serial(port = port, baudrate = baudRate, bytesize = serial.EIGHTBITS, timeout = 5)
 
 		if ( self.__serial.isOpen() == True ):
 			self.__serial.close()

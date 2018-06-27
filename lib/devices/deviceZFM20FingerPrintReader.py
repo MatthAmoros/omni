@@ -73,7 +73,7 @@ class ZFM20Reader(DeviceBase):
 							""" We read something """
 							if result is not None and len(result) > 1 :
 								self._on_data_read(len(result), result)
-							sleep(1)
+							sleep(2)
 				else:
 					print("Unable to initialize ZFM20 reader")
 
@@ -130,9 +130,9 @@ class ZFM20Reader(DeviceBase):
 			return -1
 
 		if len(self.master_url) > 0:
-			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
+			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id))
 			try:
-				r = requests.get(self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
+				r = requests.get(self.master_url + '/accessRule/' + str(self.zone_id))
 				if r.status_code == 200:
 					return 1
 				else:
