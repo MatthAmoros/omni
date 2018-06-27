@@ -65,7 +65,11 @@ class ZFM20Reader(DeviceBase):
 							self.is_running = True
 							""" Controller is enable, start reading """
 							#Prevent over-header
-							result = device.activate_fingerprint_control()
+							try:
+								result = device.activate_fingerprint_control()
+							except:
+								## Only interrupt on device stopped
+								pass
 							""" We read something """
 							if result is not None and len(result) > 1 :
 								self._on_data_read(len(result), result)
