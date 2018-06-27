@@ -47,12 +47,12 @@ TODO
 ## Supported devices / roles
 
 Role : Access controller
-  - HID iClass R-640X-300 Card Reader
-  - RC522 Card Reader
-	-[TESTING] ZFM 20 (Adafruit sensor)
-  - [TODO] ZK4500 Fingerprint Reader
+  - [OK] HID iClass R-640X-300 Card Reader
+  - [OK] RC522 Card Reader
+  - [TESTING] ZFM 20 (Adafruit sensor) (Currently testing)
+  - [HELP] ZK4500 Fingerprint Reader (Image seems to be encrypted)
   - [TODO] Digital Persona URU 4000 Fingerprint Reader
-	- [TODO] Fprint Fingerprint reader library compatibility
+  - [TODO] Fprint Fingerprint reader library compatibility
 
 Role : Energy Manager
   - [TODO]
