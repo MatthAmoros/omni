@@ -6,7 +6,7 @@ __all__ = ['FingerPrintReader']
 __version__ = '0.1'
 
 from .deviceBase import DeviceBase
-from protocols.ZFM20_Device import ZFM20_Device
+from .protocols.ZFM20_Device import ZFM20_Device
 from time import sleep
 import requests
 import json
