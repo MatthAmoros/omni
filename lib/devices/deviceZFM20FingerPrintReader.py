@@ -123,16 +123,16 @@ class ZFM20Reader(DeviceBase):
 
 		self.must_stop = True
 
-	def validate_credential(self, card_id, secret):
+	def validate_credential(self, characteristics, secret):
 		""" Validates provided credentials against master's db """
 		if not self.is_configuration_loaded:
 			print("No configuration loaded")
 			return -1
 
 		if len(self.master_url) > 0:
-			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id))
+			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id) + '/characteristics/token_data')
 			try:
-				r = requests.get(self.master_url + '/accessRule/' + str(self.zone_id))
+				r = requests.post(self.master_url + '/accessRule/' + str(self.zone_id) + '/characteristics/token_data', json={"characteristics" : characteristics})
 				if r.status_code == 200:
 					return 1
 				else:

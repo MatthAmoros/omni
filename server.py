@@ -102,15 +102,31 @@ def report_state():
 			break
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
-@app.route("/accessRule/<zone>/<credential>", methods=['GET'])
+@app.route("/accessRule/<zone>/token/<credential>", methods=['GET'])
 def validate_credential(zone, credential):
+	"""
+	Token is already calculated
+	"""
 	source = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
+
 	canAccess = source.get_or_create_client_access_rights(credential, zone)
 
 	if canAccess:
 		return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 	else:
 		return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
+
+@app.route("/accessRule/<zone>/<token_type>/token_data", methods=['POST'])
+def report_state(zone, token_type):
+	data = request.data
+	data = json.loads(data)
+
+	if token_type == 'characteristics':
+		print(str(data))
+	else:
+		return json.dumps({'success':False}), 404, {'ContentType':'application/json'}
+
+	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
 
 @app.route("/configuration/<client_id>")
 def configuration(client_id):
