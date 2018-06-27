@@ -47,7 +47,7 @@ class DeviceFactory:
 					if config['deviceType'] == 2:
 						""" ZK45Reader """
 						device = ZK45Reader(self.name)
-					if config['deviceType'] == 3:
+					if config['deviceType'] == 4:
 						""" ZFM20Reader """
 						device = ZFM20Reader(self.name)
 					elif config['deviceType'] == 0:
