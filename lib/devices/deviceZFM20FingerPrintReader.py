@@ -67,7 +67,7 @@ class ZFM20Reader(DeviceBase):
 							#Prevent over-header
 							result = device.activate_fingerprint_control()
 							""" We read something """
-							if len(result) > 1 :
+							if result is not None and len(result) > 1 :
 								self._on_data_read(len(result), result)
 							sleep(1)
 				else:

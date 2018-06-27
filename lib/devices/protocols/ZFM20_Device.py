@@ -1286,7 +1286,7 @@ class ZFM20_Device(object):
 
 			return characteristics
 		else:
-			return 0x00
+			return None
 
 
 if __name__ == "__main__":
