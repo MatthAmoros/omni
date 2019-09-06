@@ -75,12 +75,14 @@ class IOEcho(DeviceBase):
 		if is_running_on_pi == True:
 			try:
 				""" Send GPIO signal to open the door """
-				self.echo_signal_to_target(self.pin_and_label[gpio]['label'])
+				for pin_and_label in self.pin_and_label_matrix:
+					if pin_and_label['pin'] == gpio:
+						self.echo_signal_to_target(pin_and_label['label'])
 			except RuntimeError:
 				pass
 
-	def echo_signal_to_target(self):
-		print("Sending signal to target")
+	def echo_signal_to_target(self, signal):
+		print("Sending " + str(signal) + " signal to target")
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
