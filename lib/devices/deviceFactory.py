@@ -53,10 +53,11 @@ class DeviceFactory:
 						device = ZFM20Reader(self.name)
 					if config['deviceType'] == 5:
 						""" IOEcho """
-						device = IOEcho(self.name)
+						print(str(config))
+						device = IOEcho(name=self.name, pin_and_label_matrix=config['specific_configuration'])
 					elif config['deviceType'] == 0:
 						""" None """
-						device = DeviceBase(self.name)
+						device = DeviceBase(name=self.name)
 					else:
 						""" Disable """
 						device = DeviceBase(self.name)
