@@ -29,21 +29,21 @@ class IOEcho(DeviceBase):
 			"""
 				Set pin numbering mode
 			"""
-			GPIO.setmode(GPIO.BCM)
+			GPIO.setmode(GPIO.BOARD)
 
 			"""
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 2, 'label': 'S011', 'value': '0'},
-				{'pin': 3, 'label': 'S012', 'value': '0'},
-				{'pin': 4, 'label': 'S033', 'value': '0'},
-				{'pin': 14, 'label': 'S021', 'value': '0'},
-				{'pin': 15, 'label': 'S022', 'value': '0'},
-				{'pin': 18, 'label': 'S023', 'value': '0'},
-				{'pin': 10, 'label': 'S031', 'value': '0'},
-				{'pin': 9, 'label': 'S032', 'value': '0'},
-				{'pin': 11, 'label': 'S033', 'value': '0'}
+				{'pin': 3, 'label': 'S011', 'value': '0'},
+				{'pin': 5, 'label': 'S012', 'value': '0'},
+				{'pin': 7, 'label': 'S033', 'value': '0'},
+				{'pin': 11, 'label': 'S021', 'value': '0'},
+				{'pin': 13, 'label': 'S022', 'value': '0'},
+				{'pin': 15, 'label': 'S023', 'value': '0'},
+				{'pin': 19, 'label': 'S031', 'value': '0'},
+				{'pin': 21, 'label': 'S032', 'value': '0'},
+				{'pin': 23, 'label': 'S033', 'value': '0'}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
