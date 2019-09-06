@@ -3,7 +3,7 @@
 	Stray clients call 'send_discovery_datagram' to broadcast an UDP message.
 	Servers listen with 'listen_for_discovery_datagram' for the same message and adopt captured clients
 """
-__all__ = ['DeviceFactory']
+__all__ = ['VisibilityManager']
 __version__ = '0.1'
 
 from socket import *
@@ -32,12 +32,10 @@ class VisibilityManager:
 		while self.must_stop == False:
 			try:
 				data, address = self.socket.recvfrom(4096)
-
 				if data == self.DISCOVERY_MESSAGE:
 					""" Client found """
 					client_adoption_endpoint = 'http://' + str(address[0]) + ':5555/adopt'
 					print("Client found at " + str(client_adoption_endpoint))
-
 					try:
 						r = requests.post(client_adoption_endpoint, data = {'master':''})
 					except requests.exceptions.ConnectionError:
