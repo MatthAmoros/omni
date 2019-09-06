@@ -53,8 +53,7 @@ class DeviceFactory:
 						device = ZFM20Reader(self.name)
 					if config['deviceType'] == 5:
 						""" IOEcho """
-						print(str(config))
-						device = IOEcho(name=self.name, pin_and_label_matrix=config['specific_configuration'])
+						device = IOEcho(name=self.name, pin_and_label_matrix='')
 					elif config['deviceType'] == 0:
 						""" None """
 						device = DeviceBase(name=self.name)
@@ -73,6 +72,7 @@ class DeviceFactory:
 
 					device.is_in_error = False
 					device.error_status = "OK"
+					device.type = config['deviceType']
 
 					print("Configuration loaded.")
 				except Exception as e:
