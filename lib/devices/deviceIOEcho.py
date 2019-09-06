@@ -19,6 +19,7 @@ except RuntimeError:
 	pass
 
 class IOEcho(DeviceBase):
+	pin_and_label_matrix = ''
 	def __init__(self, name, pin_and_label_matrix):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
@@ -34,15 +35,15 @@ class IOEcho(DeviceBase):
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 2, 'label': 'S011'},
-				{'pin': 3, 'label': 'S012'},
-				{'pin': 4, 'label': 'S033'},
-				{'pin': 14, 'label': 'S021'},
-				{'pin': 15, 'label': 'S022'},
-				{'pin': 18, 'label': 'S023'},
-				{'pin': 10, 'label': 'S031'},
-				{'pin': 9, 'label': 'S032'},
-				{'pin': 11, 'label': 'S033'}
+				{'pin': 2, 'label': 'S011', 'value': '0'},
+				{'pin': 3, 'label': 'S012', 'value': '0'},
+				{'pin': 4, 'label': 'S033', 'value': '0'},
+				{'pin': 14, 'label': 'S021', 'value': '0'},
+				{'pin': 15, 'label': 'S022', 'value': '0'},
+				{'pin': 18, 'label': 'S023', 'value': '0'},
+				{'pin': 10, 'label': 'S031', 'value': '0'},
+				{'pin': 9, 'label': 'S032', 'value': '0'},
+				{'pin': 11, 'label': 'S033', 'value': '0'}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
@@ -72,6 +73,13 @@ class IOEcho(DeviceBase):
 			print("Reading loop stopped")
 
 		sleep(1)
+
+
+	def get_status(self):
+		for pin_and_label in self.pin_and_label_matrix:
+			pin_and_label['value'] = GPIO.input(pin_and_label['pin'])
+
+		return str(pin_and_label_matrix)
 
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:

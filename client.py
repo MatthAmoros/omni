@@ -35,10 +35,10 @@ device_factory = DeviceFactory(node_id)
 app = Flask(__name__)
 
 # ==== Flask definitions ====
-@app.route("/")
-def index():
+@app.route("/GPIO", methods=['GET'])
+def get_gpio():
 	""" Used to check if client is online """
-	return str(doorCtrl),"200"
+	return str(device_object.get_status()),"200"
 
 @app.route("/shutdown")
 def shutdown():

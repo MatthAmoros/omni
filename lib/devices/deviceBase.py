@@ -62,3 +62,6 @@ class DeviceBase(object):
 
 	def stop_loop(self):
 		raise NotImplementedError('main_loop must be overloaded')
+
+	def get_status(self):
+		raise NotImplementedError('get_status must be overloaded')
