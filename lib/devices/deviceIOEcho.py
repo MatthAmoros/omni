@@ -48,7 +48,7 @@ class IOEcho(DeviceBase):
 
 			for pin_and_label in self.pin_and_label_matrix:
 				""" Should add a physical pull down """
-				#GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+				GPIO.setup(pin_and_label['pin'], GPIO.IN)
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
