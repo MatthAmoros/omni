@@ -3,7 +3,7 @@
 This is the client, it starts a web server to handle basic communication
 with the master then runs a device_loop that while act depending on loaded configuration
 """
-__version__ = '0.1'
+__version__ = '0.2'
 
 import sys
 import requests
@@ -98,13 +98,11 @@ def adopt():
 	else:
 		return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
-
 @app.route('/adopt', methods=['GET'])
 def get_master():
 	""" Returns current master """
 	if request.method == 'GET':
 		return device_factory.master_url
-
 
 @app.route('/state', methods=['GET'])
 def get_status():
@@ -124,7 +122,7 @@ def start_web_server():
 	print("Web server stopped")
 
 def start_device_loop():
-	""" Starts RFID reading loop """
+	""" Starts device loop """
 	try:
 		global adopted
 		global device_object
@@ -133,7 +131,6 @@ def start_device_loop():
 
 		while application_stopping == False:
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
-				run_worker = False
 				print("Initialize main device loop on thread " + str(threading.get_ident()) + ", device type " + str(device_object.type))
 				if device_object.type != "NONE":
 					device_object.run()
@@ -142,8 +139,6 @@ def start_device_loop():
 				""" Run discovery mode """
 				print("Broadcasting discovery message")
 				visibility_manager.send_discovery_datagram()
-
-			sleep(5)
 	finally:
 		print("Gracefully closed device loop")
 
@@ -190,7 +185,6 @@ def main():
 
 	web_server_thread.join()
 
-	sleep(1)
 	#Join threads
 	print("Done.")
 
