@@ -262,7 +262,7 @@ class DataSource:
 			try:
 				cnxn = pyodbc.connect(connection_string)
 				cursor = cnxn.cursor()
-				cursor.execute('SELECT TOP 1 ZoneId, Enabled, ControllerTypeId, ControllerDescription, SpecificConfiguration FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(client_id))
+				cursor.execute('SELECT TOP 1 ZoneId, Enabled, ControllerTypeId, ControllerDescription FROM AccessControl.dbo.Controller WHERE ControllerCode =' + str(client_id))
 
 				row = cursor.fetchone()
 
@@ -272,7 +272,6 @@ class DataSource:
 					config.enabled = row[1]
 					config.deviceType = row[2]
 					config.description = row[3]
-					config.specific_configuration = row[4]
 				else:
 					print("No configuration found for client " +  str(client_id))
 			except Exception as e:
