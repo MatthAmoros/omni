@@ -89,15 +89,17 @@ class IOEcho(DeviceBase):
 				for pin_and_label in self.pin_and_label_matrix:
 					if pin_and_label['pin'] == gpio:
 						self.echo_signal_to_target(pin_and_label['label'])
-						""" Sleep 300 ms, avoid bouncing """
-						sleep(0.3)
+						""" Sleep 500 ms, avoid bouncing """
+						sleep(0.5)
 						break
 			except RuntimeError:
 				pass
 
 	def echo_signal_to_target(self, signal):
 		print("Sending " + str(signal) + " signal to target")
-
+		socket = socket(AF_INET, SOCK_DGRAM)
+		socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+		socket.sendto(bytes(str(signal).encode('utf-8')), ('192.168.2.188', 900))
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
