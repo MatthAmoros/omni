@@ -9,7 +9,7 @@ import json
 import time
 from threading import Thread
 
-from lib.sourceFactory import SourceFactory
+from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
 from lib.common import ServerSetting, DeviceConfiguration, Member
 
@@ -21,37 +21,8 @@ else:
 SERVER_SECRET = "DaSecretVectorUsedToHashCardId" #Default
 
 
-def pre_start_diagnose():
-	print("Pre-start diagnostic ...")
-	print("1) Loading application configuration ...")
-
-	""" Reading configuration """
-	appConfig = ConfigParser()
-	appConfig.read('./cfg/config.ini')
-
-	print("Sections found : " + str(appConfig.sections()))
-
-	if len(appConfig.sections()) == 0:
-		raise RuntimeError("Could not open configuration file")
-
-	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
-	SERVER_SECRET = appConfig.get("AppConstants", "Secret")
-
-	print(" >> Configuration OK")
-
-	print("2) Trying to reach datasource...")
-	sourceDbConnection = SourceFactory(SourceFactory.TYPE_DATABASE, CONNECTION_FILE_PATH)
-	dataSourceOk = sourceDbConnection.is_reachable()
-	if dataSourceOk == 1:
-		print(" >> Datasource OK")
-	else:
-		print(" >> Datasource unreachable.")
-
-
 #Only if it's run
 if __name__ == "__main__":
-    pre_start_diagnose()
-
     """ Start discovery manager """
     visibility_manager = VisibilityManager()
     discovery_thread = Thread(target=visibility_manager.listen_for_discovery_datagram)
