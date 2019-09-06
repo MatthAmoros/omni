@@ -47,7 +47,8 @@ class IOEcho(DeviceBase):
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
-				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+				""" Should add a physical pull down """
+				#GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
@@ -88,12 +89,15 @@ class IOEcho(DeviceBase):
 				for pin_and_label in self.pin_and_label_matrix:
 					if pin_and_label['pin'] == gpio:
 						self.echo_signal_to_target(pin_and_label['label'])
+						""" Sleep 300 ms, avoid bouncing """
+						sleep(0.3)
+						break
 			except RuntimeError:
 				pass
 
 	def echo_signal_to_target(self, signal):
 		print("Sending " + str(signal) + " signal to target")
-		sleep(0.2)
+
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
