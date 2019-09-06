@@ -9,6 +9,7 @@ from .deviceBase import DeviceBase
 from time import sleep
 import requests
 import json
+from socket import *
 
 try:
 	import RPi.GPIO as GPIO
