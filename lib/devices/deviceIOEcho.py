@@ -97,9 +97,9 @@ class IOEcho(DeviceBase):
 
 	def echo_signal_to_target(self, signal):
 		print("Sending " + str(signal) + " signal to target")
-		socket = socket(AF_INET, SOCK_DGRAM)
-		socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-		socket.sendto(bytes(str(signal).encode('utf-8')), ('192.168.2.188', 900))
+		client_socket = socket(AF_INET, SOCK_DGRAM)
+		client_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
+		client_socket.sendto(bytes(str(signal).encode('utf-8')), ('192.168.2.188', 900))
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
