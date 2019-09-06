@@ -74,12 +74,12 @@ class IOEcho(DeviceBase):
 
 		sleep(1)
 
-
+	#Overrided from DeviceBase
 	def get_status(self):
 		for pin_and_label in self.pin_and_label_matrix:
 			pin_and_label['value'] = GPIO.input(pin_and_label['pin'])
 
-		return str(pin_and_label_matrix)
+		return str(self.pin_and_label_matrix)
 
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
