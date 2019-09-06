@@ -57,6 +57,10 @@ Role : Access controller
 Role : Energy Manager
   - [TODO]
 
+Role : IO Echo
+  - [OK] Receive IO using GPIO and send it throught TCP
+
+
 
 ## Built With
 
