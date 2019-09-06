@@ -37,8 +37,9 @@ app = Flask(__name__)
 # ==== Flask definitions ====
 @app.route("/GPIO", methods=['GET'])
 def get_gpio():
+	global deviceObject
 	""" Used to check if client is online """
-	return str(device_object.get_status()),"200"
+	return str(device_object.get_status()), 200
 
 @app.route("/shutdown")
 def shutdown():
