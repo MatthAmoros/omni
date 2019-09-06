@@ -8,6 +8,7 @@ __version__ = '0.1'
 import sys
 import requests
 import json
+import threading
 
 # Module imports
 try:
@@ -107,7 +108,6 @@ def get_master():
 @app.route('/state', methods=['GET'])
 def get_status():
 	""" Returns current configuraiton """
-	global device_object
 	device_status = DeviceStatus(device_object.name, device_object.is_in_error, device_object.error_status)
 	return jsonify(device_status.serialize()), 200, {'ContentType':'application/json'}
 
@@ -126,15 +126,14 @@ def start_device_loop():
 	""" Starts RFID reading loop """
 	try:
 		global adopted
+		global device_object
 		print("Starting device ...")
 		visibility_manager = VisibilityManager()
 
 		while application_stopping == False:
-			global device_object
-
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
 				run_worker = False
-				print("Initialize main device loop, adoption state : " + str(adopted))
+				print("Initialize main device loop on thread " + str(threading.get_ident()) + ", device type " + str(device_object.type))
 				if device_object.type != "NONE":
 					device_object.run()
 
