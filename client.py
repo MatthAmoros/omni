@@ -139,6 +139,7 @@ def start_device_loop():
 				""" Run discovery mode """
 				print("Broadcasting discovery message")
 				visibility_manager.send_discovery_datagram()
+				sleep(15)
 	finally:
 		print("Gracefully closed device loop")
 
