@@ -21,11 +21,13 @@ except RuntimeError:
 
 class IOEcho(DeviceBase):
 	pin_and_label_matrix = ''
-	def __init__(self, name, pin_and_label_matrix):
+	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
 		if is_running_on_pi == True:
-			print("Starting IOEcho device.")
+			print("Starting IOEcho device...")
+			self.target_address = target_address
+			self.target_port = target_port
 
 			"""
 				Set pin numbering mode
@@ -53,8 +55,6 @@ class IOEcho(DeviceBase):
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
-			print("IOEcho device built !")
-
 	#Overrided from DeviceBase
 	def main_loop(self):
 		""" Starts RFID reading loop """
@@ -74,8 +74,6 @@ class IOEcho(DeviceBase):
 		finally:
 			print("Reading loop stopped")
 
-		sleep(1)
-
 	#Overrided from DeviceBase
 	def get_status(self):
 		for pin_and_label in self.pin_and_label_matrix:
@@ -90,17 +88,17 @@ class IOEcho(DeviceBase):
 				for pin_and_label in self.pin_and_label_matrix:
 					if pin_and_label['pin'] == gpio:
 						self.echo_signal_to_target(pin_and_label['label'])
-						""" Sleep 500 ms, avoid bouncing """
+						""" Sleep 500 ms, avoid signal bouncing """
 						sleep(0.5)
 						break
 			except RuntimeError:
 				pass
 
 	def echo_signal_to_target(self, signal):
-		print("Sending " + str(signal) + " signal to target")
+		print("Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
 		client_socket = socket(AF_INET, SOCK_DGRAM)
 		client_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-		client_socket.sendto(bytes(str(signal).encode('utf-8')), ('192.168.2.188', 900))
+		client_socket.sendto(bytes(str(signal).encode('utf-8')), (self.target_address, self.target_port))
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
