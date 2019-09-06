@@ -15,6 +15,7 @@ class DeviceConfiguration:
 	secret = "" #Server secret, for future cryptographic uses
 	deviceType = 0
 	description = ""
+	specific_configuration = ""
 
 	def __init__(self, client_id):
 		self.client_id = client_id
@@ -24,7 +25,7 @@ class DeviceConfiguration:
 
 	def serialize(self):
 		"""Serializes current object instance (used with jsonify)"""
-		return { 'description': self.description, 'zone' : self.zone, 'enabled' : self.enabled, 'dayTimeOnly' : self.day_time_only, 'authorizeOnly' : self.authorize_only, 'secret' : self.secret, 'deviceType' : self.deviceType}
+		return { 'description': self.description, 'zone' : self.zone, 'enabled' : self.enabled, 'dayTimeOnly' : self.day_time_only, 'authorizeOnly' : self.authorize_only, 'secret' : self.secret, 'deviceType' : self.deviceType, 'specific_configuration': self.specific_configuration}
 
 class DeviceStatus:
 	client_id = 0
