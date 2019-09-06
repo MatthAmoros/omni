@@ -65,7 +65,7 @@ def load_configuration():
 	""" Called by master to force reload configuration """
 	global device_object
 	device_object = device_factory.get_configuration()
-	
+
 	return json.dumps({'success':device_object.is_in_error}), 200, {'ContentType':'application/json'}
 
 @app.route('/adopt', methods=['POST'])
@@ -78,24 +78,21 @@ def adopt():
 				403 : Master alreay registered
 	"""
 	if len(device_factory.master_url) == 0:
-		if request.method == 'POST':
-			global adopted
-			new_master_url = request.form.get('master')
+		global adopted
+		new_master_url = request.form.get('master')
 
-			if new_master_url != '':
-				""" Try with provided url """
-				device_factory.set_master(new_master_url)
-			else:
-				""" Without master url provided, try with caller url and default port """
-				remote_url = 'http://' + str(request.remote_addr) + ':5000'
-				device_factory.set_master(remote_url)
-
-			""" Success """
-			load_configuration()
-			adopted = True
-			return json.dumps({'success':True}), 202, {'ContentType':'application/json'}
+		if new_master_url != '':
+			""" Try with provided url """
+			device_factory.set_master(new_master_url)
 		else:
-			return json.dumps({'success':False}), 405, {'ContentType':'application/json'}
+			""" Without master url provided, try with caller url and default port """
+			remote_url = 'http://' + str(request.remote_addr) + ':5000'
+			device_factory.set_master(remote_url)
+
+		""" Success """
+		load_configuration()
+		adopted = True
+		return json.dumps({'success':True}), 202, {'ContentType':'application/json'}
 	else:
 		return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
@@ -128,6 +125,7 @@ def start_web_server():
 def start_device_loop():
 	""" Starts RFID reading loop """
 	try:
+		global adopted
 		print("Starting device ...")
 		visibility_manager = VisibilityManager()
 
@@ -136,11 +134,13 @@ def start_device_loop():
 
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
 				run_worker = False
-				print("Initialize main device loop.")
-				device_object.run()
+				print("Initialize main device loop, adoption state : " + str(adopted))
+				if device_object.type != "NONE":
+					device_object.run()
 
 			if adopted == False:
 				""" Run discovery mode """
+				print("Broadcasting discovery message")
 				visibility_manager.send_discovery_datagram()
 
 			sleep(5)
@@ -169,8 +169,8 @@ def main():
 	print("Shutting down")
 
 	#Notify threads
-
 	print("Notify threads to stop...")
+
 	""" First, stop device thread """
 	global device_object
 	global application_stopping
