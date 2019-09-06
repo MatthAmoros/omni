@@ -117,7 +117,7 @@ def validate_credential(zone, credential):
 		return json.dumps({'success':False}), 403, {'ContentType':'application/json'}
 
 @app.route("/accessRule/<zone>/<token_type>/token_data", methods=['POST'])
-def report_state(zone, token_type):
+def report_state_zone(zone, token_type):
 	data = request.data
 	data = json.loads(data)
 
