@@ -13,6 +13,7 @@ if proc == "ARM":
 
 from .deviceZK45FingerPrintReader import ZK45Reader
 from .deviceZFM20FingerPrintReader import ZFM20Reader
+from .deviceIOEcho import IOEcho
 from .deviceBase import DeviceBase
 import requests
 import json
@@ -50,6 +51,9 @@ class DeviceFactory:
 					if config['deviceType'] == 4:
 						""" ZFM20Reader """
 						device = ZFM20Reader(self.name)
+					if config['deviceType'] == 5:
+						""" IOEcho """
+						device = IOEcho(self.name)
 					elif config['deviceType'] == 0:
 						""" None """
 						device = DeviceBase(self.name)
