@@ -39,15 +39,15 @@ class IOEcho(DeviceBase):
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 3, 'label': 'S011', 'value': '1'},
-				{'pin': 5, 'label': 'S012', 'value': '1'},
-				{'pin': 7, 'label': 'S013', 'value': '1'},
-				{'pin': 11, 'label': 'S021', 'value': '1'},
-				{'pin': 13, 'label': 'S022', 'value': '1'},
-				{'pin': 15, 'label': 'S023', 'value': '1'},
-				{'pin': 19, 'label': 'S031', 'value': '1'},
-				{'pin': 21, 'label': 'S032', 'value': '1'},
-				{'pin': 23, 'label': 'S033', 'value': '1'}
+				{'pin': 3, 'label': 'S011', 'value': 1},
+				{'pin': 5, 'label': 'S012', 'value': 1},
+				{'pin': 7, 'label': 'S013', 'value': 1},
+				{'pin': 11, 'label': 'S021', 'value': 1},
+				{'pin': 13, 'label': 'S022', 'value': 1},
+				{'pin': 15, 'label': 'S023', 'value': 1},
+				{'pin': 19, 'label': 'S031', 'value': 1},
+				{'pin': 21, 'label': 'S032', 'value': 1},
+				{'pin': 23, 'label': 'S033', 'value': 1}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
