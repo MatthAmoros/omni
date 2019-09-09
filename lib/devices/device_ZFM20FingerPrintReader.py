@@ -5,7 +5,8 @@
 __all__ = ['FingerPrintReader']
 __version__ = '0.1'
 
-from .deviceBase import DeviceBase
+from lib.devices.device_base import DeviceBase
+from .protocols.ZFM20_Device import ZFM20_Device
 from time import sleep
 import requests
 import json
@@ -20,7 +21,7 @@ except Exception as e:
 	is_running_on_pi = False
 	pass
 
-class ZK45Reader(DeviceBase):
+class ZFM20Reader(DeviceBase):
 	def __init__(self, name, action_pin_BCM=24, led_pin_BCM=23):
 		DeviceBase.__init__(self, name)
 
@@ -36,11 +37,12 @@ class ZK45Reader(DeviceBase):
 		"""
 			Blink to show loaded
 		"""
+
 		print("FingerPrint reader built !")
 
     #Overrided from DeviceBase
 	def main_loop(self):
-		""" Starts RFID reading loop """
+		""" Starts fingerprint reading loop """
 		try:
 			print("Starting controller...")
 			if is_running_on_pi == True:
@@ -51,16 +53,30 @@ class ZK45Reader(DeviceBase):
 				""" Green light, device loaded """
 				GPIO.output(self._led_pin_BCM, GPIO.LOW)
 				GPIO.output(self._action_pin_BCM, GPIO.LOW)
+
 				self.blink_led()
 
 				print("Setting up external vlaidation signal to BCM " + str(self._action_pin_BCM))
-			""" TODO : Reading from usb """
-			while self.must_stop == False :
-				if self.is_zone_enabled == True:
-					self.is_running = True
-					""" Controller is enable, start reading """
-					#Prevent over-header
-					sleep(1)
+
+			with ZFM20_Device() as device:
+				if device.verify_password() == True:
+					while self.must_stop == False :
+						if self.is_zone_enabled == True:
+							self.is_running = True
+							""" Controller is enable, start reading """
+							#Prevent over-header
+							try:
+								result = device.activate_fingerprint_control()
+							except:
+								## Only interrupt on device stopped
+								pass
+							""" We read something """
+							if result is not None and len(result) > 1 :
+								self._on_data_read(len(result), result)
+							sleep(2)
+				else:
+					print("Unable to initialize ZFM20 reader")
+
 
 		except KeyboardInterrupt:
 			print("Stopped by user")
@@ -107,16 +123,16 @@ class ZK45Reader(DeviceBase):
 
 		self.must_stop = True
 
-	def validate_credential(self, card_id, secret):
+	def validate_credential(self, characteristics, secret):
 		""" Validates provided credentials against master's db """
 		if not self.is_configuration_loaded:
 			print("No configuration loaded")
 			return -1
 
 		if len(self.master_url) > 0:
-			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
+			print("Getting " + self.master_url + '/accessRule/' + str(self.zone_id) + '/characteristics/token_data')
 			try:
-				r = requests.get(self.master_url + '/accessRule/' + str(self.zone_id) + '/' + str(card_id))
+				r = requests.post(self.master_url + '/accessRule/' + str(self.zone_id) + '/characteristics/token_data', json={"characteristics" : characteristics})
 				if r.status_code == 200:
 					return 1
 				else:

@@ -4,6 +4,7 @@ __version__ = '0.1'
 
 from threading import Thread
 from time import sleep
+from lib.common import PrintColor
 import requests
 
 class DeviceBase(object):
@@ -38,7 +39,7 @@ class DeviceBase(object):
 		#Start thread
 		device_loop_thread.start();
 
-		print("Device " + str(self.name) + " started")
+		print(PrintColor.OKGREEN + "Device " + str(self.name) + " started")
 
 		device_loop_thread.join()
 
@@ -51,11 +52,11 @@ class DeviceBase(object):
 		if len(self.master_url) > 0:
 			r = requests.post(self.master_url + '/report/state', json={"client_id": str(self.client_id), "is_in_error" : str(self.is_in_error), "error_status" : str(self.error_status) })
 			if str(r.status_code) == "200":
-				print("Successfully reported status [" + str(self.error_status) + "] to server")
+				print(PrintColor.OKBLUE + "Successfully reported status [" + str(self.error_status) + "] to server")
 			else:
-				print("An error ocurred while reporting status : (server response " + str(r.status_code) + ")")
+				print(PrintColor.FAIL + "An error ocurred while reporting status : (server response " + str(r.status_code) + ")")
 		else:
-			print("Abort reporting, master not set.")
+			print(PrintColor.WARNING + "Abort reporting, master not set.")
 
 	def main_loop(self):
 		raise NotImplementedError('main_loop must be overloaded')

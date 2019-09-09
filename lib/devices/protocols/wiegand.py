@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 import signal, os
-import RPi.GPIO as GPIO
+from lib.common import PrintColor
+
+try:
+	import RPi.GPIO as GPIO
+	is_running_on_pi = True
+except RuntimeError:
+	print(PrintColor.WARNING + "Starting without GPIO")
+	is_running_on_pi = False
+	pass
 """
 bits=26 value=12442091
 bits=26 value=45883139

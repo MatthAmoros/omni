@@ -9,11 +9,15 @@ import sys
 import requests
 import json
 import threading
+from lib.devices.device_factory import DeviceFactory
+from lib.devices.device_base import DeviceBase
+from lib.visibilityManager import VisibilityManager
+from lib.common import DeviceStatus, PrintColor
 
 # Module imports
 try:
-	from lib.devices.deviceFactory import DeviceFactory
-	from lib.devices.deviceBase import DeviceBase
+	from lib.devices.device_factory import DeviceFactory
+	from lib.devices.device_base import DeviceBase
 	from lib.visibilityManager import VisibilityManager
 	from lib.common import DeviceStatus, PrintColor
 except ModuleNotFoundError:
@@ -133,7 +137,8 @@ def start_device_loop():
 		visibility_manager = VisibilityManager()
 
 		while application_stopping == False:
-			if device_object.is_zone_enabled == True and device_object.is_running == False:
+			if device_object.is_zone_enabled == True and device_object.is_running == False \
+ 			and device_object.is_in_error == False:
 				print(PrintColor.OKGREEN + "Initialize main device loop on thread " + str(threading.get_ident()) + ", device type " + str(device_object.type))
 				if device_object.type != "NONE":
 					device_object.run()

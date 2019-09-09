@@ -6,15 +6,13 @@ __version__ = '0.1'
 
 import platform
 
-proc = platform.processor()
-if proc == "ARM":
-	""" Loading RaspberryPi only devices """
-	from .deviceHIDReader import HIDReader
 
-from .deviceZK45FingerPrintReader import ZK45Reader
-from .deviceZFM20FingerPrintReader import ZFM20Reader
-from .deviceIOEcho import IOEcho
-from .deviceBase import DeviceBase
+from lib.devices.device_HIDReader import HIDReader
+from lib.devices.device_IOEcho import IOEcho
+from lib.devices.device_ZK45FingerPrintReader import ZK45Reader
+from lib.devices.device_ZFM20FingerPrintReader import ZFM20Reader
+from lib.devices.device_base import DeviceBase
+from lib.common import PrintColor
 import requests
 import json
 
@@ -74,10 +72,10 @@ class DeviceFactory:
 					device.error_status = "OK"
 					device.type = config['deviceType']
 
-					print("Configuration loaded.")
+					print(PrintColor.OKBLUE + "Configuration loaded.")
 				except Exception as e:
 					error_message = "Device type not supported by current platform. Configuration aborted. (" + str(e) + ")"
-					print(error_message)
+					print(PrintColor.FAIL + error_message)
 					device.zone_id = 1
 
 					device.is_zone_enabled = False
@@ -104,14 +102,14 @@ class DeviceFactory:
 	def set_master(self, master_url):
 		""" Sets default master """
 		if(not master_url.startswith("http")):
-			print("Error, master is not a valid URL")
+			print(PrintColor.FAIL + "Error, master is not a valid URL")
 
 		if master_url.endswith('/'):
 			master_url = master_url[:-1] #Remove last '/'
 
 		r = requests.get(master_url + '/confirmAdopt/' + str(self.name))
 		if r.status_code == 200:
-			print("Setting master URL to " + master_url)
+			print(PrintColor.OKBLUE + "Setting master URL to " + master_url)
 			self.master_url = master_url
 		else:
-			print("Error, invalid master response (" + str(r.status_code) + ")")
+			print(PrintColor.FAIL + "Error, invalid master response (" + str(r.status_code) + ")")

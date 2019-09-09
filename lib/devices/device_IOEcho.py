@@ -5,7 +5,7 @@
 __all__ = ['IOEcho']
 __version__ = '0.1'
 
-from .deviceBase import DeviceBase
+from lib.devices.device_base import DeviceBase
 from time import sleep
 from lib.common import PrintColor
 import requests
@@ -16,7 +16,7 @@ try:
 	import RPi.GPIO as GPIO
 	is_running_on_pi = True
 except RuntimeError:
-	print("Starting without GPIO")
+	print(PrintColor.WARNING + "Starting without GPIO")
 	is_running_on_pi = False
 	pass
 
@@ -26,7 +26,7 @@ class IOEcho(DeviceBase):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
 		if is_running_on_pi == True:
-			print("Starting IOEcho device...")
+			print(PrintColor.OKBLUE + "Starting IOEcho device...")
 			self.target_address = target_address
 			self.target_port = target_port
 
@@ -55,7 +55,7 @@ class IOEcho(DeviceBase):
 				GPIO.setup(pin_and_label['pin'], GPIO.IN)
 				""" Set falling edge detection, callback and debounce time to 300 ms """
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=300)
-				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
+				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 			self.pre_start_diagnose()
 
@@ -75,6 +75,10 @@ class IOEcho(DeviceBase):
 					else:
 						""" Controller is disable, wait for a valid configuration """
 						break
+			else:
+				print(PrintColor.WARNING + "This device can only work with GPIO, canceling ...")
+				self.is_in_error = True
+				sleep(5)
 		finally:
 			print("Reading loop stopped")
 
@@ -102,7 +106,7 @@ class IOEcho(DeviceBase):
 				pass
 
 	def echo_signal_to_target(self, signal):
-		print("Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
+		print(PrintColor.OKBLUE + "Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
 		client_socket = socket(AF_INET, SOCK_DGRAM)
 		client_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
 		client_socket.sendto(bytes(str(signal).encode('utf-8')), (self.target_address, self.target_port))
