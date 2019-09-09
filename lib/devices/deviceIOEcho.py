@@ -52,7 +52,8 @@ class IOEcho(DeviceBase):
 			for pin_and_label in self.pin_and_label_matrix:
 				""" Should add a physical pull up """
 				GPIO.setup(pin_and_label['pin'], GPIO.IN)
-				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received)
+				""" Set falling edge detection, callback and debounce time to 300 ms """
+				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=300)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 	#Overrided from DeviceBase
@@ -88,8 +89,6 @@ class IOEcho(DeviceBase):
 				for pin_and_label in self.pin_and_label_matrix:
 					if pin_and_label['pin'] == gpio:
 						self.echo_signal_to_target(pin_and_label['label'])
-						""" Sleep 500 ms, avoid signal bouncing """
-						sleep(0.5)
 						break
 			except RuntimeError:
 				pass
