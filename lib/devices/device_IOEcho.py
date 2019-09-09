@@ -109,7 +109,7 @@ class IOEcho(DeviceBase):
 		print(PrintColor.OKBLUE + "Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
 		client_socket = socket(AF_INET, SOCK_STREAM)
 		client_socket.connect((self.target_address, self.target_port))
-		client_socket.sendall(bytes(str(signal).encode('utf-8')), (self.target_address, self.target_port))
+		client_socket.sendall(bytes(str(signal).encode('utf-8')))
 		client_socket.close()
 
 	#Overrided from DeviceBase
