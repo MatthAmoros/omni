@@ -15,7 +15,7 @@ try:
 	from lib.devices.deviceFactory import DeviceFactory
 	from lib.devices.deviceBase import DeviceBase
 	from lib.visibilityManager import VisibilityManager
-	from lib.common import DeviceStatus
+	from lib.common import DeviceStatus, PrintColor
 except ModuleNotFoundError:
 	sys.exit("Business modules not found")
 else:
@@ -52,7 +52,6 @@ def shutdown():
 	else:
 		print("Must stop with local device running ?")
 	return json.dumps({'success':True}), 200, {'ContentType':'application/json'}
-
 
 @app.route("/isNodeFree")
 def is_node_free():
@@ -111,33 +110,32 @@ def get_status():
 	return jsonify(device_status.serialize()), 200, {'ContentType':'application/json'}
 
 # ===========================
-# 		Threads declarations
+# 	Threads declarations
 # ===========================
-
 def start_web_server():
 	""" Starts Flask """
 	print("Start web server...")
 	global app
 	app.run(host='0.0.0.0', port=int("5555"))
-	print("Web server stopped")
+	print(PrintColor.OKGREEN + "Web server stopped")
 
 def start_device_loop():
 	""" Starts device loop """
 	try:
 		global adopted
 		global device_object
-		print("Starting device ...")
+		print(PrintColor.OKGREEN + "Starting device ...")
 		visibility_manager = VisibilityManager()
 
 		while application_stopping == False:
 			if device_object.is_zone_enabled == True and device_object.is_running == False:
-				print("Initialize main device loop on thread " + str(threading.get_ident()) + ", device type " + str(device_object.type))
+				print(PrintColor.OKGREEN + "Initialize main device loop on thread " + str(threading.get_ident()) + ", device type " + str(device_object.type))
 				if device_object.type != "NONE":
 					device_object.run()
 
 			if adopted == False:
 				""" Run discovery mode """
-				print("Broadcasting discovery message")
+				print(PrintColor.OKBLUE + "Broadcasting discovery message")
 				visibility_manager.send_discovery_datagram()
 				sleep(15)
 	finally:
@@ -162,10 +160,10 @@ def main():
 	# ===========================
 	# 		Shutting down
 	# ===========================
-	print("Shutting down")
+	print(PrintColor.WARNING + "Shutting down")
 
 	#Notify threads
-	print("Notify threads to stop...")
+	print(PrintColor.WARNING + "Notify threads to stop...")
 
 	""" First, stop device thread """
 	global device_object
@@ -187,7 +185,7 @@ def main():
 	web_server_thread.join()
 
 	#Join threads
-	print("Done.")
+	print(PrintColor.OKGREEN + "Done.")
 
 # ===========================
 # 		Starting up

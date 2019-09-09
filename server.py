@@ -20,7 +20,7 @@ from web.router import query_js, query_styles, view_index, edp_is_alive, edp_con
 """ Business import """
 from lib.datasource import DataSource
 from lib.visibilityManager import VisibilityManager
-from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus
+from lib.common import ServerSetting, DeviceConfiguration, Member, DeviceStatus, PrintColor
 
 """ When called by external WSGI server """
 if __name__ == "__main__":
@@ -141,7 +141,7 @@ def configuration(client_id):
 	if configuration is None:
 		return json.dumps({'success':False}), 204, {'ContentType':'application/json'}
 
-	print("Sending configuration for client " + str(client_id))
+	print(PrintColor.OKBLUE + "Sending configuration for client " + str(client_id))
 	return jsonify(configuration.serialize()), 200, {'ContentType':'application/json'}
 
 def get_configuration_by_client_id(client_id):
@@ -169,30 +169,30 @@ def load_server_configuration():
 	conf = source.load_server_configuration()
 
 def pre_start_diagnose():
-	print("Pre-start diagnostic ...")
-	print("1) Loading application configuration ...")
+	print(PrintColor.OKBLUE + "Pre-start diagnostic ...")
+	print(PrintColor.OKBLUE + "1) Loading application configuration ...")
 
 	""" Reading configuration """
 	appConfig = ConfigParser()
 	appConfig.read('./cfg/config.ini')
 
-	print("Sections found : " + str(appConfig.sections()))
+	print(PrintColor.OKBLUE + "Sections found : " + str(appConfig.sections()))
 
 	if len(appConfig.sections()) == 0:
-		raise RuntimeError("Could not open configuration file")
+		raise RuntimeError(PrintColor.WARNING + "Could not open configuration file")
 
 	CONNECTION_FILE_PATH = appConfig.get("AppConstants", "ConnectionStringFilePath")
 	SERVER_SECRET = appConfig.get("AppConstants", "Secret")
 
-	print(" >> Configuration OK")
+	print(PrintColor.OKBLUE + " >> Configuration OK")
 
-	print("2) Trying to reach datasource...")
+	print(PrintColor.OKBLUE + "2) Trying to reach datasource...")
 	sourceDbConnection = DataSource(DataSource.TYPE_DATABASE, CONNECTION_FILE_PATH)
 	dataSourceOk = sourceDbConnection.is_reachable()
 	if dataSourceOk == 1:
-		print(" >> Datasource OK")
+		print(PrintColor.OKBLUE + " >> Datasource OK")
 	else:
-		print(" >> Datasource unreachable.")
+		print(PrintColor.WARNING + " >> Datasource unreachable.")
 
 
 #Only if it's run
@@ -205,9 +205,9 @@ if __name__ == "__main__":
 
 	discovery_thread.start()
 
-	print("Start web server...")
+	print(PrintColor.OKGREEN + "Start web server...")
 	app.run(host='0.0.0.0', port=5000)
-	print("Web server stopped.")
+	print(PrintColor.OKGREEN + "Web server stopped.")
 	visibility_manager.must_stop = True
-	print("Waiting for secondaries threads")
+	print(PrintColor.OKBLUE + "Waiting for secondaries threads")
 	discovery_thread.join()
