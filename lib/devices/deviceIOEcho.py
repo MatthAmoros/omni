@@ -7,7 +7,7 @@ __version__ = '0.1'
 
 from .deviceBase import DeviceBase
 from time import sleep
-from .common import PrintColor
+from omni.lib.common import PrintColor
 import requests
 import json
 from socket import *
