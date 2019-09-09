@@ -22,7 +22,7 @@ except RuntimeError:
 
 class IOEcho(DeviceBase):
 	pin_and_label_matrix = ''
-	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100):
+	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100, debounce_time=500):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
 		if is_running_on_pi == True:
@@ -54,7 +54,7 @@ class IOEcho(DeviceBase):
 				""" Should add a physical pull up """
 				GPIO.setup(pin_and_label['pin'], GPIO.IN)
 				""" Set falling edge detection, callback and debounce time to 300 ms """
-				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=300)
+				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=debounce_time)
 				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 			self.pre_start_diagnose()
