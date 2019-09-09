@@ -50,9 +50,9 @@ class IOEcho(DeviceBase):
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
-				""" Should add a physical pull down """
+				""" Should add a physical pull up """
 				GPIO.setup(pin_and_label['pin'], GPIO.IN)
-				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received)
+				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 	#Overrided from DeviceBase
