@@ -7,6 +7,7 @@ __version__ = '0.1'
 
 from .deviceBase import DeviceBase
 from time import sleep
+from .common import PrintColor
 import requests
 import json
 from socket import *
@@ -38,15 +39,15 @@ class IOEcho(DeviceBase):
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 3, 'label': 'S011', 'value': '0'},
-				{'pin': 5, 'label': 'S012', 'value': '0'},
-				{'pin': 7, 'label': 'S013', 'value': '0'},
-				{'pin': 11, 'label': 'S021', 'value': '0'},
-				{'pin': 13, 'label': 'S022', 'value': '0'},
-				{'pin': 15, 'label': 'S023', 'value': '0'},
-				{'pin': 19, 'label': 'S031', 'value': '0'},
-				{'pin': 21, 'label': 'S032', 'value': '0'},
-				{'pin': 23, 'label': 'S033', 'value': '0'}
+				{'pin': 3, 'label': 'S011', 'value': '1'},
+				{'pin': 5, 'label': 'S012', 'value': '1'},
+				{'pin': 7, 'label': 'S013', 'value': '1'},
+				{'pin': 11, 'label': 'S021', 'value': '1'},
+				{'pin': 13, 'label': 'S022', 'value': '1'},
+				{'pin': 15, 'label': 'S023', 'value': '1'},
+				{'pin': 19, 'label': 'S031', 'value': '1'},
+				{'pin': 21, 'label': 'S032', 'value': '1'},
+				{'pin': 23, 'label': 'S033', 'value': '1'}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
@@ -55,6 +56,8 @@ class IOEcho(DeviceBase):
 				""" Set falling edge detection, callback and debounce time to 300 ms """
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=300)
 				print("Pin " + str(pin_and_label['pin']) + " initialized as input.")
+
+			self.pre_start_diagnose()
 
 	#Overrided from DeviceBase
 	def main_loop(self):
@@ -74,6 +77,11 @@ class IOEcho(DeviceBase):
 						break
 		finally:
 			print("Reading loop stopped")
+
+	def pre_start_diagnose(self):
+		for pin_and_label in self.pin_and_label_matrix:
+			if pin_and_label['value'] != GPIO.input(pin_and_label['pin']):
+				print(str(PrintColor.WARNING) +  "[W] Pin " + str(pin_and_label['pin']) + " is not set to initialization value.")
 
 	#Overrided from DeviceBase
 	def get_status(self):
