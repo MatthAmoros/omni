@@ -40,7 +40,7 @@ class IOEcho(DeviceBase):
 			self.pin_and_label_matrix = [
 				{'pin': 3, 'label': 'S011', 'value': '0'},
 				{'pin': 5, 'label': 'S012', 'value': '0'},
-				{'pin': 7, 'label': 'S033', 'value': '0'},
+				{'pin': 7, 'label': 'S013', 'value': '0'},
 				{'pin': 11, 'label': 'S021', 'value': '0'},
 				{'pin': 13, 'label': 'S022', 'value': '0'},
 				{'pin': 15, 'label': 'S023', 'value': '0'},
