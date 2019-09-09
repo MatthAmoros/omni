@@ -106,11 +106,14 @@ class IOEcho(DeviceBase):
 				pass
 
 	def echo_signal_to_target(self, signal):
-		print(PrintColor.OKBLUE + "Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
-		client_socket = socket(AF_INET, SOCK_STREAM)
-		client_socket.connect((self.target_address, self.target_port))
-		client_socket.sendall(bytes(str(signal).encode('utf-8')))
-		client_socket.close()
+		try:
+			print(PrintColor.OKBLUE + "Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
+			client_socket = socket(AF_INET, SOCK_STREAM)
+			client_socket.connect((self.target_address, self.target_port))
+			client_socket.sendall(bytes(str(signal).encode('utf-8')))
+			client_socket.close()
+		except:
+			print(PrintColor.WARNING + "Signal could not be sent to " + str(self.target_address) + ":" + str(self.target_port))
 
 	#Overrided from DeviceBase
 	def stop_loop(self):
