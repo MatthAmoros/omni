@@ -51,7 +51,7 @@ class DeviceFactory:
 						device = ZFM20Reader(self.name)
 					if config['deviceType'] == 5:
 						""" IOEcho """
-						device = IOEcho(name=self.name, pin_and_label_matrix='')
+						device = IOEcho(name=self.name, pin_and_label_matrix='', target_address='192.168.2.54', target_port=900)
 					elif config['deviceType'] == 0:
 						""" None """
 						device = DeviceBase(name=self.name)
