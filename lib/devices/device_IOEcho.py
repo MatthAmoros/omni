@@ -11,6 +11,7 @@ from lib.common import PrintColor
 from datetime import datetime, timedelta
 import requests
 import json
+import time
 from socket import *
 
 try:
@@ -45,12 +46,12 @@ class IOEcho(DeviceBase):
 				{'pin': 3, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 5, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 7, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 11, 'label': 'S021', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 13, 'label': 'S022', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 15, 'label': 'S023', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 19, 'label': 'S031', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 21, 'label': 'S032', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 23, 'label': 'S033', 'value': 0, 'lastSent': datetime.now()}
+				{'pin': 11, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 13, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 15, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 19, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 21, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 23, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
@@ -97,6 +98,9 @@ class IOEcho(DeviceBase):
 
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
+			time.sleep(0.1)         # need to filter out the false positive of some power fluctuation
+			if GPIO.input(gpio) != GPIO.HIGH:
+				return
 			try:
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
