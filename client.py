@@ -85,6 +85,8 @@ def load_configuration():
 		config['enabled'] = True
 		config['dayTimeOnly'] = 0
 		config['secret'] = 'standalone'
+		config['target_address'] = '192.168.2.54'
+		config['target_port'] = 900
 		device_object = device_factory.set_configuration(config)
 
 	return json.dumps({'success':device_object.is_in_error}), 200, {'ContentType':'application/json'}
