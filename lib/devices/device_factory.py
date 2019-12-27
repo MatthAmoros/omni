@@ -28,6 +28,55 @@ class DeviceFactory:
 		self.isRunning = False
 		return
 
+	def set_configuration(self, config):
+		try:
+			#Request success
+			if config['deviceType'] == 1:
+				""" HID Reader """
+				device = HIDReader(self.name)
+			if config['deviceType'] == 2:
+				""" ZK45Reader """
+				device = ZK45Reader(self.name)
+			if config['deviceType'] == 4:
+				""" ZFM20Reader """
+				device = ZFM20Reader(self.name)
+			if config['deviceType'] == 5:
+				""" IOEcho """
+				device = IOEcho(name=self.name, pin_and_label_matrix='', target_address='192.168.2.54', target_port=900)
+			elif config['deviceType'] == 0:
+				""" None """
+				device = DeviceBase(name=self.name)
+			else:
+				""" Disable """
+				device = DeviceBase(self.name)
+
+			device.zone_id = config['zone']
+
+			device.is_zone_enabled = config['enabled']
+			device.is_zone_day_time_only = config['dayTimeOnly']
+			device.is_configuration_loaded = True
+
+			device.master_secret = config['secret']
+			device.master_url = self.master_url
+
+			device.is_in_error = False
+			device.error_status = "OK"
+			device.type = config['deviceType']
+
+			print(PrintColor.OKBLUE + "Configuration loaded.")
+		except Exception as e:
+			error_message = "Device type not supported by current platform. Configuration aborted. (" + str(e) + ")"
+			print(PrintColor.FAIL + error_message)
+			device.zone_id = 1
+
+			device.is_zone_enabled = False
+			device.is_zone_day_time_only = False
+			device.is_in_error = True
+
+			device.error_status = error_message
+
+		return device
+
 	def get_configuration(self):
 		""" Asks master for configuration """
 		device = DeviceBase(self.name)

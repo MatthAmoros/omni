@@ -31,6 +31,8 @@ else:
 	from time import sleep
 
 adopted = False
+is_standalone = 0
+standalone_device = 0
 
 application_stopping = False
 node_id = get_mac()
@@ -74,7 +76,16 @@ def is_node_free():
 def load_configuration():
 	""" Called by master to force reload configuration """
 	global device_object
-	device_object = device_factory.get_configuration()
+	if is_standalone == 0:
+		device_object = device_factory.get_configuration()
+	else:
+		config = {}
+		config['deviceType'] = int(standalone_device)
+		config['zone'] = 1
+		config['enabled'] = True
+		config['dayTimeOnly'] = 0
+		config['secret'] = 'standalone'
+		device_object = device_factory.set_configuration(config)
 
 	return json.dumps({'success':device_object.is_in_error}), 200, {'ContentType':'application/json'}
 
@@ -133,6 +144,7 @@ def start_device_loop():
 	try:
 		global adopted
 		global device_object
+		global is_standalone
 		print(PrintColor.OKGREEN + "Starting device ...")
 		visibility_manager = VisibilityManager()
 
@@ -143,16 +155,27 @@ def start_device_loop():
 				if device_object.type != "NONE":
 					device_object.run()
 
-			if adopted == False:
+			if adopted == False and is_standalone == 0:
 				""" Run discovery mode """
 				print(PrintColor.OKBLUE + "Broadcasting discovery message")
 				visibility_manager.send_discovery_datagram()
 				sleep(15)
+
+			if is_standalone == 1 and device_object.is_running == False \
+ 			and device_object.is_in_error == False:
+				load_configuration()
 	finally:
 		print("Gracefully closed device loop")
 
 def main():
 	""" Main method, handle startup and shutdown """
+	global is_standalone
+	global standalone_device
+	if len(sys.argv) > 1:
+		print(PrintColor.WARNING + "Standalone device.")
+		is_standalone = 1
+		standalone_device = sys.argv[1]
+		print(str(standalone_device))
 
 	#Delcare processes
 	web_server_thread = Thread(target=start_web_server)
