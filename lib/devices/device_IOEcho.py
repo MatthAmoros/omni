@@ -52,7 +52,7 @@ class IOEcho(DeviceBase):
 
 			for pin_and_label in self.pin_and_label_matrix:
 				""" Should add a physical pull up """
-				GPIO.setup(pin_and_label['pin'], GPIO.IN)
+				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
 				""" Set falling edge detection, callback and debounce time to 300 ms """
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=debounce_time)
 				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
