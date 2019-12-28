@@ -8,6 +8,7 @@ __version__ = '0.1'
 from lib.devices.device_base import DeviceBase
 from time import sleep
 from lib.common import PrintColor
+from datetime import datetime, timedelta
 import requests
 import json
 from socket import *
@@ -22,11 +23,13 @@ except RuntimeError:
 
 class IOEcho(DeviceBase):
 	pin_and_label_matrix = ''
+	debounce_time = 0
 	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100, debounce_time=500):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
 		if is_running_on_pi == True:
 			print(PrintColor.OKBLUE + "Starting IOEcho device...")
+			self.debounce_time = debounce_time
 			self.target_address = target_address
 			self.target_port = target_port
 
@@ -39,22 +42,20 @@ class IOEcho(DeviceBase):
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 3, 'label': 'S011', 'value': 1},
-				{'pin': 5, 'label': 'S012', 'value': 1},
-				{'pin': 7, 'label': 'S013', 'value': 1},
-				{'pin': 11, 'label': 'S021', 'value': 1},
-				{'pin': 13, 'label': 'S022', 'value': 1},
-				{'pin': 15, 'label': 'S023', 'value': 1},
-				{'pin': 19, 'label': 'S031', 'value': 1},
-				{'pin': 21, 'label': 'S032', 'value': 1},
-				{'pin': 23, 'label': 'S033', 'value': 1}
+				{'pin': 3, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 5, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 7, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 11, 'label': 'S021', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 13, 'label': 'S022', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 15, 'label': 'S023', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 19, 'label': 'S031', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 21, 'label': 'S032', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 23, 'label': 'S033', 'value': 0, 'lastSent': datetime.now()}
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
-				""" Should add a physical pull up """
 				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
-				""" Set falling edge detection, callback and debounce time to 300 ms """
-				GPIO.add_event_detect(pin_and_label['pin'], GPIO.FALLING, callback=self._on_data_received, bouncetime=debounce_time)
+				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received, bouncetime=debounce_time)
 				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 			self.pre_start_diagnose()
@@ -99,7 +100,9 @@ class IOEcho(DeviceBase):
 			try:
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
-					if pin_and_label['pin'] == gpio:
+					""" Added 'soft' debounce """
+					if pin_and_label['pin'] == gpio and pin_and_label['lastSent'] > datetime.now() +  timedelta(milliseconds=self.debounce_time):
+						pin_and_label['lastSent'] = datetime.now()
 						self.echo_signal_to_target(pin_and_label['label'])
 						break
 			except RuntimeError:
