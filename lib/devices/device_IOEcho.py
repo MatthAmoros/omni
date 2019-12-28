@@ -54,7 +54,7 @@ class IOEcho(DeviceBase):
 			]
 
 			for pin_and_label in self.pin_and_label_matrix:
-				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_UP)
+				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received, bouncetime=debounce_time)
 				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
@@ -101,10 +101,13 @@ class IOEcho(DeviceBase):
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
 					""" Added 'soft' debounce """
-					if pin_and_label['pin'] == gpio and datetime.now() > pin_and_label['lastSent'] + timedelta(milliseconds=500):
-						pin_and_label['lastSent'] = datetime.now()
-						self.echo_signal_to_target(pin_and_label['label'])
-						break
+					if pin_and_label['pin'] == gpio:
+						if datetime.now().time() > (pin_and_label['lastSent'] + timedelta(milliseconds=500)).time():
+							pin_and_label['lastSent'] = datetime.now()
+							self.echo_signal_to_target(pin_and_label['label'])
+							break
+						else:
+							print("Debouce : Now " + str(datetime.now().time()) + " Last " + str((pin_and_label['lastSent'] + timedelta(milliseconds=500)).time()))
 			except RuntimeError:
 				pass
 
