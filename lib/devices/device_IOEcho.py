@@ -101,7 +101,7 @@ class IOEcho(DeviceBase):
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
 					""" Added 'soft' debounce """
-					if pin_and_label['pin'] == gpio and pin_and_label['lastSent'] > datetime.now() +  timedelta(milliseconds=self.debounce_time):
+					if pin_and_label['pin'] == gpio and datetime.now() +  timedelta(milliseconds=self.debounce_time) > pin_and_label['lastSent']:
 						pin_and_label['lastSent'] = datetime.now()
 						self.echo_signal_to_target(pin_and_label['label'])
 						break
