@@ -28,9 +28,7 @@ class IOEcho(DeviceBase):
 	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100, debounce_time=500):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
-		"""
-			TODO : Add dynamic configuration, or stroe pin map in a file
-		"""
+		""" Load pinout configuration """
 		with open("cfg/io_configuration.json", encoding='utf-8-sig') as json_file:
 			text = json_file.read()
 			json_data = json.loads(text)
@@ -44,6 +42,7 @@ class IOEcho(DeviceBase):
 
 			"""
 				Set pin numbering mode
+				/_!_\ Should be the same as the one used to build pínout configuration
 			"""
 			GPIO.setmode(GPIO.BOARD)
 
@@ -52,6 +51,8 @@ class IOEcho(DeviceBase):
 			for pin_and_label in self.pin_and_label_matrix:
 				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received, bouncetime=debounce_time)
+				""" Initialize last sent """
+				pin_and_label['lastSent'] = datetime.now()
 				print(PrintColor.OKBLUE + "Pin " + str(pin_and_label['pin']) + " initialized as input.")
 
 			self.pre_start_diagnose()
