@@ -46,9 +46,9 @@ class IOEcho(DeviceBase):
 				{'pin': 11, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 12, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 33, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 35, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 37, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 33, 'label': 'S021', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 35, 'label': 'S022', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 37, 'label': 'S023', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 40, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 21, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 23, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()}
