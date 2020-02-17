@@ -110,7 +110,7 @@ class IOEcho(DeviceBase):
 						if datetime.now().time() > (pin_and_label['lastSent'] + timedelta(milliseconds=500)).time():
 							pin_and_label['lastSent'] = datetime.now()
 							self.echo_signal_to_target(pin_and_label['label'])
-							print(PrintColor.OKBLUE + "GPIO [" + str(gpio) + "] Sending " + str(signal) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
+							print(PrintColor.OKBLUE + "GPIO [" + str(gpio) + "] Sending " + str(pin_and_label['label']) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
 							break
 						else:
 							print("Debouce : Now " + str(datetime.now().time()) + " Last " + str((pin_and_label['lastSent'] + timedelta(milliseconds=500)).time()))
