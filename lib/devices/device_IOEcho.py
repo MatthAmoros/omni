@@ -45,8 +45,8 @@ class IOEcho(DeviceBase):
 			self.pin_and_label_matrix = [
 				{'pin': 3, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 5, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 7, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 11, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 13, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 15, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 19, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
@@ -109,8 +109,8 @@ class IOEcho(DeviceBase):
 					if pin_and_label['pin'] == gpio:
 						if datetime.now().time() > (pin_and_label['lastSent'] + timedelta(milliseconds=500)).time():
 							pin_and_label['lastSent'] = datetime.now()
-							self.echo_signal_to_target(pin_and_label['label'])
 							print(PrintColor.OKBLUE + "GPIO [" + str(gpio) + "] Sending " + str(pin_and_label['label']) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
+							self.echo_signal_to_target(pin_and_label['label'])
 							break
 						else:
 							print("Debouce : Now " + str(datetime.now().time()) + " Last " + str((pin_and_label['lastSent'] + timedelta(milliseconds=500)).time()))
