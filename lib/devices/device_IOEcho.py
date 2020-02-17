@@ -97,6 +97,10 @@ class IOEcho(DeviceBase):
 
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
+			time.sleep(0.1)         # need to filter out the false positive of some power fluctuation
+			if GPIO.input(gpio) != GPIO.HIGH:
+				print("Debouce : False positive.")
+				return
 			try:
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
