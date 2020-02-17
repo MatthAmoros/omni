@@ -98,7 +98,7 @@ class IOEcho(DeviceBase):
 
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
-			time.sleep(0.2)         # need to filter out the false positive of some power fluctuation
+			time.sleep(0.3)         # need to filter out the false positive of some power fluctuation
 			if GPIO.input(gpio) != GPIO.HIGH:
 				return
 			try:
