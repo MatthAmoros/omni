@@ -28,6 +28,14 @@ class IOEcho(DeviceBase):
 	def __init__(self, name, pin_and_label_matrix, target_address='', target_port=9100, debounce_time=500):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
+		"""
+			TODO : Add dynamic configuration, or stroe pin map in a file
+		"""
+		with open("cfg/io_configuration.json", encoding='utf-8-sig') as json_file:
+			text = json_file.read()
+			json_data = json.loads(text)
+			print("Loaded configuration : " + str(json_data))
+
 		if is_running_on_pi == True:
 			print(PrintColor.OKBLUE + "Starting IOEcho device...")
 			self.debounce_time = debounce_time
@@ -39,20 +47,7 @@ class IOEcho(DeviceBase):
 			"""
 			GPIO.setmode(GPIO.BOARD)
 
-			"""
-				TODO : Add dynamic configuration, or stroe pin map in a file
-			"""
-			self.pin_and_label_matrix = [
-				{'pin': 11, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 12, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 33, 'label': 'S021', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 35, 'label': 'S022', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 37, 'label': 'S023', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 40, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 21, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 23, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()}
-			]
+			self.pin_and_label_matrix = json_data
 
 			for pin_and_label in self.pin_and_label_matrix:
 				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
