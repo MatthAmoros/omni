@@ -100,10 +100,6 @@ class IOEcho(DeviceBase):
 		if is_running_on_pi == True:
 			time.sleep(0.1)         # need to filter out the false positive of some power fluctuation
 			if GPIO.input(gpio) != GPIO.HIGH:
-<<<<<<< HEAD
-=======
-				print("Debouce : False positive.")
->>>>>>> d5aed0f2516ea6d281aa9081c34f629f60abfcfa
 				return
 			try:
 				""" Send GPIO signal to open the door """
