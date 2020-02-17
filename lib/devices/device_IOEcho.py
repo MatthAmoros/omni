@@ -43,13 +43,13 @@ class IOEcho(DeviceBase):
 				TODO : Add dynamic configuration, or stroe pin map in a file
 			"""
 			self.pin_and_label_matrix = [
-				{'pin': 3, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 5, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 11, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 12, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 13, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 15, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
-				{'pin': 19, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 33, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 35, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 37, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()},
+				{'pin': 40, 'label': 'S011', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 21, 'label': 'S012', 'value': 0, 'lastSent': datetime.now()},
 				{'pin': 23, 'label': 'S013', 'value': 0, 'lastSent': datetime.now()}
 			]
