@@ -99,7 +99,7 @@ class IOEcho(DeviceBase):
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
 			""" Debounce, in this case we receive a lot of events due to bad cabling (EMC) """
-			time.sleep(0.3)
+			time.sleep(0.5)
 			if GPIO.input(gpio) != GPIO.HIGH:
 				return
 			try:
