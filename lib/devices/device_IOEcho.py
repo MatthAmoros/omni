@@ -38,16 +38,16 @@ class IOEcho(DeviceBase):
 		except:
 			""" Fallback to static configuration """
 			self.pin_and_label_matrix = [
-			{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': null},
-			{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': null},
-			{'pin': 33, 'label': 'S013', 'value': 0, 'lastSent': null},
-			{'pin': 12, 'label': 'S021', 'value': 0, 'lastSent': null},
-			{'pin': 19, 'label': 'S022', 'value': 0, 'lastSent': null},
-			{'pin': 29, 'label': 'S023', 'value': 0, 'lastSent': null},
-			{'pin': 31, 'label': 'S021', 'value': 0, 'lastSent': null},
-			{'pin': 37, 'label': 'S032', 'value': 0, 'lastSent': null},
-			{'pin': 35, 'label': 'S033', 'value': 0, 'lastSent': null},
-			{'pin': 40, 'label': 'S033', 'value': 0, 'lastSent': null}
+			{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': None},
+			{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': None},
+			{'pin': 33, 'label': 'S013', 'value': 0, 'lastSent': None},
+			{'pin': 12, 'label': 'S021', 'value': 0, 'lastSent': None},
+			{'pin': 19, 'label': 'S022', 'value': 0, 'lastSent': None},
+			{'pin': 29, 'label': 'S023', 'value': 0, 'lastSent': None},
+			{'pin': 31, 'label': 'S021', 'value': 0, 'lastSent': None},
+			{'pin': 37, 'label': 'S032', 'value': 0, 'lastSent': None},
+			{'pin': 35, 'label': 'S033', 'value': 0, 'lastSent': None},
+			{'pin': 40, 'label': 'S033', 'value': 0, 'lastSent': None}
 			]
 
 		if is_running_on_pi == True:
