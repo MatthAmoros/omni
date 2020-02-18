@@ -29,10 +29,26 @@ class IOEcho(DeviceBase):
 		DeviceBase.__init__(self, name)
 		DeviceBase.type = "IOEcho"
 		""" Load pinout configuration """
-		with open("cfg/io_configuration.json", encoding='utf-8-sig') as json_file:
-			text = json_file.read()
-			json_data = json.loads(text)
-			print("Loaded configuration : " + str(json_data))
+		try:
+			with open("cfg/io_configuration.json", encoding='utf-8-sig') as json_file:
+				text = json_file.read()
+				json_data = json.loads(text)
+				print("Loaded configuration : " + str(json_data))
+				self.pin_and_label_matrix = json_data
+		except:
+			""" Fallback to static configuration """
+			self.pin_and_label_matrix = [
+			{'pin': 7, 'label': 'S011', 'value': 0, 'lastSent': null},
+			{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': null},
+			{'pin': 33, 'label': 'S013', 'value': 0, 'lastSent': null},
+			{'pin': 12, 'label': 'S021', 'value': 0, 'lastSent': null},
+			{'pin': 19, 'label': 'S022', 'value': 0, 'lastSent': null},
+			{'pin': 29, 'label': 'S023', 'value': 0, 'lastSent': null},
+			{'pin': 31, 'label': 'S021', 'value': 0, 'lastSent': null},
+			{'pin': 37, 'label': 'S032', 'value': 0, 'lastSent': null},
+			{'pin': 35, 'label': 'S033', 'value': 0, 'lastSent': null},
+			{'pin': 40, 'label': 'S033', 'value': 0, 'lastSent': null}
+			]
 
 		if is_running_on_pi == True:
 			print(PrintColor.OKBLUE + "Starting IOEcho device...")
@@ -46,7 +62,6 @@ class IOEcho(DeviceBase):
 			"""
 			GPIO.setmode(GPIO.BOARD)
 
-			self.pin_and_label_matrix = json_data
 
 			for pin_and_label in self.pin_and_label_matrix:
 				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
