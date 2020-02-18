@@ -62,7 +62,6 @@ class IOEcho(DeviceBase):
 			"""
 			GPIO.setmode(GPIO.BOARD)
 
-
 			for pin_and_label in self.pin_and_label_matrix:
 				GPIO.setup(pin_and_label['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 				GPIO.add_event_detect(pin_and_label['pin'], GPIO.RISING, callback=self._on_data_received, bouncetime=debounce_time)
@@ -110,21 +109,19 @@ class IOEcho(DeviceBase):
 	def _on_data_received(self, gpio):
 		if is_running_on_pi == True:
 			""" Debounce, in this case we receive a lot of events due to bad cabling (EMC) """
-			time.sleep(0.1)
+			time.sleep(0.2)
 			if GPIO.input(gpio) != GPIO.HIGH:
+				print("Debouce GPIO " + str(gpio))
 				return
 			try:
 				""" Send GPIO signal to open the door """
 				for pin_and_label in self.pin_and_label_matrix:
 					""" Added 'soft' debounce """
 					if pin_and_label['pin'] == gpio:
-						if datetime.now().time() > (pin_and_label['lastSent'] + timedelta(milliseconds=500)).time():
-							pin_and_label['lastSent'] = datetime.now()
-							print(PrintColor.OKBLUE + "GPIO [" + str(gpio) + "] Sending " + str(pin_and_label['label']) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
-							self.echo_signal_to_target(pin_and_label['label'])
-							break
-						else:
-							print("Debouce : Now " + str(datetime.now().time()) + " Last " + str((pin_and_label['lastSent'] + timedelta(milliseconds=500)).time()))
+						pin_and_label['lastSent'] = datetime.now()
+						print(PrintColor.OKBLUE + "GPIO [" + str(gpio) + "] Sending " + str(pin_and_label['label']) + " signal to " + str(self.target_address) + ":" + str(self.target_port))
+						self.echo_signal_to_target(pin_and_label['label'])
+						break
 			except RuntimeError:
 				pass
 
