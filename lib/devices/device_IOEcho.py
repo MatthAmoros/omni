@@ -42,7 +42,7 @@ class IOEcho(DeviceBase):
 			{'pin': 11, 'label': 'S012', 'value': 0, 'lastSent': None},
 			{'pin': 33, 'label': 'S013', 'value': 0, 'lastSent': None},
 			{'pin': 12, 'label': 'S021', 'value': 0, 'lastSent': None},
-			{'pin': 19, 'label': 'S022', 'value': 0, 'lastSent': None},
+			{'pin': 19, 'label': 'S013', 'value': 0, 'lastSent': None},
 			{'pin': 29, 'label': 'S023', 'value': 0, 'lastSent': None},
 			{'pin': 31, 'label': 'S021', 'value': 0, 'lastSent': None},
 			{'pin': 37, 'label': 'S032', 'value': 0, 'lastSent': None},

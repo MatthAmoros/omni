@@ -3,7 +3,7 @@
   {"pin": 11, "label": "S012", "value": 0, "lastSent": null},
   {"pin": 33, "label": "S013", "value": 0, "lastSent": null},
   {"pin": 12, "label": "S021", "value": 0, "lastSent": null},
-  {"pin": 19, "label": "S022", "value": 0, "lastSent": null},
+  {"pin": 19, "label": "S013", "value": 0, "lastSent": null},
   {"pin": 29, "label": "S023", "value": 0, "lastSent": null},
   {"pin": 31, "label": "S021", "value": 0, "lastSent": null},
   {"pin": 37, "label": "S032", "value": 0, "lastSent": null},
